@@ -1,6 +1,4 @@
 const puppeteer = require('puppeteer');
-// const axios = require('axios');
-// const saveAs = require('file-saver');
 const fs = require('fs');
 const request = require('request');
 
@@ -22,7 +20,7 @@ async function processArray(array) {
   console.log('Done!')
 }
 
-const download = function(uri, filename, callback){
+const download = async function(uri, filename, callback){
   request.head(uri, function(err, res, body){
     console.log('content-type:', res.headers['content-type']);
     console.log('content-length:', res.headers['content-length']);
@@ -35,7 +33,7 @@ const download = function(uri, filename, callback){
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: {
-      width: 1400,
+      width: 1440,
       height: 900
     }
   });
@@ -43,8 +41,8 @@ const download = function(uri, filename, callback){
   // Go to website
   const page = await browser.newPage();
   await page.goto('https://www.facebook.com');
-  // const context = browser.defaultBrowserContext();
-  // await context.overridePermissions('https://www.facebook.com', ['notifications']);
+  const context = browser.defaultBrowserContext();
+  await context.overridePermissions('https://www.facebook.com', ['notifications']);
 
   // Submit login
   page.focus('#email');
@@ -62,15 +60,31 @@ const download = function(uri, filename, callback){
   await page.waitFor(1000);
 
   const $albumImages = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
+  // const imgLink = await $albumImages[3];
+  // let $likesHeader = await page.$('#medley_header_likes');
+  // let $booksHeader = await page.$('#medley_header_books');
+  // let $currentLastPhoto = await $albumImages[$albumImages.length - 1];
+  // while (!$booksHeader) {
+  //   await $currentLastPhoto.hover();
+  //   await page.waitFor(2000);
+  //   $likesHeader = await page.$('#medley_header_likes');
+  // }
 
   for (const imgLink of $albumImages) {
     const imageName = imgLink._remoteObject.description;
     await imgLink.click();
-    await page.waitFor('.fbPhotoSnowliftContainer');
-    const imageSrc = await page.$eval('.spotlight', el => el.src);
+    imgLink.dispose();
+    // 2 second delay for Facebook to figure out right image size to display based on the browser resolution
+    await page.waitFor(4000);
+    await page.waitForSelector('.fbPhotoSnowliftContainer');
+    // const photoContainer = await page.$('.fbPhotoSnowliftContainer');
+    // const imageSrc = await photoContainer.$eval('.spotlight', nodes => nodes.map(n => n.src));
+    const imageSrc = await page.$eval('.fbPhotoSnowliftContainer img.spotlight', el => el.src);
+    await page.waitFor(2000);
 
-    download(imageSrc, `${imageName}.png`, async function(){
+    await download(imageSrc, `${imageName}.png`, async function(){
       console.log(`done download ${imageName}.png`);
+      await page.waitFor(2000);
       await page.keyboard.press('Escape');
     });
   }
