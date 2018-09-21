@@ -1,0 +1,20 @@
+{
+  "name": "fb-photos-scraper",
+  "version": "1.0.0",
+  "description": "Scrape Facebook Photos of Me",
+  "main": "scrape.js",
+  "dependencies": {
+    "axios": "0.18.0",
+    "cheerio": "1.0.0-rc.2",
+    "file-saver": "1.3.8",
+    "puppeteer": "1.8.0",
+    "request": "2.88.0",
+    "request-promise": "4.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
