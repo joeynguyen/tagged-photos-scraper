@@ -4,11 +4,13 @@
   "description": "Scrape Facebook Photos of Me",
   "main": "scrape.js",
   "dependencies": {
+    "dotenv": "6.1.0",
     "puppeteer": "1.8.0",
     "request": "2.88.0"
   },
   "devDependencies": {},
   "scripts": {
+    "start": "node ./scrape.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

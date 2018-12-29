@@ -2,6 +2,8 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const request = require('request');
 
+require('dotenv').config();
+
 function delay() {
   return new Promise(resolve => setTimeout(resolve, 300));
 }
@@ -46,9 +48,9 @@ const download = async function(uri, filename, callback){
 
   // Submit login
   page.focus('#email');
-  await page.keyboard.type('');
+  await page.keyboard.type(process.env.USERNAME);
   const $passField = await page.$('input#pass');
-  await $passField.type('');
+  await $passField.type(process.env.PASSWORD);
   await $passField.press('Enter');
 
   // Go to Photos of Your page
