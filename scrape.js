@@ -4,36 +4,35 @@ const request = require('request');
 
 require('dotenv').config();
 
-const download = async function (uri, filename, callback) {
-  request.head(uri, (err, res, body) => {
-    // console.log('content-type:', res.headers['content-type']);
-    // console.log('content-length:', res.headers['content-length']);
-
+async function download(uri, filename, callback) {
+  request.head(uri, () => {
     request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
   });
-};
+}
 
-const downloadAllPhotos = async function ($photos) {
-  for (const imgLink of $photos) {
-    const imageName = imgLink._remoteObject.description;
-    await imgLink.click();
+async function downloadAllPhotos(page, $photos) {
+  for (const $photo of $photos) {
+    /* eslint-disable no-underscore-dangle */
+    const imageName = $photo._remoteObject.description;
+    /* eslint-disable no-await-in-loop */
+    await $photo.click();
     // don't need to keep reference in memory
-    imgLink.dispose();
-    // 4 second delay for Facebook to figure out right image size to display based on the browser resolution
+    $photo.dispose();
+    // 4 second delay for Facebook to figure out appropriate
+    // image size to display based on the browser resolution
     await page.waitFor(4000);
     await page.waitForSelector('.fbPhotoSnowliftContainer');
-    // const photoContainer = await page.$('.fbPhotoSnowliftContainer');
-    // const imageSrc = await photoContainer.$eval('.spotlight', nodes => nodes.map(n => n.src));
+
     const imageSrc = await page.$eval('.fbPhotoSnowliftContainer img.spotlight', el => el.src);
-    // await page.waitFor(2000);
+    await page.waitFor(2000);
 
     await download(imageSrc, `${imageName}.png`, async () => {
       console.log(`done downloading ${imageName}.png`);
-      // await page.waitFor(2000);
+      await page.waitFor(2000);
       await page.keyboard.press('Escape');
     });
   }
-};
+}
 
 async function scrapeInfiniteScrollPhotos(
   page,
@@ -63,10 +62,11 @@ async function scrapeInfiniteScrollPhotos(
   $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
   console.log(`taggedPhotos FINAL length: ${$taggedPhotos.length}`);
 
-  await downloadAllPhotos($taggedPhotos);
+  await downloadAllPhotos(page, $taggedPhotos);
 }
 
 (async () => {
+  // start puppeteer
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: {
@@ -96,23 +96,10 @@ async function scrapeInfiniteScrollPhotos(
   await page.waitFor('a[name="Photos of You"]');
   await page.waitFor(1000);
 
-  // const $albumWrapper = await page.$$('.fbPhotosRedesignBorderOverlay');
-  // const albumWrapperStyle = await page.$eval('.fbPhotosRedesignBorderOverlay', el => el.attributes.style.value);
-  // console.log(`albumWrapperStyle: ${JSON.stringify(albumWrapperStyle)}`);
-  // const $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
-  // console.log(`taggedPhotos length: ${$taggedPhotos.length}`);
-  // const imgLink = await $taggedPhotos[3];
-  // let $likesHeader = await page.$('#medley_header_likes');
-  // let $booksHeader = await page.$('#medley_header_books');
-  // let $currentLastPhoto = await $taggedPhotos[$taggedPhotos.length - 1];
-  // while (!$booksHeader) {
-  //   await $currentLastPhoto.hover();
-  //   await page.waitFor(2000);
-  //   $likesHeader = await page.$('#medley_header_likes');
-  // }
-
+  // scrape photos
   await scrapeInfiniteScrollPhotos(page);
 
+  // stop puppeteer
   await page.waitFor(1000);
   console.log('closing browser');
   await browser.close();
