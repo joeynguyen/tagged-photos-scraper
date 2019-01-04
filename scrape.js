@@ -7,43 +7,38 @@ require('dotenv').config();
 async function download(uri, filename, callback) {
   console.log(`Downloading ${filename}`);
   await request.head(uri, () => {
-    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    request(uri).pipe(fs.createWriteStream(filename)).on('finish', callback);
   });
 }
 
 async function downloadAllPhotos(page, $photos) {
-  const $photo = $photos[0];
+  for (let i = 0; i < $photos.length; i++) {
+    const $photo = $photos[i];
+    /* eslint-disable no-await-in-loop */
+    await $photo.click();
+    await page.waitForSelector('.fbPhotoSnowliftPopup');
 
-  // for (const $photo of $photos) {
-  /* eslint-disable no-await-in-loop */
-  await $photo.click();
-  // don't need to keep reference in memory
-  $photo.dispose();
-  await page.waitForSelector('.fbPhotoSnowliftPopup');
-  // 4 second delay for Facebook to figure out appropriate
-  // image size to display based on the browser resolution
-  await page.waitFor(4000);
+    // 5 second delay for Facebook to figure out appropriate
+    // image size to display based on the browser resolution
+    await page.waitFor(5000);
+    // stop referencing the element handle
+    $photo.dispose();
 
-  const imageSrc = await page.$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src);
+    const imageSrc = await page.$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src);
 
-  // grab filename of image from URL
-  const reg = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
-  const filename = reg.exec(imageSrc)[0];
-  await page.waitFor(2000);
+    // grab filename of image from URL
+    const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
+    const filename = regx.exec(imageSrc)[0];
 
-  await download(imageSrc, filename, async () => {
-    try {
+    await download(imageSrc, filename, async () => {
       console.log(`Downloaded ${filename} successfully`);
-      await page.keyboard.press('Escape');
-      console.log('Escape pressed');
+      console.log(`downloaded ${i + 1} photos out of ${$photos.length}`);
+    });
 
-      await page.waitFor(2000);
-      console.log('waited 2 secs again');
-    } catch (err) {
-      console.log('err', err);
-    }
-  });
-  // }
+    // press Escape to hide currently displayed high quality image
+    await page.keyboard.press('Escape');
+    await page.waitFor(2000);
+  }
 }
 
 async function scrapeInfiniteScrollPhotos(
@@ -61,11 +56,13 @@ async function scrapeInfiniteScrollPhotos(
   //     await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
   //     currentHeight = await page.evaluate('document.body.scrollHeight');
   //     await page.waitFor(scrollDelay);
+  //     console.log('scrolling down the page to load more photos');
   //   }
   // } catch (e) {
   //   // there will be an error thrown once the page can't scroll down any further
   //   // since there aren't any more photos left to load
   //   // do nothing with the error
+  //     console.log("Can't scroll down anymore");
   // }
 
   const $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
@@ -100,10 +97,10 @@ async function scrapeInfiniteScrollPhotos(
   await $passField.press('Enter');
 
   // Go to "Photos of You" page
-  console.log('Going to "Photos of You" page');
   const $profileLink = await page.waitFor('div[data-click="profile_icon"] a');
   await $profileLink.click();
   const $photosLink = await page.waitFor('a[data-tab-key="photos"]');
+  console.log('Going to "Photos of You" page');
   await $photosLink.click();
   await page.waitFor('a[name="Photos of You"]');
   await page.waitFor(1000);
@@ -111,14 +108,10 @@ async function scrapeInfiniteScrollPhotos(
   // scrape photos
   console.log('Searching for photos');
   await scrapeInfiniteScrollPhotos(page);
+  await page.waitFor(1000);
 
   // stop puppeteer
-  await page.waitFor(5000);
-  console.log('waited 5 sec');
   console.log('Shutting down');
   await page.close();
-  console.log('page closed');
-
   await browser.close();
-  console.log('browser closed');
 })();
