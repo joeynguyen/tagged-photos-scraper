@@ -45,28 +45,33 @@ async function scrapeInfiniteScrollPhotos(
   page,
   scrollDelay = 1000,
 ) {
-  // try {
-  //   let previousHeight = 0;
-  //   let currentHeight = await page.evaluate('document.body.scrollHeight');
+  let $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
+  console.log(`Found ${$taggedPhotos.length} photos`);
 
-  //   // keep scrolling to the bottom of the page until there are no more photos to load
-  //   while (previousHeight < currentHeight) {
-  //     previousHeight = currentHeight;
-  //     await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-  //     await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
-  //     currentHeight = await page.evaluate('document.body.scrollHeight');
-  //     await page.waitFor(scrollDelay);
-  //     console.log('scrolling down the page to load more photos');
-  //   }
-  // } catch (e) {
-  //   // there will be an error thrown once the page can't scroll down any further
-  //   // since there aren't any more photos left to load
-  //   // do nothing with the error
-  //     console.log("Can't scroll down anymore");
-  // }
+  try {
+    let previousHeight = 0;
+    let currentHeight = await page.evaluate('document.body.scrollHeight');
 
-  const $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
-  console.log(`Found ${$taggedPhotos.length} tagged photos`);
+    // keep scrolling to the bottom of the page until there are no more photos to load
+    while (previousHeight < currentHeight) {
+      previousHeight = currentHeight;
+      await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
+      await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
+      currentHeight = await page.evaluate('document.body.scrollHeight');
+      await page.waitFor(scrollDelay);
+      $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
+      console.log(`Found ${$taggedPhotos.length} photos`);
+      console.log('scrolling down the page to load more photos');
+    }
+  } catch (e) {
+    // there will be an error thrown once the page can't scroll down any further
+    // since there aren't any more photos left to load
+    // do nothing with the error
+    console.log("Can't scroll down anymore");
+  }
+
+  $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
+  console.log(`Final count: ${$taggedPhotos.length} tagged photos found.`);
 
   await downloadAllPhotos(page, $taggedPhotos);
 }
