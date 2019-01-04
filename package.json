@@ -1,11 +1,11 @@
 {
   "name": "fb-photos-scraper",
   "version": "1.0.0",
-  "description": "Scrape Facebook Photos of Me",
+  "description": "Scrape Facebook for photos you're tagged in",
   "main": "scrape.js",
   "dependencies": {
     "dotenv": "6.1.0",
-    "puppeteer": "1.8.0",
+    "puppeteer": "1.11.0",
     "request": "2.88.0"
   },
   "devDependencies": {
