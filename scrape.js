@@ -4,10 +4,16 @@ const request = require('request');
 
 require('dotenv').config();
 
-async function download(uri, filename, callback) {
+async function download(uri, filename, iter, callback) {
   console.log(`Downloading ${filename}`);
   await request.head(uri, () => {
-    request(uri).pipe(fs.createWriteStream(filename)).on('finish', callback);
+    request(uri)
+      .pipe(fs.createWriteStream(filename))
+      .on('finish', callback)
+      .on('error', (error) => {
+        console.log('error', error.message);
+        console.log(`failed on iteration: ${iter}`);
+      });
   });
 }
 
@@ -30,7 +36,7 @@ async function downloadAllPhotos(page, $photos) {
     const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
     const filename = regx.exec(imageSrc)[0];
 
-    await download(imageSrc, filename, async () => {
+    await download(imageSrc, filename, i, async () => {
       console.log(`Downloaded ${filename} successfully`);
       console.log(`downloaded ${i + 1} photos out of ${$photos.length}`);
     });
