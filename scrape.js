@@ -17,7 +17,7 @@ async function download(uri, filename, iter, callback) {
   });
 }
 
-async function downloadAllPhotos(page, $photos) {
+async function downloadAllPhotos(page, $photos, runScraperEvent) {
   for (let i = 0; i < $photos.length; i++) {
     const $photo = $photos[i];
     /* eslint-disable no-await-in-loop */
@@ -37,8 +37,10 @@ async function downloadAllPhotos(page, $photos) {
     const filename = regx.exec(imageSrc)[0];
 
     await download(imageSrc, filename, i, async () => {
+      const photosDownloaded = i + 1;
       console.log(`Downloaded ${filename} successfully`);
-      console.log(`downloaded ${i + 1} photos out of ${$photos.length}`);
+      console.log(`downloaded ${photosDownloaded} photos out of ${$photos.length}`);
+      runScraperEvent.sender.send('photos-downloaded', photosDownloaded);
     });
 
     // press Escape to hide currently displayed high quality image
@@ -49,6 +51,7 @@ async function downloadAllPhotos(page, $photos) {
 
 async function scrapeInfiniteScrollPhotos(
   page,
+  runScraperEvent,
   scrollDelay = 1000,
 ) {
   let $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
@@ -78,11 +81,12 @@ async function scrapeInfiniteScrollPhotos(
 
   $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
   console.log(`Final count: ${$taggedPhotos.length} tagged photos found.`);
+  runScraperEvent.sender.send('photos-found', $taggedPhotos.length);
 
-  await downloadAllPhotos(page, $taggedPhotos);
+  await downloadAllPhotos(page, $taggedPhotos, runScraperEvent);
 }
 
-async function scrape() {
+async function scrape(runScraperEvent) {
   // start puppeteer
   const browser = await puppeteer.launch({
     headless: true,
@@ -118,7 +122,7 @@ async function scrape() {
 
   // scrape photos
   console.log('Searching for photos');
-  await scrapeInfiniteScrollPhotos(page);
+  await scrapeInfiniteScrollPhotos(page, runScraperEvent);
   await page.waitFor(1000);
 
   // stop puppeteer

@@ -1,16 +1,14 @@
 // Modules to control application life and create native browser window
-const path = require('path');
 const {app, BrowserWindow, ipcMain } = require('electron');
-
+const path = require('path');
 const scrape = require('./scrape.js');
 
 const isDev = process.env.ELECTRON_IS_DEV;
 
-
 ipcMain.on('run-scraper', (event, arg) => {
   console.log(arg); // prints "run scraper"
   event.sender.send('scraper-started', 'scraper started');
-  scrape();
+  scrape(event);
 });
 
 // Keep a global reference of the window object, if you don't, the window will

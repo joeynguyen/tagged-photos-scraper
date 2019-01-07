@@ -8,16 +8,29 @@ class App extends Component {
     this.sendMessage = this.sendMessage.bind(this);
   }
 
+  // state = {
+  //   photoDownloadedName: null,
+  //   photoDownloadedCount: 0,
+  //   totalPhotosCount: 0,
+  // }
+
   componentDidMount() {
     // Electron IPC example
     ipcRenderer.on('scraper-started', (event, arg) => {
-      console.log(arg) // prints "scraper started"
+      console.log(arg); // prints "scraper started"
+    });
+    ipcRenderer.on('photos-found', (event, num) => {
+      console.log(num);
+      console.log(`Photos found: ${num}`);
+    });
+    ipcRenderer.on('photos-downloaded', (event, photoNumber) => {
+      console.log(`photoNumber: ${photoNumber}`);
     });
   }
 
   componentWillUnmount() {
     // Electron IPC example
-    ipcRenderer.removeAllListeners('scraper-started');
+    ipcRenderer.removeAllListeners();
   }
 
   sendMessage() {
