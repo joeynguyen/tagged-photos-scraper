@@ -5,8 +5,9 @@ const scrape = require('./scrape.js');
 
 const isDev = process.env.ELECTRON_IS_DEV;
 
-ipcMain.on('run-scraper', (event, arg) => {
-  console.log(arg); // prints "run scraper"
+ipcMain.on('run-scraper', (event, photoStartIndex) => {
+  console.log('Starting scraper');
+  console.log('photoStartIndex', photoStartIndex);
   event.sender.send('status-friendly', 'Started');
   event.sender.send('status-internal', 'running');
   scrape(event);
