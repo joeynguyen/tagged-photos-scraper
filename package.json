@@ -17,6 +17,6 @@
     "start": "node ./scrape.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Joey Nguyen",
+  "license": "GPL-3.0-or-later"
 }
