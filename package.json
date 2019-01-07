@@ -2,21 +2,29 @@
   "name": "fb-photos-scraper",
   "version": "1.0.0",
   "description": "Scrape Facebook for photos you're tagged in",
+  "author": "Joey Nguyen",
+  "license": "GPL-3.0-or-later",
   "main": "scrape.js",
   "dependencies": {
     "dotenv": "6.1.0",
     "puppeteer": "1.11.0",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-scripts": "2.1.3",
     "request": "2.88.0"
   },
-  "devDependencies": {
-    "eslint": "5.11.1",
-    "eslint-config-airbnb-base": "13.1.0",
-    "eslint-plugin-import": "2.14.0"
-  },
+  "devDependencies": {},
   "scripts": {
-    "start": "node ./scrape.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cli": "node ./scrape.js",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "author": "Joey Nguyen",
-  "license": "GPL-3.0-or-later"
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
