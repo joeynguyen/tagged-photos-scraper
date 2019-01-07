@@ -4,7 +4,8 @@
   "description": "Scrape Facebook for photos you're tagged in",
   "author": "Joey Nguyen",
   "license": "GPL-3.0-or-later",
-  "main": "scrape.js",
+  "homepage": "./",
+  "main": "main.js",
   "dependencies": {
     "dotenv": "6.1.0",
     "puppeteer": "1.11.0",
@@ -13,18 +14,23 @@
     "react-scripts": "2.1.3",
     "request": "2.88.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "concurrently": "4.1.0",
+    "electron": "4.0.1",
+    "electron-packager": "13.0.1",
+    "wait-on": "3.2.0"
+  },
   "scripts": {
     "cli": "node ./scrape.js",
-    "start": "react-scripts start",
+    "start": "concurrently 'yarn react-start' 'wait-on http://localhost:3000/ && yarn electron-start'",
+    "react-start": "BROWSER=none react-scripts start",
+    "electron-start": "ELECTRON_IS_DEV=1 electron .",
+    "electron-build": "electron-packager ./ --overwrite",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
+    "Electron >= 4.0.0"
   ]
 }
