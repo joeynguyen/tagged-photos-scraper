@@ -82,7 +82,7 @@ async function scrapeInfiniteScrollPhotos(
   await downloadAllPhotos(page, $taggedPhotos);
 }
 
-(async () => {
+async function scrape() {
   // start puppeteer
   const browser = await puppeteer.launch({
     headless: true,
@@ -125,4 +125,6 @@ async function scrapeInfiniteScrollPhotos(
   console.log('Shutting down');
   await page.close();
   await browser.close();
-})();
+}
+
+module.exports = scrape;
