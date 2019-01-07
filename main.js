@@ -2,7 +2,12 @@
 const path = require('path');
 const {app, BrowserWindow} = require('electron');
 const isDev = process.env.ELECTRON_IS_DEV;
+const { ipcMain } = require('electron')
 
+ipcMain.on('asynchronous-message', (event, arg) => {
+  console.log(arg) // prints "ping"
+  event.sender.send('asynchronous-reply', 'pong')
+})
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
