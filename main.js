@@ -7,7 +7,7 @@ const isDev = process.env.ELECTRON_IS_DEV;
 
 ipcMain.on('run-scraper', (event, arg) => {
   console.log(arg); // prints "run scraper"
-  event.sender.send('scraper-started', 'scraper started');
+  event.sender.send('scraper-status', 'Started');
   scrape(event);
 });
 
