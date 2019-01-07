@@ -10,19 +10,19 @@ class App extends Component {
 
   componentDidMount() {
     // Electron IPC example
-    ipcRenderer.on('asynchronous-reply', (event, arg) => {
-      console.log(arg) // prints "pong"
+    ipcRenderer.on('scraper-started', (event, arg) => {
+      console.log(arg) // prints "scraper started"
     });
   }
 
   componentWillUnmount() {
     // Electron IPC example
-    ipcRenderer.removeAllListeners('asynchronous-reply');
+    ipcRenderer.removeAllListeners('scraper-started');
   }
 
   sendMessage() {
     // Electron IPC example
-    ipcRenderer.send('asynchronous-message', 'ping');
+    ipcRenderer.send('run-scraper', 'run scraper');
   }
 
   render() {
