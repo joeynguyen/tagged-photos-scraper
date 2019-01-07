@@ -19,10 +19,10 @@ async function download(uri, filename, iter, runScraperEvent, callback) {
   });
 }
 
-async function downloadAllPhotos(page, $photos, runScraperEvent) {
+async function downloadAllPhotos(photoStartIndex, $photos, page, runScraperEvent) {
   runScraperEvent.sender.send('status-friendly', 'Downloading photos...');
 
-  for (let i = 0; i < $photos.length; i++) {
+  for (let i = photoStartIndex; i < $photos.length; i++) {
     const $photo = $photos[i];
     /* eslint-disable no-await-in-loop */
     await $photo.click();
@@ -54,6 +54,7 @@ async function downloadAllPhotos(page, $photos, runScraperEvent) {
 }
 
 async function scrapeInfiniteScrollPhotos(
+  photoStartIndex,
   page,
   runScraperEvent,
   scrollDelay = 1000,
@@ -91,10 +92,10 @@ async function scrapeInfiniteScrollPhotos(
   console.log(`Final count: ${$taggedPhotos.length} tagged photos found.`);
   runScraperEvent.sender.send('photos-found', $taggedPhotos.length);
 
-  await downloadAllPhotos(page, $taggedPhotos, runScraperEvent);
+  await downloadAllPhotos(photoStartIndex, $taggedPhotos, page, runScraperEvent);
 }
 
-async function scrape(runScraperEvent) {
+async function scrape(photoStartIndex, runScraperEvent) {
   // start puppeteer
   const browser = await puppeteer.launch({
     headless: true,
@@ -134,7 +135,7 @@ async function scrape(runScraperEvent) {
   // scrape photos
   console.log('Searching for photos');
   runScraperEvent.sender.send('status-friendly', 'Searching for photos');
-  await scrapeInfiniteScrollPhotos(page, runScraperEvent);
+  await scrapeInfiniteScrollPhotos(photoStartIndex, page, runScraperEvent);
   await page.waitFor(1000);
 
   // stop puppeteer

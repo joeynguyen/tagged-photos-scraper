@@ -10,7 +10,7 @@ ipcMain.on('run-scraper', (event, photoStartIndex) => {
   console.log('photoStartIndex', photoStartIndex);
   event.sender.send('status-friendly', 'Started');
   event.sender.send('status-internal', 'running');
-  scrape(event);
+  scrape(photoStartIndex, event);
 });
 
 // Keep a global reference of the window object, if you don't, the window will
