@@ -9,15 +9,16 @@ class App extends Component {
   }
 
   state = {
-    scraperStatus: 'Not started',
+    scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'complete']
+    scraperStatusFriendly: 'Ready',
     photoDownloadedCount: 0,
     totalPhotosCount: 0,
   }
 
   componentDidMount() {
-    ipcRenderer.on('scraper-status', (event, status) => {
+    ipcRenderer.on('status-friendly', (event, status) => {
       console.log(status);
-      this.setState({ scraperStatus: status });
+      this.setState({ scraperStatusFriendly: status });
     });
 
     ipcRenderer.on('photos-found', (event, num) => {
@@ -29,6 +30,11 @@ class App extends Component {
     ipcRenderer.on('photos-downloaded', (event, photoNumber) => {
       console.log(`photoNumber: ${photoNumber}`);
       this.setState({ photoDownloadedCount: photoNumber });
+    });
+
+    ipcRenderer.on('status-internal', (event, status) => {
+      console.log('Internal status', status);
+      this.setState({ scraperStatusInternal: status });
     });
   }
 
@@ -44,7 +50,8 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <p>Current status: {this.state.scraperStatus}</p>
+          <p>Current status: {this.state.scraperStatusFriendly}</p>
+          <p>Internal status: {this.state.scraperStatusInternal}</p>
           <p>Photos found: {this.state.totalPhotosCount}</p>
           <p>Photos downloaded: {this.state.photoDownloadedCount}</p>
           <button onClick={this.sendMessage}>Start</button>
