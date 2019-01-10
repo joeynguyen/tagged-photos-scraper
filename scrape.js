@@ -38,7 +38,9 @@ async function downloadAllPhotos(photoStartIndex, $photos, page, runScraperEvent
 
     // grab filename of image from URL
     const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
-    const filename = regx.exec(imageSrc)[0];
+    let filename = regx.exec(imageSrc)[0];
+    // append index number in front of filename for debugging purposes
+    filename = `${i}-${filename}`;
 
     await download(imageSrc, filename, i, runScraperEvent, async () => {
       const photosDownloaded = i + 1;
