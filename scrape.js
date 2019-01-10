@@ -105,10 +105,32 @@ async function scrape(photoStartIndex, runScraperEvent) {
     },
   });
 
+  process.on('uncaughtException', function (err) {
+    console.log('error', err);
+    runScraperEvent.sender.send('status-friendly', `uncaughtException error: ${err}`);
+    runScraperEvent.sender.send('status-internal', 'crashed');
+    // throw err;
+  });
+
   // Go to website
+  const page = await browser.newPage();
+  let result = await page.evaluate(
+    () => {
+      return window.innerWidth;
+    }
+  );
+
+  console.log(`Detected window.innerWidth to be ${result}.`);
+
+  page.on('error', (err) => {
+    runScraperEvent.sender.send('status-friendly', `Page error: ${err}`);
+    runScraperEvent.sender.send('status-internal', 'crashed');
+    console.log('error', err);
+    // throw err;
+  });
+
   console.log('Going to facebook.com');
   runScraperEvent.sender.send('status-friendly', 'Going to facebook.com');
-  const page = await browser.newPage();
   await page.goto('https://www.facebook.com');
   const context = browser.defaultBrowserContext();
   await context.overridePermissions('https://www.facebook.com', ['notifications']);
@@ -144,6 +166,7 @@ async function scrape(photoStartIndex, runScraperEvent) {
   runScraperEvent.sender.send('status-internal', 'complete');
   await page.close();
   await browser.close();
+  console.log('puppeeter shut down');
 }
 
 module.exports = scrape;

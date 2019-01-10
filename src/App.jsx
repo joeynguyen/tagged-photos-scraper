@@ -34,10 +34,10 @@ class App extends Component {
   }
 
   // componentDidUpdate(prevProps, prevState) {
-  //   // re-run scraper if it crashed
+  //   // automatically retry if app crashes
   //   if (
-  //     prevState.scraperStatusInternal !== this.props.scraperStatusInternal &&
-  //     this.props.scraperStatusInternal === 'crashed'
+  //     prevState.scraperStatusInternal !== this.state.scraperStatusInternal &&
+  //     this.state.scraperStatusInternal === 'crashed'
   //   ) {
   //     this.setState({ scraperStatusInternal: 'running' });
   //     this.setState({ scraperStatusFriendly: 'Restarting scraper' });
@@ -51,15 +51,19 @@ class App extends Component {
 
   runScraper() {
     let photoStartIndex = 0;
+    const {
+      scraperStatusInternal,
+      photoDownloadedCount,
+    } = this.state;
 
     if (
-      this.props.scraperStatusInternal === 'crashed' &&
-      this.state.photoDownloadedCount !== 0
+      scraperStatusInternal === 'crashed' &&
+      photoDownloadedCount !== 0
     ) {
       // index starts at 0 so it's 1 behind downloaded count
       // for example, if 2 photos have been downloaded successfully,
       // we restart at index 2 to begin downloading photo #3
-      photoStartIndex = this.state.photoDownloadedCount;
+      photoStartIndex = photoDownloadedCount;
     }
 
     ipcRenderer.send('run-scraper', photoStartIndex);
@@ -81,7 +85,7 @@ class App extends Component {
           <p>Internal status: {scraperStatusInternal}</p>
           <p>Photos found: {totalPhotosCount}</p>
           <p>Photos downloaded: {photoDownloadedCount}</p>
-          {scraperStatusInternal === 'complete' ? null : (
+          {scraperStatusInternal === 'complete' ? (<h2>Complete!</h2>) : (
             <button
               disabled={scraperStatusInternal === 'running'}
               onClick={this.runScraper}
