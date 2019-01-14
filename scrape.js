@@ -4,7 +4,7 @@ const request = require('request');
 
 require('dotenv').config();
 
-async function download(uri, filename, iter, runScraperEvent, callback) {
+async function downloadFile(uri, filename, iter, runScraperEvent, browser, callback) {
   console.log(`Downloading ${filename}`);
   await request.head(uri, () => {
     request(uri)
@@ -15,11 +15,12 @@ async function download(uri, filename, iter, runScraperEvent, callback) {
         console.log(`failed on iteration: ${iter}`);
         runScraperEvent.sender.send('status-friendly', 'Downloading failed before all photos were downloaded');
         runScraperEvent.sender.send('status-internal', 'crashed');
+        browser.close()
       });
   });
 }
 
-async function downloadAllPhotos(photoStartIndex, $photos, page, runScraperEvent) {
+async function downloadAllPhotos(photoStartIndex, $photos, page, browser, runScraperEvent) {
   runScraperEvent.sender.send('status-friendly', 'Downloading photos...');
 
   for (let i = photoStartIndex; i < $photos.length; i++) {
@@ -42,7 +43,7 @@ async function downloadAllPhotos(photoStartIndex, $photos, page, runScraperEvent
     // append index number in front of filename for debugging purposes
     filename = `${i}-${filename}`;
 
-    await download(imageSrc, filename, i, runScraperEvent, async () => {
+    await downloadFile(imageSrc, filename, i, runScraperEvent, browser, async () => {
       const photosDownloaded = i + 1;
       console.log(`Downloaded ${filename} successfully`);
       console.log(`downloaded ${photosDownloaded} photos out of ${$photos.length}`);
@@ -58,6 +59,7 @@ async function downloadAllPhotos(photoStartIndex, $photos, page, runScraperEvent
 async function scrapeInfiniteScrollPhotos(
   photoStartIndex,
   page,
+  browser,
   runScraperEvent,
   scrollDelay = 1000,
 ) {
@@ -94,7 +96,7 @@ async function scrapeInfiniteScrollPhotos(
   console.log(`Final count: ${$taggedPhotos.length} tagged photos found.`);
   runScraperEvent.sender.send('photos-found', $taggedPhotos.length);
 
-  await downloadAllPhotos(photoStartIndex, $taggedPhotos, page, runScraperEvent);
+  await downloadAllPhotos(photoStartIndex, $taggedPhotos, page, browser, runScraperEvent);
 }
 
 async function scrape(photoStartIndex, runScraperEvent) {
@@ -105,6 +107,9 @@ async function scrape(photoStartIndex, runScraperEvent) {
       width: 3440,
       height: 1440,
     },
+    // even if the user's focus isn't on this app,
+    // don't throttle this app's performance
+    webPreferences: { backgroundThrottling: false }
   });
 
   process.on('uncaughtException', function (err) {
@@ -112,6 +117,7 @@ async function scrape(photoStartIndex, runScraperEvent) {
     runScraperEvent.sender.send('status-friendly', `uncaughtException error: ${err}`);
     runScraperEvent.sender.send('status-internal', 'crashed');
     // throw err;
+    browser.close()
   });
 
   // Go to website
@@ -159,7 +165,7 @@ async function scrape(photoStartIndex, runScraperEvent) {
   // scrape photos
   console.log('Searching for photos');
   runScraperEvent.sender.send('status-friendly', 'Searching for photos');
-  await scrapeInfiniteScrollPhotos(photoStartIndex, page, runScraperEvent);
+  await scrapeInfiniteScrollPhotos(photoStartIndex, page, browser, runScraperEvent);
   await page.waitFor(1000);
 
   // stop puppeteer
