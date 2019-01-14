@@ -1,36 +1,50 @@
 {
-  "name": "fb-photos-scraper",
+  "name": "tagged-photos-scraper",
   "version": "1.0.0",
   "description": "Scrape Facebook for photos you're tagged in",
   "author": "Joey Nguyen",
   "license": "GPL-3.0-or-later",
   "homepage": "./",
-  "main": "main.js",
+  "main": "public/electron.js",
   "dependencies": {
     "dotenv": "6.1.0",
+    "electron-is-dev": "1.0.1",
     "puppeteer": "1.11.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-scripts": "2.1.3",
     "request": "2.88.0"
   },
   "devDependencies": {
     "concurrently": "4.1.0",
+    "cross-env": "5.2.0",
     "electron": "4.0.1",
-    "electron-packager": "13.0.1",
+    "electron-builder": "20.38.4",
+    "react-scripts": "2.1.3",
     "wait-on": "3.2.0"
   },
   "scripts": {
-    "cli": "node ./scrape.js",
     "start": "concurrently 'yarn react-start' 'wait-on http://localhost:3000/ && yarn electron-start'",
-    "react-start": "BROWSER=none react-scripts start",
-    "electron-start": "ELECTRON_IS_DEV=1 electron .",
-    "electron-build": "electron-packager ./ --overwrite",
-    "build": "react-scripts build",
+    "react-start": "cross-env BROWSER=none react-scripts start",
+    "react-build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron-start": "electron .",
+    "build:pack": "electron-builder --dir",
+    "build:dist": "yarn react-build && electron-builder -lmw",
+    "postinstall": "install-app-deps"
   },
   "browserslist": [
     "Electron >= 4.0.0"
-  ]
+  ],
+  "build": {
+    "appId": "com.joeynguyen.tagged-photos-scraper",
+    "files": [
+      "build",
+      "node_modules"
+    ],
+    "productName": "Tagged Photos Scraper",
+    "mac": {
+      "category": "public.app-category.utilities"
+    }
+  }
 }

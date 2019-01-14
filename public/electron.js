@@ -3,7 +3,7 @@ const {app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const scrape = require('./scrape.js');
 
-const isDev = process.env.ELECTRON_IS_DEV;
+const isDev = require('electron-is-dev');
 
 ipcMain.on('run-scraper', (event, photoStartIndex) => {
   console.log('Starting scraper');
@@ -31,11 +31,10 @@ function createWindow() {
   mainWindow.loadURL(
       isDev
       ? 'http://localhost:3000' // Dev server ran by react-scripts
-      : `file://${path.join(__dirname, '/build/index.html')}` // Bundled application
+      : `file://${path.join(__dirname, '/index.html')}` // Bundled application
   );
-
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  // isDev && mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
