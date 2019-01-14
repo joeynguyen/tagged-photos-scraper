@@ -1,7 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const request = require('request');
-
 require('dotenv').config();
 
 async function downloadFile(uri, filename, iter, runScraperEvent, browser, callback) {

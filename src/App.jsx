@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
 const { ipcRenderer } = window.require('electron')
+const log = window.require('electron-log');
+const unhandled = window.require('electron-unhandled');
+
+unhandled({
+  logger: log.error
+});
 
 class App extends Component {
   constructor(props) {

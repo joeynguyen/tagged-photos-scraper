@@ -2370,6 +2370,11 @@ clean-css@4.2.x:
   dependencies:
     source-map "~0.6.0"
 
+clean-stack@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-2.0.0.tgz#301bfa9e8dd2d3d984c0e542f7aa67b996f63e0a"
+  integrity sha512-VEoL9Qh7I8s8iHnV53DaeWSt8NJ0g3khMfK6NiCPB7H657juhro+cSw2O88uo3bo0c0X5usamtXk0/Of0wXa5A==
+
 cli-boxes@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/cli-boxes/-/cli-boxes-1.0.0.tgz#4fa917c3e59c94a004cd61f8ee509da651687143"
@@ -3442,10 +3447,15 @@ electron-download@^4.1.0:
     semver "^5.4.1"
     sumchecker "^2.0.2"
 
-electron-is-dev@1.0.1:
+electron-is-dev@1.0.1, electron-is-dev@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-1.0.1.tgz#6e0a184736fe7aea77d18210b0b0f6a02402c4bc"
   integrity sha512-iwM3EotA9HTXqMGpQRkR/kT8OZqBbdfHTnlwcxsjSLYqY8svvsq0MuujsWCn3/vtgRmDv/PC/gKUUpoZvi5C1w==
+
+electron-log@2.2.17:
+  version "2.2.17"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-2.2.17.tgz#e71e2ebb949fc96ded7cdb99eeee7202e48981d2"
+  integrity sha512-v+Af5W5z99ehhaLOfE9eTSXUwjzh2wFlQjz51dvkZ6ZIrET6OB/zAZPvsuwT6tm3t5x+M1r+Ed3U3xtPZYAyuQ==
 
 electron-osx-sign@0.4.11:
   version "0.4.11"
@@ -3476,6 +3486,16 @@ electron-to-chromium@^1.3.62, electron-to-chromium@^1.3.96:
   version "1.3.98"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.98.tgz#f200bdac84b1110d7d9904f34f4fc6d5573a8a9c"
   integrity sha512-WIZdNuvE3dFr6kkPgv4d/cfswNZD6XbeLBM8baOIQTsnbf4xWrVEaLvp7oNnbnMWWXDqq7Tbv+H5JfciLTJm4Q==
+
+electron-unhandled@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/electron-unhandled/-/electron-unhandled-2.1.0.tgz#c72e59bbb481aecb53ab3f472a334ad1b48c90d2"
+  integrity sha512-c7igzS87v05tHbdeTN6mkbctzmnsgLQO7ASGxOraF1cB/UM+AEdn4cp/TeS+pKGq8PxLiXII+54ab4jYHryJMQ==
+  dependencies:
+    clean-stack "^2.0.0"
+    electron-is-dev "^1.0.1"
+    ensure-error "^1.0.0"
+    lodash.debounce "^4.0.8"
 
 electron@4.0.1:
   version "4.0.1"
@@ -3529,6 +3549,11 @@ enhanced-resolve@^4.1.0:
     graceful-fs "^4.1.2"
     memory-fs "^0.4.0"
     tapable "^1.0.0"
+
+ensure-error@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ensure-error/-/ensure-error-1.0.0.tgz#c54c13329132cad06f847423b52c22fd88099d0d"
+  integrity sha512-0WlwxG3KPXJxHxxEWh7+N/RyJgP9QAZKNzBxqqU+TxOg2TNqM1E6YhmJC8cz3ELi45K9N3J8jhTYQJieZwpljA==
 
 entities@~1.1.1:
   version "1.1.2"
