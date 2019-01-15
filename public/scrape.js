@@ -5,7 +5,7 @@ const { download } = require('electron-dl');
 
 require('dotenv').config();
 
-async function downloadFile(uri, filename, iter, ipc, browser, electronWindow) {
+async function downloadFile(uri, filename, iter, browser, ipc, electronWindow) {
   download(electronWindow, uri, {
     directory: app.getPath('downloads') + "/tagged-photos-scraper",
     filename
@@ -17,7 +17,7 @@ async function downloadFile(uri, filename, iter, ipc, browser, electronWindow) {
       }
       const photosDownloaded = iter + 1;
       log.info(`Downloaded ${filename} successfully`);
-      log.info(`downloaded ${photosDownloaded} photos`);
+      log.info(`${photosDownloaded} photos downloaded`);
       ipc.send('photos-downloaded', photosDownloaded);
     })
     .catch(err => {
@@ -30,7 +30,14 @@ async function downloadFile(uri, filename, iter, ipc, browser, electronWindow) {
     });
 }
 
-async function findAllPhotos(photoStartIndex, $photos, page, browser, ipc, electronWindow) {
+async function downloadAllPhotos(
+    photoStartIndex,
+    $photos,
+    page,
+    browser,
+    ipc,
+    electronWindow
+  ) {
   ipc.send('status-friendly', 'Downloading photos...');
 
   for (let i = photoStartIndex; i < $photos.length; i++) {
@@ -53,7 +60,7 @@ async function findAllPhotos(photoStartIndex, $photos, page, browser, ipc, elect
     // append index number in front of filename for debugging purposes
     filename = `${i}-${filename}`;
 
-    await downloadFile(imageSrc, filename, i, ipc, browser, electronWindow);
+    await downloadFile(imageSrc, filename, i, browser, ipc, electronWindow);
 
     // press Escape to hide currently displayed high quality image
     await page.keyboard.press('Escape');
@@ -62,11 +69,8 @@ async function findAllPhotos(photoStartIndex, $photos, page, browser, ipc, elect
 }
 
 async function scrapeInfiniteScrollPhotos(
-  photoStartIndex,
   page,
-  browser,
   ipc,
-  electronWindow,
   scrollDelay = 1000,
 ) {
   let $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
@@ -102,7 +106,7 @@ async function scrapeInfiniteScrollPhotos(
   log.info(`Final count: ${$taggedPhotos.length} tagged photos found.`);
   ipc.send('photos-found', $taggedPhotos.length);
 
-  await findAllPhotos(photoStartIndex, $taggedPhotos, page, browser, ipc, electronWindow);
+  return $taggedPhotos;
 }
 
 async function main(photoStartIndex, ipc, electronWindow) {
@@ -141,6 +145,7 @@ async function main(photoStartIndex, ipc, electronWindow) {
     browser.close();
   });
 
+  // navigate to Facebook
   log.info('Going to facebook.com');
   ipc.send('status-friendly', 'Going to facebook.com');
   await page.goto('https://www.facebook.com');
@@ -169,16 +174,17 @@ async function main(photoStartIndex, ipc, electronWindow) {
   // scrape photos
   log.info('Searching for photos');
   ipc.send('status-friendly', 'Searching for photos');
-  await scrapeInfiniteScrollPhotos(photoStartIndex, page, browser, ipc, electronWindow);
+  const $taggedPhotos = await scrapeInfiniteScrollPhotos(page, ipc);
+  await downloadAllPhotos(photoStartIndex, $taggedPhotos, page, browser, ipc, electronWindow);
   await page.waitFor(1000);
 
   // stop puppeteer
-  log.info('Shutting puppeteer down');
+  log.info('Stopping puppeteer');
   ipc.send('status-friendly', 'Finished downloading all tagged photos!');
   ipc.send('status-internal', 'complete');
   await page.close();
   await browser.close();
-  log.info('puppeeter shut down');
+  log.info('puppeeter browser closed');
 }
 
 module.exports = main;

@@ -1,10 +1,11 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const scrape = require('./scrape.js');
 const isDev = require('electron-is-dev');
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
+
+const scrape = require('./scrape.js');
 
 unhandled({
   logger: log.error
