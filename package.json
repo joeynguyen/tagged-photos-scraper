@@ -8,6 +8,7 @@
   "main": "public/electron.js",
   "dependencies": {
     "dotenv": "6.1.0",
+    "electron-dl": "1.12.0",
     "electron-is-dev": "1.0.1",
     "electron-log": "2.2.17",
     "electron-unhandled": "2.1.0",
@@ -27,13 +28,13 @@
   "scripts": {
     "start": "concurrently 'yarn react-start' 'wait-on http://localhost:3000/ && yarn electron-start'",
     "react-start": "cross-env BROWSER=none react-scripts start",
-    "react-build": "react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "electron-start": "electron .",
-    "build:pack": "electron-builder --dir",
-    "build:dist": "yarn react-build && electron-builder -lmw",
-    "postinstall": "install-app-deps"
+    "builder:pack": "electron-builder --dir",
+    "builder:dist": "yarn build && electron-builder -lmw",
+    "postinstall": "electron-builder install-app-deps"
   },
   "browserslist": [
     "Electron >= 4.0.0"

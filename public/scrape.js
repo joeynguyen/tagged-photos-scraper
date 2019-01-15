@@ -1,25 +1,36 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs');
-const request = require('request');
+const log = require('electron-log');
+const { app } = require('electron');
+const { download } = require('electron-dl');
+
 require('dotenv').config();
 
-async function downloadFile(uri, filename, iter, runScraperEvent, browser, callback) {
-  console.log(`Downloading ${filename}`);
-  await request.head(uri, () => {
-    request(uri)
-      .pipe(fs.createWriteStream(filename))
-      .on('finish', callback)
-      .on('error', (error) => {
-        console.log('error', error.message);
-        console.log(`failed on iteration: ${iter}`);
-        runScraperEvent.sender.send('status-friendly', 'Downloading failed before all photos were downloaded');
-        runScraperEvent.sender.send('status-internal', 'crashed');
-        browser.close()
-      });
-  });
+async function downloadFile(uri, filename, iter, runScraperEvent, browser, electronWindow) {
+  download(electronWindow, uri, {
+    directory: app.getPath('downloads') + "/tagged-photos-scraper",
+    filename
+  })
+    .then(downloadItem => {
+      const filesize = downloadItem.getTotalBytes()
+      console.log('filesize', filesize);
+      if (filesize < 30000) {
+
+      }
+      const photosDownloaded = iter + 1;
+      console.log(`Downloaded ${filename} successfully`);
+      console.log(`downloaded ${photosDownloaded} photos`);
+      runScraperEvent.sender.send('photos-downloaded', photosDownloaded);
+    })
+    .catch(err => {
+      console.log('error', err.message);
+      console.log(`failed on iteration: ${iter}`);
+      runScraperEvent.sender.send('status-friendly', `Downloading failed at photo #${iter} before all photos were downloaded`);
+      runScraperEvent.sender.send('status-internal', 'crashed');
+      browser.close()
+    });
 }
 
-async function downloadAllPhotos(photoStartIndex, $photos, page, browser, runScraperEvent) {
+async function findAllPhotos(photoStartIndex, $photos, page, browser, runScraperEvent, electronWindow) {
   runScraperEvent.sender.send('status-friendly', 'Downloading photos...');
 
   for (let i = photoStartIndex; i < $photos.length; i++) {
@@ -42,12 +53,7 @@ async function downloadAllPhotos(photoStartIndex, $photos, page, browser, runScr
     // append index number in front of filename for debugging purposes
     filename = `${i}-${filename}`;
 
-    await downloadFile(imageSrc, filename, i, runScraperEvent, browser, async () => {
-      const photosDownloaded = i + 1;
-      console.log(`Downloaded ${filename} successfully`);
-      console.log(`downloaded ${photosDownloaded} photos out of ${$photos.length}`);
-      runScraperEvent.sender.send('photos-downloaded', photosDownloaded);
-    });
+    await downloadFile(imageSrc, filename, i, runScraperEvent, browser, electronWindow);
 
     // press Escape to hide currently displayed high quality image
     await page.keyboard.press('Escape');
@@ -60,6 +66,7 @@ async function scrapeInfiniteScrollPhotos(
   page,
   browser,
   runScraperEvent,
+  electronWindow,
   scrollDelay = 1000,
 ) {
   let $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
@@ -95,10 +102,10 @@ async function scrapeInfiniteScrollPhotos(
   console.log(`Final count: ${$taggedPhotos.length} tagged photos found.`);
   runScraperEvent.sender.send('photos-found', $taggedPhotos.length);
 
-  await downloadAllPhotos(photoStartIndex, $taggedPhotos, page, browser, runScraperEvent);
+  await findAllPhotos(photoStartIndex, $taggedPhotos, page, browser, runScraperEvent, electronWindow);
 }
 
-async function scrape(photoStartIndex, runScraperEvent) {
+async function scrape(photoStartIndex, runScraperEvent, electronWindow) {
   // start puppeteer
   const browser = await puppeteer.launch({
     headless: true,
@@ -164,7 +171,7 @@ async function scrape(photoStartIndex, runScraperEvent) {
   // scrape photos
   console.log('Searching for photos');
   runScraperEvent.sender.send('status-friendly', 'Searching for photos');
-  await scrapeInfiniteScrollPhotos(photoStartIndex, page, browser, runScraperEvent);
+  await scrapeInfiniteScrollPhotos(photoStartIndex, page, browser, runScraperEvent, electronWindow);
   await page.waitFor(1000);
 
   // stop puppeteer

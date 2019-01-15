@@ -10,14 +10,6 @@ unhandled({
   logger: log.error
 });
 
-ipcMain.on('run-scraper', (event, photoStartIndex) => {
-  console.log('Starting scraper');
-  console.log('photoStartIndex', photoStartIndex);
-  event.sender.send('status-friendly', 'Started');
-  event.sender.send('status-internal', 'running');
-  scrape(photoStartIndex, event);
-});
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -74,3 +66,9 @@ app.on('activate', function() {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.on('run-scraper', (event, photoStartIndex) => {
+  log.info('Starting scraper at photoStartIndex: ' + photoStartIndex);
+  event.sender.send('status-friendly', 'Started');
+  event.sender.send('status-internal', 'running');
+  scrape(photoStartIndex, event, mainWindow);
+});
