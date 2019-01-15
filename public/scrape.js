@@ -12,19 +12,19 @@ async function downloadFile(uri, filename, iter, runScraperEvent, browser, elect
   })
     .then(downloadItem => {
       const filesize = downloadItem.getTotalBytes()
-      console.log('filesize', filesize);
       if (filesize < 30000) {
 
       }
       const photosDownloaded = iter + 1;
-      console.log(`Downloaded ${filename} successfully`);
-      console.log(`downloaded ${photosDownloaded} photos`);
+      log.info(`Downloaded ${filename} successfully`);
+      log.info(`downloaded ${photosDownloaded} photos`);
       runScraperEvent.sender.send('photos-downloaded', photosDownloaded);
     })
     .catch(err => {
-      console.log('error', err.message);
-      console.log(`failed on iteration: ${iter}`);
-      runScraperEvent.sender.send('status-friendly', `Downloading failed at photo #${iter} before all photos were downloaded`);
+      const errMessage = `Downloading failed at photo #${iter} before all photos were downloaded`;
+      log.info(errMessage);
+      log.error('error', err.message);
+      runScraperEvent.sender.send('status-friendly', errMessage);
       runScraperEvent.sender.send('status-internal', 'crashed');
       browser.close()
     });
@@ -70,7 +70,7 @@ async function scrapeInfiniteScrollPhotos(
   scrollDelay = 1000,
 ) {
   let $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
-  console.log(`Found ${$taggedPhotos.length} photos`);
+  log.info(`Found ${$taggedPhotos.length} photos`);
   runScraperEvent.sender.send('photos-found', $taggedPhotos.length);
 
   try {
@@ -86,20 +86,20 @@ async function scrapeInfiniteScrollPhotos(
       currentHeight = await page.evaluate('document.body.scrollHeight');
       await page.waitFor(scrollDelay);
       $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
-      console.log(`Found ${$taggedPhotos.length} photos`);
+      log.info(`Found ${$taggedPhotos.length} photos`);
       runScraperEvent.sender.send('photos-found', $taggedPhotos.length);
-      console.log('Scrolling down the page to load more photos');
+      log.info('Scrolling down the page to load more photos');
     }
   } catch (e) {
     // there will be an error thrown once the page can't scroll down any further
     // since there aren't any more photos left to load
     // do nothing with the error
-    console.log("Can't scroll down anymore");
+    log.info("Can't scroll down anymore");
     runScraperEvent.sender.send('status-friendly', 'Found all of your tagged photos');
   }
 
   $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
-  console.log(`Final count: ${$taggedPhotos.length} tagged photos found.`);
+  log.info(`Final count: ${$taggedPhotos.length} tagged photos found.`);
   runScraperEvent.sender.send('photos-found', $taggedPhotos.length);
 
   await findAllPhotos(photoStartIndex, $taggedPhotos, page, browser, runScraperEvent, electronWindow);
@@ -119,10 +119,9 @@ async function scrape(photoStartIndex, runScraperEvent, electronWindow) {
   });
 
   process.on('uncaughtException', function (err) {
-    console.log('error', err);
-    runScraperEvent.sender.send('status-friendly', `uncaughtException error: ${err}`);
+    log.error('error', err);
+    runScraperEvent.sender.send('status-friendly', `The app crashed unexpectedly with error: ${err}`);
     runScraperEvent.sender.send('status-internal', 'crashed');
-    // throw err;
     browser.close()
   });
 
@@ -134,23 +133,22 @@ async function scrape(photoStartIndex, runScraperEvent, electronWindow) {
     }
   );
 
-  console.log(`Detected window.innerWidth to be ${result}.`);
+  log.info(`Detected window.innerWidth to be ${result}.`);
 
   page.on('error', (err) => {
+    log.error('error', err);
     runScraperEvent.sender.send('status-friendly', `Page error: ${err}`);
     runScraperEvent.sender.send('status-internal', 'crashed');
-    console.log('error', err);
-    // throw err;
   });
 
-  console.log('Going to facebook.com');
+  log.info('Going to facebook.com');
   runScraperEvent.sender.send('status-friendly', 'Going to facebook.com');
   await page.goto('https://www.facebook.com');
   const context = browser.defaultBrowserContext();
   await context.overridePermissions('https://www.facebook.com', ['notifications']);
 
   // Submit login
-  console.log('Logging in');
+  log.info('Logging in');
   runScraperEvent.sender.send('status-friendly', 'Logging in');
   page.focus('#email');
   await page.keyboard.type(process.env.USERNAME);
@@ -162,25 +160,25 @@ async function scrape(photoStartIndex, runScraperEvent, electronWindow) {
   const $profileLink = await page.waitFor('div[data-click="profile_icon"] a');
   await $profileLink.click();
   const $photosLink = await page.waitFor('a[data-tab-key="photos"]');
-  console.log('Going to "Photos of You" page');
+  log.info('Going to "Photos of You" page');
   runScraperEvent.sender.send('status-friendly', 'Going to "Photos of You" page');
   await $photosLink.click();
   await page.waitFor('a[name="Photos of You"]');
   await page.waitFor(1000);
 
   // scrape photos
-  console.log('Searching for photos');
+  log.info('Searching for photos');
   runScraperEvent.sender.send('status-friendly', 'Searching for photos');
   await scrapeInfiniteScrollPhotos(photoStartIndex, page, browser, runScraperEvent, electronWindow);
   await page.waitFor(1000);
 
   // stop puppeteer
-  console.log('Shutting down');
+  log.info('Shutting puppeteer down');
   runScraperEvent.sender.send('status-friendly', 'Finished downloading all tagged photos!');
   runScraperEvent.sender.send('status-internal', 'complete');
   await page.close();
   await browser.close();
-  console.log('puppeeter shut down');
+  log.info('puppeeter shut down');
 }
 
 module.exports = scrape;
