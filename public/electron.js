@@ -70,5 +70,5 @@ ipcMain.on('run-scraper', (event, photoStartIndex) => {
   log.info(`Starting scraper at photoStartIndex: ${photoStartIndex}`);
   event.sender.send('status-friendly', 'Started');
   event.sender.send('status-internal', 'running');
-  scrape(photoStartIndex, event, mainWindow);
+  scrape(photoStartIndex, event.sender, mainWindow);
 });
