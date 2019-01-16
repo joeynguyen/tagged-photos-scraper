@@ -10,7 +10,31 @@ const scrape = require('./scrape.js');
 unhandled({
   logger: log.error
 });
-console.log('log.transports.file.file', log.transports.file.file);
+console.log('log file location', log.transports.file.findLogPath());
+
+// install dev tools for debugging during development
+const installExtensions = async () => {
+  const {
+    default: installExtension,
+    REACT_DEVELOPER_TOOLS,
+    // REDUX_DEVTOOLS,
+  } = require('electron-devtools-installer');
+
+  const extensions = [
+    REACT_DEVELOPER_TOOLS,
+    // REDUX_DEVTOOLS,
+  ];
+
+  await Promise.all(
+    extensions.map(extension => {
+      return new Promise(resolve => {
+        resolve(installExtension(extension));
+      });
+    })
+  )
+    .then(name => console.log(`Added Extensions: ${name}`))
+    .catch(err => console.log('An error occurred: ', err));
+};
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -48,7 +72,12 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', async () => {
+  if (isDev) {
+    await installExtensions();
+  }
+  createWindow();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
