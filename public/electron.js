@@ -10,6 +10,8 @@ const scrape = require('./scrape.js');
 unhandled({
   logger: log.error
 });
+console.log('log.transports.file.file', log.transports.file.file);
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

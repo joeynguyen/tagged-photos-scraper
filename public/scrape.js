@@ -5,15 +5,16 @@ const { download } = require('electron-dl');
 
 require('dotenv').config();
 
-async function downloadFile(uri, filename, iter, browser, ipc, electronWindow) {
-  download(electronWindow, uri, {
+async function downloadFile(url, filename, iter, browser, ipc, electronWindow) {
+  download(electronWindow, url, {
     directory: app.getPath('downloads') + "/tagged-photos-scraper",
     filename
   })
     .then(downloadItem => {
       const filesize = downloadItem.getTotalBytes()
       if (filesize < 30000) {
-
+        ipc.send('small-filesize', {index: iter, url});
+        log.warn(`Downloaded a small-size file at index ${iter} with URL ${url}`);
       }
       const photosDownloaded = iter + 1;
       log.info(`Downloaded ${filename} successfully`);

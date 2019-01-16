@@ -18,6 +18,7 @@ class App extends Component {
     photoDownloadedCount: 0,
     scraperStatusFriendly: 'Ready',
     scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'complete']
+    smallPhotos: [],
     totalPhotosCount: 0,
   }
 
@@ -36,6 +37,10 @@ class App extends Component {
 
     ipcRenderer.on('photos-downloaded', (event, photoNumber) => {
       this.setState({ photoDownloadedCount: photoNumber });
+    });
+
+    ipcRenderer.on('small-filesize', (event, photoObj) => {
+      this.setState({ smallPhotos: this.state.smallPhotos.concat(photoObj) });
     });
   }
 
@@ -99,6 +104,12 @@ class App extends Component {
               {buttonText}
             </button>
           )}
+          <p>Downloaded photos with small file sizes:</p>
+          <ul>
+            {this.state.smallPhotos.map(photo => (
+              <li>{`#${photo.index} - ${photo.url}`}</li>
+            ))}
+          </ul>
         </header>
       </div>
     );
