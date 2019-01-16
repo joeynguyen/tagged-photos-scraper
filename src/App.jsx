@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import Main from './Main';
 const { ipcRenderer } = window.require('electron')
 const log = window.require('electron-log');
 const unhandled = window.require('electron-unhandled');
@@ -82,34 +83,23 @@ class App extends Component {
 
   render() {
     const {
+      photoDownloadedCount,
       scraperStatusInternal,
       scraperStatusFriendly,
-      photoDownloadedCount,
+      smallPhotos,
       totalPhotosCount
     } = this.state;
-    const buttonText = (scraperStatusInternal === 'crashed') ? 'Retry' : 'Start';
-
     return (
       <div className="App">
         <header className="App-header">
-          <p>Current status: {scraperStatusFriendly}</p>
-          <p>Internal status: {scraperStatusInternal}</p>
-          <p>Photos found: {totalPhotosCount}</p>
-          <p>Photos downloaded: {photoDownloadedCount}</p>
-          {scraperStatusInternal === 'complete' ? (<h2>Complete!</h2>) : (
-            <button
-              disabled={scraperStatusInternal === 'running'}
-              onClick={this.runScraper}
-            >
-              {buttonText}
-            </button>
-          )}
-          <p>Downloaded photos with small file sizes:</p>
-          <ul>
-            {this.state.smallPhotos.map(photo => (
-              <li>{`#${photo.index} - ${photo.url}`}</li>
-            ))}
-          </ul>
+          <Main
+            photosDownloadedCount={photoDownloadedCount}
+            photosDownloadedSmall={smallPhotos}
+            photosTotal={totalPhotosCount}
+            statusFriendly={scraperStatusFriendly}
+            statusInternal={scraperStatusInternal}
+            startScraper={this.runScraper}
+          />
         </header>
       </div>
     );
