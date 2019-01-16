@@ -7,31 +7,32 @@ function Main({
   photosTotal,
   statusFriendly,
   statusInternal,
-  startScraper
+  startScraper,
 }) {
-  const buttonText = (statusInternal === 'crashed') ? 'Retry' : 'Start';
+  const buttonText = statusInternal === 'crashed' ? 'Retry' : 'Start';
   return (
     <>
       <p>Current status: {statusFriendly}</p>
       <p>Internal status: {statusInternal}</p>
       <p>Photos found: {photosTotal}</p>
       <p>Photos downloaded: {photosDownloadedCount}</p>
-      {statusInternal === 'complete' ? (<h2>Complete!</h2>) : (
-        <button
-          disabled={statusInternal === 'running'}
-          onClick={startScraper}
-        >
+      {statusInternal === 'complete' ? (
+        <h2>Complete!</h2>
+      ) : (
+        <button disabled={statusInternal === 'running'} onClick={startScraper}>
           {buttonText}
         </button>
       )}
-      <p>{`Downloaded photos with small file sizes: ${photosDownloadedSmall.length}`}</p>
+      <p>{`Downloaded photos with small file sizes: ${
+        photosDownloadedSmall.length
+      }`}</p>
       <ul>
         {photosDownloadedSmall.map(photo => (
           <li>{`#${photo.index} - ${photo.url}`}</li>
         ))}
       </ul>
     </>
-  )
+  );
 }
 
 Main.propTypes = {

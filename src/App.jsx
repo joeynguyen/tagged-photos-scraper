@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
 import Main from './Main';
-const { ipcRenderer } = window.require('electron')
+const { ipcRenderer } = window.require('electron');
 const log = window.require('electron-log');
 const unhandled = window.require('electron-unhandled');
 
 unhandled({
-  logger: log.error
+  logger: log.error,
 });
 
 class App extends Component {
@@ -21,7 +21,7 @@ class App extends Component {
     scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'complete']
     smallPhotos: [],
     totalPhotosCount: 0,
-  }
+  };
 
   componentDidMount() {
     ipcRenderer.on('status-friendly', (event, status) => {
@@ -34,7 +34,7 @@ class App extends Component {
 
     ipcRenderer.on('photos-found', (event, num) => {
       this.setState({ totalPhotosCount: num });
-   });
+    });
 
     ipcRenderer.on('photos-downloaded', (event, photoNumber) => {
       this.setState({ photoDownloadedCount: photoNumber });
@@ -63,15 +63,9 @@ class App extends Component {
 
   runScraper() {
     let photoStartIndex = 0;
-    const {
-      scraperStatusInternal,
-      photoDownloadedCount,
-    } = this.state;
+    const { scraperStatusInternal, photoDownloadedCount } = this.state;
 
-    if (
-      scraperStatusInternal === 'crashed' &&
-      photoDownloadedCount !== 0
-    ) {
+    if (scraperStatusInternal === 'crashed' && photoDownloadedCount !== 0) {
       // index starts at 0 so it's 1 behind downloaded count
       // for example, if 2 photos have been downloaded successfully,
       // we restart at index 2 to begin downloading photo #3
@@ -87,7 +81,7 @@ class App extends Component {
       scraperStatusInternal,
       scraperStatusFriendly,
       smallPhotos,
-      totalPhotosCount
+      totalPhotosCount,
     } = this.state;
     return (
       <div className="App">

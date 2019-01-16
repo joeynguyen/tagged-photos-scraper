@@ -41,7 +41,7 @@
     "postinstall": "electron-builder install-app-deps",
     "lint": "eslint --debug src/",
     "lint:write": "eslint --debug src/ --fix",
-    "prettier": "prettier --write './src/**/*.{ts,js,css,json}'"
+    "prettier": "prettier --write './src/**/*.{ts,tsx,js,jsx,scss,css,json}'"
   },
   "browserslist": [
     "Electron >= 4.0.0"
