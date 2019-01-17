@@ -19,7 +19,7 @@ class App extends Component {
   state = {
     photoNumberDownloaded: 0,
     scraperStatusFriendly: 'Ready',
-    scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'complete']
+    scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', complete']
     smallPhotos: [],
     totalPhotosCount: 0,
     userRequestedPhotoIndexStart: null,

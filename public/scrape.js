@@ -175,13 +175,22 @@ async function main(photoStartIndex, ipc, electronWindow) {
   log.info('Searching for photos');
   ipc.send('status-friendly', 'Searching for photos');
   const $taggedPhotos = await scrapeInfiniteScrollPhotos(page, ipc);
-  await downloadAllPhotos(photoStartIndex, $taggedPhotos, page, browser, ipc, electronWindow);
-  await page.waitFor(1000);
+  if (photoStartIndex > $taggedPhotos.length) {
+    log.error("The number of the photo the user requested to start at was higher than the number of the user's tagged photos");
+    ipc.send('status-internal', 'failed');
+    ipc.send(
+      'status-friendly',
+      'The number of the photo you requested to start at was higher than the number of existing photos'
+    );
+  } else {
+    await downloadAllPhotos(photoStartIndex, $taggedPhotos, page, browser, ipc, electronWindow);
+    await page.waitFor(1000);
+    ipc.send('status-friendly', 'Finished downloading all tagged photos!');
+    ipc.send('status-internal', 'complete');
+  }
 
   // stop puppeteer
   log.info('Stopping puppeteer');
-  ipc.send('status-friendly', 'Finished downloading all tagged photos!');
-  ipc.send('status-internal', 'complete');
   await page.close();
   await browser.close();
   log.info('puppeeter browser closed');
