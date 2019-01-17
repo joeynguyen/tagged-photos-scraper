@@ -13,7 +13,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.runScraper = this.runScraper.bind(this);
-    this.handleChangeUserPhotoStart = this.handleChangeUserPhotoStart.bind(this);
+    this.handleChangeUserPhotoStart = this.handleChangeUserPhotoStart.bind(
+      this
+    );
   }
 
   state = {
@@ -52,16 +54,25 @@ class App extends Component {
   }
 
   handleChangeUserPhotoStart(e) {
-    this.setState({ userRequestedPhotoIndexStart: parseInt(e.target.value, 10) })
+    this.setState({
+      userRequestedPhotoIndexStart: parseInt(e.target.value, 10),
+    });
   }
 
   runScraper() {
     let photoStartIndex = 0;
-    const { scraperStatusInternal, photoNumberDownloaded, userRequestedPhotoIndexStart } = this.state;
+    const {
+      scraperStatusInternal,
+      photoNumberDownloaded,
+      userRequestedPhotoIndexStart,
+    } = this.state;
 
     if (userRequestedPhotoIndexStart !== null) {
       photoStartIndex = userRequestedPhotoIndexStart;
-    } else if (scraperStatusInternal === 'crashed' && photoNumberDownloaded !== 0) {
+    } else if (
+      scraperStatusInternal === 'crashed' &&
+      photoNumberDownloaded !== 0
+    ) {
       // index starts at 0 so it's 1 behind the number downloaded
       // for example, if photo #2 was last downloaded successfully,
       // we restart at index 2 to begin downloading photo #3
