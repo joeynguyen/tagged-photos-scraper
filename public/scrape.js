@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 const log = require('electron-log');
 const { app } = require('electron');
 const { download } = require('electron-dl');
+const { TimeoutError } = require('puppeteer/Errors');
 
 require('dotenv').config();
 
@@ -116,6 +117,8 @@ async function main(photoStartIndex, ipc, electronWindow) {
     defaultViewport: {
       width: 3440,
       height: 1440,
+      // width: 1440,
+      // height: 900,
     },
     // even if the user's focus isn't on this app,
     // don't throttle this app's performance
@@ -167,9 +170,33 @@ async function main(photoStartIndex, ipc, electronWindow) {
   await $passField.type(process.env.PASSWORD);
   await $passField.press('Enter');
 
-  // Go to "Photos of You" page
-  const $profileLink = await page.waitFor('div[data-click="profile_icon"] a');
+  // Go to Profile page from Homepage
+  let $profileLink;
+  try {
+    $profileLink = await page.waitFor('div[data-click="profile_icon"] a', { timeout: 10000 });
+  } catch(e) {
+    if (e instanceof TimeoutError) {
+      // await page.waitForSelector('#reg-link', { timeout: 10000 })
+      await page.waitForSelector('[href^="https://www.facebook.com/recover/initiate"]', { timeout: 10000 })
+        .then(async () => {
+          log.error('login credentails incorrect');
+          ipc.send('status-internal', 'failure');
+          ipc.send('status-friendly', 'The login credentials are incorrect');
+        })
+        .catch(async () => {
+          log.error("Couldn't find profile_icon selector on homepage");
+          ipc.send('status-internal', 'failure');
+          ipc.send('status-friendly', 'The page is missing a required, expected link.  Please let the developer of this app know about this issue.');
+        })
+        .finally(async () => {
+          await page.close();
+          await browser.close();
+        });
+    }
+  }
   await $profileLink.click();
+
+  // Go to "Photos of You" page
   const $photosLink = await page.waitFor('a[data-tab-key="photos"]');
   log.info('Going to "Photos of You" page');
   ipc.send('status-friendly', 'Going to "Photos of You" page');
@@ -183,7 +210,7 @@ async function main(photoStartIndex, ipc, electronWindow) {
   const $taggedPhotos = await scrapeInfiniteScrollPhotos(page, ipc);
   if (photoStartIndex > $taggedPhotos.length) {
     log.error("The number of the photo the user requested to start at was higher than the number of the user's tagged photos");
-    ipc.send('status-internal', 'failed');
+    ipc.send('status-internal', 'failure');
     ipc.send(
       'status-friendly',
       'The number of the photo you requested to start at was higher than the number of existing photos'

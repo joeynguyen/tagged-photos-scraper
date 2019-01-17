@@ -11,7 +11,7 @@ function Main({
   startScraper,
   userRequestedPhotoIndexStart,
 }) {
-  const buttonText = statusInternal === 'crashed' ? 'Retry' : 'Start';
+  const buttonText = (statusInternal === 'crashed' || statusInternal === 'failure') ? 'Retry' : 'Start';
   return (
     <>
       <p>If you want to start at a certain photo number, enter it here:</p>
