@@ -134,13 +134,19 @@ async function main(photoStartIndex, ipc, electronWindow) {
   // handle errors
   process.on('uncaughtException', (err) => {
     log.error('uncaughtException error', err);
-    ipc.send('status-friendly', `The scraper crashed unexpectedly with error: ${err}. If you would like to continue downloading where you left off, click the button below.`);
+    ipc.send('status-friendly', `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`);
+    ipc.send('status-internal', 'crashed');
+    browser.close();
+  });
+  page.on('pageerror', (err) => {
+    log.error('page uncaughtException error', err);
+    ipc.send('status-friendly', `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`);
     ipc.send('status-internal', 'crashed');
     browser.close();
   });
   page.on('error', (err) => {
-    log.error('page error', err);
-    ipc.send('status-friendly', `The scraper crashed unexpectedly with page error: ${err}. If you would like to continue downloading where you left off, click the button below.`);
+    log.error('page crash error', err);
+    ipc.send('status-friendly', `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`);
     ipc.send('status-internal', 'crashed');
     browser.close();
   });
