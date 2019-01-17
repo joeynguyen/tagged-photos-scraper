@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Main({
+  handleChangeUserPhotoStart,
   photoNumberDownloaded,
   photosDownloadedSmall,
   photosTotal,
@@ -18,7 +19,10 @@ function Main({
       <input
         id="userRequestedPhotoIndexStart"
         type="number"
+        onChange={handleChangeUserPhotoStart}
         value={userRequestedPhotoIndexStart}
+        placeholder="enter an integer"
+        min={0}
       />
       <p>Current status: {statusFriendly}</p>
       <p>Internal status: {statusInternal}</p>
@@ -44,6 +48,7 @@ function Main({
 }
 
 Main.propTypes = {
+  handleChangeUserPhotoStart: PropTypes.func.isRequired,
   photoNumberDownloaded: PropTypes.number.isRequired,
   photosDownloadedSmall: PropTypes.arrayOf(
     PropTypes.exact({

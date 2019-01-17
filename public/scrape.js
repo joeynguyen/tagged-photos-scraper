@@ -16,10 +16,9 @@ async function downloadFile(url, filename, iter, browser, ipc, electronWindow) {
         ipc.send('small-filesize', {index: iter, url});
         log.warn(`Downloaded a small-size file at index ${iter} with URL ${url}`);
       }
-      const photosDownloaded = iter + 1;
       log.info(`Downloaded ${filename} successfully`);
-      log.info(`Photo #${photosDownloaded} downloaded`);
-      ipc.send('photo-number-downloaded', photosDownloaded);
+      log.info(`Photo #${iter} downloaded`);
+      ipc.send('photo-number-downloaded', iter);
     })
     .catch(err => {
       const errMessage = `Downloading failed at photo #${iter} before all photos were downloaded`;
