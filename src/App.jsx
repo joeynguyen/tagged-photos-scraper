@@ -13,14 +13,16 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.runScraper = this.runScraper.bind(this);
+    this.handleChangeUserPhotoStart = this.handleChangeUserPhotoStart.bind(this);
   }
 
   state = {
-    photoDownloadedCount: 0,
+    photoNumberDownloaded: 0,
     scraperStatusFriendly: 'Ready',
     scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'complete']
     smallPhotos: [],
     totalPhotosCount: 0,
+    userRequestedPhotoIndexStart: null,
   };
 
   componentDidMount() {
@@ -36,8 +38,8 @@ class App extends Component {
       this.setState({ totalPhotosCount: num });
     });
 
-    ipcRenderer.on('photos-downloaded', (event, photoNumber) => {
-      this.setState({ photoDownloadedCount: photoNumber });
+    ipcRenderer.on('photo-number-downloaded', (event, photoNumber) => {
+      this.setState({ photoNumberDownloaded: photoNumber });
     });
 
     ipcRenderer.on('small-filesize', (event, photoObj) => {
@@ -45,31 +47,23 @@ class App extends Component {
     });
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   // automatically retry if app crashes
-  //   if (
-  //     prevState.scraperStatusInternal !== this.state.scraperStatusInternal &&
-  //     this.state.scraperStatusInternal === 'crashed'
-  //   ) {
-  //     this.setState({ scraperStatusInternal: 'running' });
-  //     this.setState({ scraperStatusFriendly: 'Restarting scraper' });
-  //     this.runScraper();
-  //   }
-  // }
-
   componentWillUnmount() {
     ipcRenderer.removeAllListeners();
   }
 
+  handleChangeUserPhotoStart(e) {
+    this.setState({ userRequestedPhotoIndexStart: e.target.value })
+  }
+
   runScraper() {
     let photoStartIndex = 0;
-    const { scraperStatusInternal, photoDownloadedCount } = this.state;
+    const { scraperStatusInternal, photoNumberDownloaded } = this.state;
 
-    if (scraperStatusInternal === 'crashed' && photoDownloadedCount !== 0) {
-      // index starts at 0 so it's 1 behind downloaded count
-      // for example, if 2 photos have been downloaded successfully,
+    if (scraperStatusInternal === 'crashed' && photoNumberDownloaded !== 0) {
+      // index starts at 0 so it's 1 behind the number downloaded
+      // for example, if photo #2 was last downloaded successfully,
       // we restart at index 2 to begin downloading photo #3
-      photoStartIndex = photoDownloadedCount;
+      photoStartIndex = photoNumberDownloaded;
     }
 
     ipcRenderer.send('run-scraper', photoStartIndex);
@@ -77,22 +71,24 @@ class App extends Component {
 
   render() {
     const {
-      photoDownloadedCount,
+      photoNumberDownloaded,
       scraperStatusInternal,
       scraperStatusFriendly,
       smallPhotos,
       totalPhotosCount,
+      userRequestedPhotoIndexStart,
     } = this.state;
     return (
       <div className="App">
         <header className="App-header">
           <Main
-            photosDownloadedCount={photoDownloadedCount}
+            photoNumberDownloaded={photoNumberDownloaded}
             photosDownloadedSmall={smallPhotos}
             photosTotal={totalPhotosCount}
             statusFriendly={scraperStatusFriendly}
             statusInternal={scraperStatusInternal}
             startScraper={this.runScraper}
+            userRequestedPhotoIndexStart={userRequestedPhotoIndexStart}
           />
         </header>
       </div>

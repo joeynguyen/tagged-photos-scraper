@@ -2,20 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Main({
-  photosDownloadedCount,
+  photoNumberDownloaded,
   photosDownloadedSmall,
   photosTotal,
   statusFriendly,
   statusInternal,
   startScraper,
+  userRequestedPhotoIndexStart,
 }) {
   const buttonText = statusInternal === 'crashed' ? 'Retry' : 'Start';
   return (
     <>
+      <p>If you want to start at a certain photo number, enter it here:</p>
+      <label for="userRequestedPhotoIndexStart">Photo number: </label>
+      <input
+        id="userRequestedPhotoIndexStart"
+        type="number"
+        value={userRequestedPhotoIndexStart}
+      />
       <p>Current status: {statusFriendly}</p>
       <p>Internal status: {statusInternal}</p>
       <p>Photos found: {photosTotal}</p>
-      <p>Photos downloaded: {photosDownloadedCount}</p>
+      <p>Photo number downloaded: {photoNumberDownloaded}</p>
       {statusInternal === 'complete' ? (
         <h2>Complete!</h2>
       ) : (
@@ -36,7 +44,7 @@ function Main({
 }
 
 Main.propTypes = {
-  photosDownloadedCount: PropTypes.number.isRequired,
+  photoNumberDownloaded: PropTypes.number.isRequired,
   photosDownloadedSmall: PropTypes.arrayOf(
     PropTypes.exact({
       index: PropTypes.number.isRequired,
@@ -47,9 +55,11 @@ Main.propTypes = {
   statusFriendly: PropTypes.string.isRequired,
   statusInternal: PropTypes.string.isRequired,
   startScraper: PropTypes.func.isRequired,
+  userRequestedPhotoIndexStart: PropTypes.number,
 };
 Main.defaultProps = {
   photosDownloadedSmall: [],
+  userRequestedPhotoIndexStart: null,
 };
 
 export default Main;
