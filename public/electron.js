@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, ipcMain } = require('electron');
+const electron = require('electron');
+const { app, BrowserWindow, ipcMain } = electron;
 const path = require('path');
 const isDev = require('electron-is-dev');
 const log = require('electron-log');
@@ -8,7 +9,7 @@ const unhandled = require('electron-unhandled');
 const scrape = require('./scrape.js');
 
 unhandled({
-  logger: log.error
+  logger: log.error,
 });
 console.log('log file location', log.transports.file.findLogPath());
 
@@ -36,29 +37,31 @@ const installExtensions = async () => {
     .catch(err => console.log('An error occurred: ', err));
 };
 
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
 function createWindow() {
+  // get the user's computer screen resolution
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1440,
-    height: 900,
+    width,
+    height,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
 
-  // and load the index.html of the app.
+  // and load the index.html of the app if app is packaged
   mainWindow.loadURL(
-      isDev
+    isDev
       ? 'http://localhost:3000' // Dev server ran by react-scripts
       : `file://${path.join(__dirname, '/index.html')}` // Bundled application
   );
   // Open the DevTools.
-  isDev && mainWindow.webContents.openDevTools()
+  isDev && mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
@@ -84,7 +87,7 @@ app.on('window-all-closed', function() {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
 });
 
