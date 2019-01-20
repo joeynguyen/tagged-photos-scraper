@@ -6,16 +6,18 @@ const { TimeoutError } = require('puppeteer/Errors');
 
 require('dotenv').config();
 
-async function downloadFile(url, filename, iter, browser, ipc, electronWindow) {
+function downloadFile(url, filename, iter, browser, ipc, electronWindow) {
   download(electronWindow, url, {
-    directory: app.getPath('downloads') + "/tagged-photos-scraper",
-    filename
+    directory: app.getPath('downloads') + '/tagged-photos-scraper',
+    filename,
   })
     .then(downloadItem => {
-      const filesize = downloadItem.getTotalBytes()
+      const filesize = downloadItem.getTotalBytes();
       if (filesize < 30000) {
-        ipc.send('small-filesize', {index: iter, url});
-        log.warn(`Downloaded a small-size file at index ${iter} with URL ${url}`);
+        ipc.send('small-filesize', { index: iter, url });
+        log.warn(
+          `Downloaded a small-size file at index ${iter} with URL ${url}`
+        );
       }
       log.info(`Downloaded ${filename} successfully`);
       log.info(`Photo #${iter} downloaded`);
@@ -27,18 +29,18 @@ async function downloadFile(url, filename, iter, browser, ipc, electronWindow) {
       log.error('error', err.message);
       ipc.send('status-friendly', errMessage);
       ipc.send('status-internal', 'crashed');
-      browser.close()
+      browser.close();
     });
 }
 
 async function downloadAllPhotos(
-    photoStartIndex,
-    $photos,
-    page,
-    browser,
-    ipc,
-    electronWindow
-  ) {
+  photoStartIndex,
+  $photos,
+  page,
+  browser,
+  ipc,
+  electronWindow
+) {
   ipc.send('status-friendly', 'Downloading photos...');
 
   for (let i = photoStartIndex; i < $photos.length; i++) {
@@ -53,7 +55,10 @@ async function downloadAllPhotos(
     // stop referencing the element handle
     $photo.dispose();
 
-    const imageSrc = await page.$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src);
+    const imageSrc = await page.$eval(
+      '.fbPhotoSnowliftPopup img.spotlight',
+      el => el.src
+    );
 
     // grab filename of image from URL
     const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
@@ -69,12 +74,10 @@ async function downloadAllPhotos(
   }
 }
 
-async function scrapeInfiniteScrollPhotos(
-  page,
-  ipc,
-  scrollDelay = 1000,
-) {
-  let $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
+async function scrapeInfiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
+  let $taggedPhotos = await page.$$(
+    'ul.fbPhotosRedesignBorderOverlay > li > a'
+  );
   log.info(`Found ${$taggedPhotos.length} photos`);
   ipc.send('photos-found', $taggedPhotos.length);
 
@@ -87,10 +90,14 @@ async function scrapeInfiniteScrollPhotos(
     while (previousHeight < currentHeight) {
       previousHeight = currentHeight;
       await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-      await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
+      await page.waitForFunction(
+        `document.body.scrollHeight > ${previousHeight}`
+      );
       currentHeight = await page.evaluate('document.body.scrollHeight');
       await page.waitFor(scrollDelay);
-      $taggedPhotos = await page.$$('ul.fbPhotosRedesignBorderOverlay > li > a');
+      $taggedPhotos = await page.$$(
+        'ul.fbPhotosRedesignBorderOverlay > li > a'
+      );
       log.info(`Found ${$taggedPhotos.length} photos`);
       ipc.send('photos-found', $taggedPhotos.length);
       log.info('Scrolling down the page to load more photos');
@@ -122,7 +129,7 @@ async function main(photoStartIndex, ipc, electronWindow) {
     },
     // even if the user's focus isn't on this app,
     // don't throttle this app's performance
-    webPreferences: { backgroundThrottling: false }
+    webPreferences: { backgroundThrottling: false },
   });
 
   // Go to website
@@ -135,21 +142,30 @@ async function main(photoStartIndex, ipc, electronWindow) {
   // log.info(`Detected window.innerWidth to be ${result}.`);
 
   // handle errors
-  process.on('uncaughtException', (err) => {
+  process.on('uncaughtException', err => {
     log.error('uncaughtException error', err);
-    ipc.send('status-friendly', `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`);
+    ipc.send(
+      'status-friendly',
+      `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
+    );
     ipc.send('status-internal', 'crashed');
     browser.close();
   });
-  page.on('pageerror', (err) => {
+  page.on('pageerror', err => {
     log.error('page uncaughtException error', err);
-    ipc.send('status-friendly', `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`);
+    ipc.send(
+      'status-friendly',
+      `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
+    );
     ipc.send('status-internal', 'crashed');
     browser.close();
   });
-  page.on('error', (err) => {
+  page.on('error', err => {
     log.error('page crash error', err);
-    ipc.send('status-friendly', `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`);
+    ipc.send(
+      'status-friendly',
+      `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
+    );
     ipc.send('status-internal', 'crashed');
     browser.close();
   });
@@ -159,7 +175,9 @@ async function main(photoStartIndex, ipc, electronWindow) {
   ipc.send('status-friendly', 'Going to facebook.com');
   await page.goto('https://www.facebook.com');
   const context = browser.defaultBrowserContext();
-  await context.overridePermissions('https://www.facebook.com', ['notifications']);
+  await context.overridePermissions('https://www.facebook.com', [
+    'notifications',
+  ]);
 
   // Submit login
   log.info('Logging in');
@@ -173,11 +191,17 @@ async function main(photoStartIndex, ipc, electronWindow) {
   // Go to Profile page from Homepage
   let $profileLink;
   try {
-    $profileLink = await page.waitFor('div[data-click="profile_icon"] a', { timeout: 10000 });
-  } catch(e) {
+    $profileLink = await page.waitFor('div[data-click="profile_icon"] a', {
+      timeout: 10000,
+    });
+  } catch (e) {
     if (e instanceof TimeoutError) {
       // await page.waitForSelector('#reg-link', { timeout: 10000 })
-      await page.waitForSelector('[href^="https://www.facebook.com/recover/initiate"]', { timeout: 10000 })
+      await page
+        .waitForSelector(
+          '[href^="https://www.facebook.com/recover/initiate"]',
+          { timeout: 10000 }
+        )
         .then(async () => {
           log.error('login credentails incorrect');
           ipc.send('status-internal', 'failure');
@@ -186,7 +210,10 @@ async function main(photoStartIndex, ipc, electronWindow) {
         .catch(async () => {
           log.error("Couldn't find profile_icon selector on homepage");
           ipc.send('status-internal', 'failure');
-          ipc.send('status-friendly', 'The page is missing a required, expected link.  Please let the developer of this app know about this issue.');
+          ipc.send(
+            'status-friendly',
+            'The page is missing a required, expected link.  Please let the developer of this app know about this issue.'
+          );
         })
         .finally(async () => {
           await page.close();
@@ -209,14 +236,23 @@ async function main(photoStartIndex, ipc, electronWindow) {
   ipc.send('status-friendly', 'Searching for photos');
   const $taggedPhotos = await scrapeInfiniteScrollPhotos(page, ipc);
   if (photoStartIndex > $taggedPhotos.length) {
-    log.error("The number of the photo the user requested to start at was higher than the number of the user's tagged photos");
+    log.error(
+      "The number of the photo the user requested to start at was higher than the number of the user's tagged photos"
+    );
     ipc.send('status-internal', 'failure');
     ipc.send(
       'status-friendly',
       'The number of the photo you requested to start at was higher than the number of existing photos'
     );
   } else {
-    await downloadAllPhotos(photoStartIndex, $taggedPhotos, page, browser, ipc, electronWindow);
+    await downloadAllPhotos(
+      photoStartIndex,
+      $taggedPhotos,
+      page,
+      browser,
+      ipc,
+      electronWindow
+    );
     await page.waitFor(1000);
     ipc.send('status-friendly', 'Finished downloading all tagged photos!');
     ipc.send('status-internal', 'complete');

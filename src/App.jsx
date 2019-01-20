@@ -13,12 +13,14 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.runScraper = this.runScraper.bind(this);
+    this.toggleVisualMode = this.toggleVisualMode.bind(this);
     this.handleChangeUserPhotoStart = this.handleChangeUserPhotoStart.bind(
       this
     );
   }
 
   state = {
+    visualMode: false,
     photoNumberDownloaded: 0,
     scraperStatusFriendly: 'Ready',
     scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', complete']
@@ -53,6 +55,12 @@ class App extends Component {
     ipcRenderer.removeAllListeners();
   }
 
+  toggleVisualMode() {
+    this.setState({
+      visualMode: !this.state.visualMode,
+    });
+  }
+
   handleChangeUserPhotoStart(e) {
     this.setState({
       userRequestedPhotoIndexStart: parseInt(e.target.value, 10),
@@ -84,6 +92,7 @@ class App extends Component {
 
   render() {
     const {
+      visualMode,
       photoNumberDownloaded,
       scraperStatusInternal,
       scraperStatusFriendly,
@@ -95,6 +104,8 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <Main
+            toggleVisualMode={this.toggleVisualMode}
+            visualMode={visualMode}
             handleChangeUserPhotoStart={this.handleChangeUserPhotoStart}
             photoNumberDownloaded={photoNumberDownloaded}
             photosDownloadedSmall={smallPhotos}

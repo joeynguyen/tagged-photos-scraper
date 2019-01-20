@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Main({
+  toggleVisualMode,
+  visualMode,
   handleChangeUserPhotoStart,
   photoNumberDownloaded,
   photosDownloadedSmall,
@@ -15,17 +17,25 @@ function Main({
     statusInternal === 'crashed' || statusInternal === 'failure'
       ? 'Retry'
       : 'Start';
+
   return (
     <>
       <p>If you want to start at a certain photo number, enter it here:</p>
-      <label for="userRequestedPhotoIndexStart">Photo number: </label>
+      <label htmlFor="userRequestedPhotoIndexStart">Photo number: </label>
       <input
         id="userRequestedPhotoIndexStart"
         type="number"
         onChange={handleChangeUserPhotoStart}
-        value={userRequestedPhotoIndexStart}
+        value={userRequestedPhotoIndexStart || ''}
         placeholder="enter an integer"
         min={0}
+      />
+      <label htmlFor="visualMode">Enable Visual Mode?</label>
+      <input
+        id="visualMode"
+        type="checkbox"
+        onChange={toggleVisualMode}
+        value={visualMode}
       />
       <p>Current status: {statusFriendly}</p>
       <p>Internal status: {statusInternal}</p>
@@ -51,6 +61,8 @@ function Main({
 }
 
 Main.propTypes = {
+  toggleVisualMode: PropTypes.func.isRequired,
+  visualMode: PropTypes.bool.isRequired,
   handleChangeUserPhotoStart: PropTypes.func.isRequired,
   photoNumberDownloaded: PropTypes.number.isRequired,
   photosDownloadedSmall: PropTypes.arrayOf(
