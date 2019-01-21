@@ -73,6 +73,7 @@ class App extends Component {
       scraperStatusInternal,
       photoNumberDownloaded,
       userRequestedPhotoIndexStart,
+      visualMode,
     } = this.state;
 
     if (userRequestedPhotoIndexStart !== null) {
@@ -87,7 +88,7 @@ class App extends Component {
       photoStartIndex = photoNumberDownloaded;
     }
 
-    ipcRenderer.send('run-scraper', photoStartIndex);
+    ipcRenderer.send('run-scraper', photoStartIndex, visualMode);
   }
 
   render() {

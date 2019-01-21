@@ -117,15 +117,14 @@ async function scrapeInfiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
   return $taggedPhotos;
 }
 
-async function main(photoStartIndex, ipc, electronWindow) {
+async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
+  const { enabled, width, height } = visualModeOptions;
   // start puppeteer
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: !enabled,
     defaultViewport: {
-      width: 3440,
-      height: 1440,
-      // width: 1440,
-      // height: 900,
+      width: enabled ? width : 3440,
+      height: enabled ? height : 1440,
     },
     // even if the user's focus isn't on this app,
     // don't throttle this app's performance
@@ -136,10 +135,13 @@ async function main(photoStartIndex, ipc, electronWindow) {
   const page = await browser.newPage();
   // let result = await page.evaluate(
   //   () => {
-  //     return window.innerWidth;
+  //     return {
+  //       width: window.innerWidth,
+  //       height: window.innerHeight,
+  //     };
   //   }
   // );
-  // log.info(`Detected window.innerWidth to be ${result}.`);
+  // log.info(`Detected window innerWidth to be ${result.width} and innerHeight to be ${result.height}.`);
 
   // handle errors
   process.on('uncaughtException', err => {

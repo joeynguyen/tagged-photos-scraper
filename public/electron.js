@@ -101,9 +101,16 @@ app.on('activate', function() {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-ipcMain.on('run-scraper', (event, photoStartIndex) => {
+ipcMain.on('run-scraper', (event, photoStartIndex, visualMode) => {
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
+  const visualModeOptions = {
+    enabled: visualMode,
+    width,
+    height,
+  };
+
   log.info(`Starting scraper at photoStartIndex: ${photoStartIndex}`);
   event.sender.send('status-friendly', 'Started');
   event.sender.send('status-internal', 'running');
-  scrape(photoStartIndex, event.sender, mainWindow);
+  scrape(photoStartIndex, visualModeOptions, event.sender, mainWindow);
 });
