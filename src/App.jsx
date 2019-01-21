@@ -24,7 +24,7 @@ class App extends Component {
     visualMode: false,
     photoNumberDownloaded: 0,
     scraperStatusFriendly: 'Ready',
-    scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', complete']
+    scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', 'complete']
     smallPhotos: [],
     totalPhotosCount: 0,
     userRequestedPhotoIndexStart: null,
@@ -81,7 +81,7 @@ class App extends Component {
       photoStartIndex = userRequestedPhotoIndexStart;
     } else if (
       (scraperStatusInternal === 'crashed' ||
-        scraperStatusInternal === 'failure') &&
+        scraperStatusInternal === 'failed') &&
       photoNumberDownloaded !== 0
     ) {
       // index starts at 0 so it's 1 behind the number downloaded

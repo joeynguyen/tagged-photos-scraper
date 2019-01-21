@@ -178,7 +178,7 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
       'status-friendly',
       'The scraper was stopped. If you would like to continue downloading where you left off, click the button below.'
     );
-    ipc.send('status-internal', 'failure');
+    ipc.send('status-internal', 'failed');
     page.close();
   });
 
@@ -216,12 +216,12 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
         )
         .then(async () => {
           log.error('login credentails incorrect');
-          ipc.send('status-internal', 'failure');
+          ipc.send('status-internal', 'failed');
           ipc.send('status-friendly', 'The login credentials are incorrect');
         })
         .catch(async () => {
           log.error("Couldn't find profile_icon selector on homepage");
-          ipc.send('status-internal', 'failure');
+          ipc.send('status-internal', 'failed');
           ipc.send(
             'status-friendly',
             'The page is missing a required, expected link.  Please let the developer of this app know about this issue.'
@@ -250,7 +250,7 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
     log.error(
       "The number of the photo the user requested to start at was higher than the number of the user's tagged photos"
     );
-    ipc.send('status-internal', 'failure');
+    ipc.send('status-internal', 'failed');
     ipc.send(
       'status-friendly',
       'The number of the photo you requested to start at was higher than the number of existing photos'

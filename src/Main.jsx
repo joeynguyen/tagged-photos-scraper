@@ -15,7 +15,7 @@ function Main({
   userRequestedPhotoIndexStart,
 }) {
   const buttonText =
-    statusInternal === 'crashed' || statusInternal === 'failure'
+    statusInternal === 'crashed' || statusInternal === 'failed'
       ? 'Retry'
       : 'Start';
 
@@ -77,7 +77,13 @@ Main.propTypes = {
   ),
   photosTotal: PropTypes.number.isRequired,
   statusFriendly: PropTypes.string.isRequired,
-  statusInternal: PropTypes.string.isRequired,
+  statusInternal: PropTypes.oneOf([
+    'ready',
+    'running',
+    'crashed',
+    'failed',
+    'complete',
+  ]).isRequired,
   startScraper: PropTypes.func.isRequired,
   userRequestedPhotoIndexStart: PropTypes.number,
 };
