@@ -133,15 +133,6 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
 
   // Go to website
   const page = await browser.newPage();
-  // let result = await page.evaluate(
-  //   () => {
-  //     return {
-  //       width: window.innerWidth,
-  //       height: window.innerHeight,
-  //     };
-  //   }
-  // );
-  // log.info(`Detected window innerWidth to be ${result.width} and innerHeight to be ${result.height}.`);
 
   // handle errors
   process.on('uncaughtException', err => {
