@@ -1,12 +1,12 @@
 const puppeteer = require('puppeteer');
 const log = require('electron-log');
-const { app } = require('electron');
+const { app, ipcMain } = require('electron');
 const { download } = require('electron-dl');
 const { TimeoutError } = require('puppeteer/Errors');
 
 require('dotenv').config();
 
-function downloadFile(url, filename, iter, browser, ipc, electronWindow) {
+function downloadFile(url, filename, iter, page, ipc, electronWindow) {
   download(electronWindow, url, {
     directory: app.getPath('downloads') + '/tagged-photos-scraper',
     filename,
@@ -29,7 +29,7 @@ function downloadFile(url, filename, iter, browser, ipc, electronWindow) {
       log.error('error', err.message);
       ipc.send('status-friendly', errMessage);
       ipc.send('status-internal', 'crashed');
-      browser.close();
+      page.close();
     });
 }
 
@@ -66,7 +66,7 @@ async function downloadAllPhotos(
     // append index number in front of filename for debugging purposes
     filename = `${i}-${filename}`;
 
-    await downloadFile(imageSrc, filename, i, browser, ipc, electronWindow);
+    await downloadFile(imageSrc, filename, i, page, ipc, electronWindow);
 
     // press Escape to hide currently displayed high quality image
     await page.keyboard.press('Escape');
@@ -133,43 +133,53 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
 
   // Go to website
   const page = await browser.newPage();
+  page.on('close', async () => {
+    log.info('page closed, closing browser as well');
+    await browser.close();
+  });
 
   // handle errors
-  process.on('uncaughtException', err => {
+  process.on('uncaughtException', async err => {
     log.error('process uncaughtException error', err);
     ipc.send(
       'status-friendly',
       `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
     );
     ipc.send('status-internal', 'crashed');
-    browser.close();
+    await page.close();
   });
-  page.on('pageerror', err => {
+  page.on('pageerror', async err => {
     log.error('page uncaughtException error', err);
     ipc.send(
       'status-friendly',
       `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
     );
     ipc.send('status-internal', 'crashed');
-    browser.close();
+    await page.close();
   });
-  page.on('error', err => {
+  page.on('error', async err => {
     log.error('puppeteer page crash error', err);
     ipc.send(
       'status-friendly',
       `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
     );
     ipc.send('status-internal', 'crashed');
-    browser.close();
+    await page.close();
   });
-  browser.on('disconnected', err => {
-    log.error('puppeteer browser disconnected error', err);
+  browser.on('disconnected', async () => {
+    log.warn('puppeteer browser disconnected');
+    await browser.close();
+  });
+  ipcMain.on('stop-scraper', () => {
+    // don't use async/await because we don't want to wait for other processes
+    // immediately shut down puppeteer
+    log.warn('puppeteer received a stop request');
     ipc.send(
       'status-friendly',
-      `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
+      'The scraper was stopped. If you would like to continue downloading where you left off, click the button below.'
     );
-    ipc.send('status-internal', 'crashed');
-    browser.close();
+    ipc.send('status-internal', 'failure');
+    page.close();
   });
 
   // navigate to Facebook
@@ -219,7 +229,6 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
         })
         .finally(async () => {
           await page.close();
-          await browser.close();
         });
     }
   }
@@ -263,8 +272,6 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
   // stop puppeteer
   log.info('Stopping puppeteer');
   await page.close();
-  await browser.close();
-  log.info('puppeeter browser closed');
 }
 
 module.exports = main;

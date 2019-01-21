@@ -13,6 +13,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.runScraper = this.runScraper.bind(this);
+    this.stopScraper = this.stopScraper.bind(this);
     this.toggleVisualMode = this.toggleVisualMode.bind(this);
     this.handleChangeUserPhotoStart = this.handleChangeUserPhotoStart.bind(
       this
@@ -79,7 +80,8 @@ class App extends Component {
     if (userRequestedPhotoIndexStart !== null) {
       photoStartIndex = userRequestedPhotoIndexStart;
     } else if (
-      scraperStatusInternal === 'crashed' &&
+      (scraperStatusInternal === 'crashed' ||
+        scraperStatusInternal === 'failure') &&
       photoNumberDownloaded !== 0
     ) {
       // index starts at 0 so it's 1 behind the number downloaded
@@ -89,6 +91,10 @@ class App extends Component {
     }
 
     ipcRenderer.send('run-scraper', photoStartIndex, visualMode);
+  }
+
+  stopScraper() {
+    ipcRenderer.send('stop-scraper');
   }
 
   render() {
@@ -114,6 +120,7 @@ class App extends Component {
             statusFriendly={scraperStatusFriendly}
             statusInternal={scraperStatusInternal}
             startScraper={this.runScraper}
+            stopScraper={this.stopScraper}
             userRequestedPhotoIndexStart={userRequestedPhotoIndexStart}
           />
         </header>

@@ -11,6 +11,7 @@ function Main({
   statusFriendly,
   statusInternal,
   startScraper,
+  stopScraper,
   userRequestedPhotoIndexStart,
 }) {
   const buttonText =
@@ -47,6 +48,9 @@ function Main({
         <button disabled={statusInternal === 'running'} onClick={startScraper}>
           {buttonText}
         </button>
+      )}
+      {statusInternal === 'running' && (
+        <button onClick={stopScraper}>Stop Scraper</button>
       )}
       <p>{`Downloaded photos with small file sizes: ${
         photosDownloadedSmall.length
