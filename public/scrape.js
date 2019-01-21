@@ -136,7 +136,7 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
 
   // handle errors
   process.on('uncaughtException', err => {
-    log.error('uncaughtException error', err);
+    log.error('process uncaughtException error', err);
     ipc.send(
       'status-friendly',
       `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
@@ -154,7 +154,16 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
     browser.close();
   });
   page.on('error', err => {
-    log.error('page crash error', err);
+    log.error('puppeteer page crash error', err);
+    ipc.send(
+      'status-friendly',
+      `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
+    );
+    ipc.send('status-internal', 'crashed');
+    browser.close();
+  });
+  browser.on('disconnected', err => {
+    log.error('puppeteer browser disconnected error', err);
     ipc.send(
       'status-friendly',
       `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
