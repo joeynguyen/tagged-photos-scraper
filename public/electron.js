@@ -6,7 +6,7 @@ const isDev = require('electron-is-dev');
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
 
-const scrape = require('./scrape.js');
+const scrape = require('./lib/scrape.js');
 
 unhandled({
   logger: log.error,

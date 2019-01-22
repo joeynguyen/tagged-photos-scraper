@@ -3,12 +3,12 @@ const log = require('electron-log');
 const { ipcMain } = require('electron');
 const { TimeoutError } = require('puppeteer/Errors');
 
-const downloadAllPhotos = require('./lib/downloadAllPhotos.js');
-const infiniteScrollPhotos = require('./lib/infiniteScrollPhotos.js');
+const downloadAllPhotos = require('./downloadAllPhotos.js');
+const infiniteScrollPhotos = require('./infiniteScrollPhotos.js');
 
 require('dotenv').config();
 
-async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
+async function scrape(photoStartIndex, visualModeOptions, ipc, electronWindow) {
   const { enabled, width, height } = visualModeOptions;
   // start puppeteer
   const browser = await puppeteer.launch({
@@ -183,4 +183,4 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
   await page.close();
 }
 
-module.exports = main;
+module.exports = scrape;
