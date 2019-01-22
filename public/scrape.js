@@ -45,8 +45,12 @@ async function downloadAllPhotos(
 
   for (let i = photoStartIndex; i < $photos.length; i++) {
     const $photo = $photos[i];
-    await $photo.click();
-    const $fullSizeLink = await page.waitForSelector(
+    const hrefPropertyHandle = await $photo.getProperty('href');
+    const photoUrl = await hrefPropertyHandle.jsonValue();
+    const newPhotoPage = await browser.newPage();
+    await newPhotoPage.goto(photoUrl);
+
+    const $fullSizeLink = await newPhotoPage.waitForSelector(
       '[href^="/photo/view_full_size"]',
       { timeout: 10000 }
     );
@@ -54,13 +58,14 @@ async function downloadAllPhotos(
     const newPagePromise = new Promise(x => {
       return browser.once('targetcreated', target => x(target.page()));
     });
-    await $fullSizeLink.click('my-link');
+    await $fullSizeLink.click();
     const newPage = await newPagePromise;
 
-    // stop referencing the element handle
-    $photo.dispose();
-
+    // await newPhotoPage.waitFor(1000);
+    await newPhotoPage.close();
+    await newPage.waitFor(1000);
     const imageSrc = await newPage.url();
+
     // grab filename of image from URL
     const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
     let filename = regx.exec(imageSrc)[0];
@@ -69,14 +74,14 @@ async function downloadAllPhotos(
 
     await downloadFile(imageSrc, filename, i, page, ipc, electronWindow);
 
-    // press Escape to hide currently displayed high quality image
     await newPage.close();
-    const $backButton = await page.$('[data-sigil="MBackNavBarClick"]');
-    $backButton.click();
+
+    // stop referencing the element handle
+    $photo.dispose();
   }
 }
 
-async function scrapeInfiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
+async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
   const photosQuerySelector = '.timeline.photos a';
   let $taggedPhotos = await page.$$(photosQuerySelector);
   log.info(`Found ${$taggedPhotos.length} photos`);
@@ -92,7 +97,8 @@ async function scrapeInfiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
       previousHeight = currentHeight;
       await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
       await page.waitForFunction(
-        `document.body.scrollHeight > ${previousHeight}`
+        `document.body.scrollHeight > ${previousHeight}`,
+        { timeout: 10000 }
       );
       currentHeight = await page.evaluate('document.body.scrollHeight');
       await page.waitFor(scrollDelay);
@@ -185,7 +191,6 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
   log.info('Going to facebook.com');
   ipc.send('status-friendly', 'Going to facebook.com');
   await page.goto('https://m.facebook.com');
-  const context = browser.defaultBrowserContext();
 
   // Submit login
   log.info('Logging in');
@@ -197,9 +202,9 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
   await $passField.press('Enter');
 
   // Bypass FB message to remember user on this browser
-  let $rememberButtonNo;
+  let $rememberUserButtonNo;
   try {
-    $rememberButtonNo = await page.waitForSelector(
+    $rememberUserButtonNo = await page.waitForSelector(
       '[href^="/login/save-device/cancel"]',
       {
         timeout: 10000,
@@ -239,7 +244,7 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
         });
     }
   }
-  await $rememberButtonNo.click();
+  await $rememberUserButtonNo.click();
   await page.waitForNavigation();
 
   // Go to Profile page from Homepage
@@ -253,15 +258,17 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
   // Go to "Photos of You" page
   log.info('Going to "Photos of You" page');
   ipc.send('status-friendly', 'Going to "Photos of You" page');
+  await page.waitForSelector('[href^="/profile/wizard/refresher"]', {
+    timeout: 5000,
+  });
   const userProfileUrl = await page.url();
   console.log('userProfileUrl', userProfileUrl);
-
   await page.goto(`${userProfileUrl}/photos`);
 
   // scrape photos
   log.info('Searching for photos');
   ipc.send('status-friendly', 'Searching for photos');
-  const $taggedPhotos = await scrapeInfiniteScrollPhotos(page, ipc);
+  const $taggedPhotos = await infiniteScrollPhotos(page, ipc);
   if (photoStartIndex > $taggedPhotos.length) {
     log.error(
       "The number of the photo the user requested to start at was higher than the number of the user's tagged photos"
