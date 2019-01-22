@@ -22,7 +22,7 @@ class App extends Component {
 
   state = {
     visualMode: false,
-    photoNumberDownloaded: 0,
+    photosDownloadedCount: 0,
     scraperStatusFriendly: 'Ready',
     scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', 'complete']
     totalPhotosCount: 0,
@@ -42,8 +42,8 @@ class App extends Component {
       this.setState({ totalPhotosCount: num });
     });
 
-    ipcRenderer.on('photo-number-downloaded', (event, photoNumber) => {
-      this.setState({ photoNumberDownloaded: photoNumber });
+    ipcRenderer.on('photos-downloaded', (event, photoNumber) => {
+      this.setState({ photosDownloadedCount: photoNumber });
     });
   }
 
@@ -67,22 +67,26 @@ class App extends Component {
     let photoStartIndex = 0;
     const {
       scraperStatusInternal,
-      photoNumberDownloaded,
+      photosDownloadedCount,
       userRequestedPhotoIndexStart,
       visualMode,
     } = this.state;
 
-    if (userRequestedPhotoIndexStart !== null) {
-      photoStartIndex = userRequestedPhotoIndexStart;
+    if (
+      userRequestedPhotoIndexStart !== null &&
+      !isNaN(userRequestedPhotoIndexStart)
+    ) {
+      // non-developers start counting at 1, not 0
+      photoStartIndex = userRequestedPhotoIndexStart - 1;
     } else if (
       (scraperStatusInternal === 'crashed' ||
         scraperStatusInternal === 'failed') &&
-      photoNumberDownloaded !== 0
+      photosDownloadedCount !== 0
     ) {
       // index starts at 0 so it's 1 behind the number downloaded
       // for example, if photo #2 was last downloaded successfully,
       // we restart at index 2 to begin downloading photo #3
-      photoStartIndex = photoNumberDownloaded;
+      photoStartIndex = photosDownloadedCount;
     }
 
     ipcRenderer.send('run-scraper', photoStartIndex, visualMode);
@@ -95,7 +99,7 @@ class App extends Component {
   render() {
     const {
       visualMode,
-      photoNumberDownloaded,
+      photosDownloadedCount,
       scraperStatusInternal,
       scraperStatusFriendly,
       totalPhotosCount,
@@ -108,7 +112,7 @@ class App extends Component {
             toggleVisualMode={this.toggleVisualMode}
             visualMode={visualMode}
             handleChangeUserPhotoStart={this.handleChangeUserPhotoStart}
-            photoNumberDownloaded={photoNumberDownloaded}
+            photosDownloadedCount={photosDownloadedCount}
             photosTotal={totalPhotosCount}
             statusFriendly={scraperStatusFriendly}
             statusInternal={scraperStatusInternal}

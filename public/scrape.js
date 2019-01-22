@@ -12,12 +12,14 @@ function downloadFile(url, filename, iter, page, ipc, electronWindow) {
     filename,
   })
     .then(downloadItem => {
+      const photosDownloaded = iter + 1;
       log.info(`Downloaded ${filename} successfully`);
-      log.info(`Photo #${iter} downloaded`);
-      ipc.send('photo-number-downloaded', iter);
+      log.info(`${photosDownloaded} downloaded`);
+      ipc.send('photos-downloaded', photosDownloaded);
     })
     .catch(err => {
-      const errMessage = `Downloading failed at photo #${iter} before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.`;
+      const errMessage = `Downloading failed at photo #${iter +
+        1} before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.`;
       log.info(errMessage);
       log.error('error', err);
       ipc.send('status-friendly', errMessage);
@@ -65,8 +67,9 @@ async function downloadAllPhotos(
       // grab filename of image from URL
       const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
       let filename = regx.exec(imageSrc)[0];
-      // append index number in front of filename for debugging purposes
-      filename = `${i}-${filename}`;
+      // append index number + 1 in front of filename for user to
+      // reference once they download in case tool fails while running
+      filename = `${i + 1}-${filename}`;
 
       await downloadFile(imageSrc, filename, i, page, ipc, electronWindow);
       await newPage.close();

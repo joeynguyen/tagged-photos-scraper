@@ -5,7 +5,7 @@ function Main({
   toggleVisualMode,
   visualMode,
   handleChangeUserPhotoStart,
-  photoNumberDownloaded,
+  photosDownloadedCount,
   photosTotal,
   statusFriendly,
   statusInternal,
@@ -40,7 +40,7 @@ function Main({
       <p>Current status: {statusFriendly}</p>
       <p>Internal status: {statusInternal}</p>
       <p>Photos found: {photosTotal}</p>
-      <p>Photo number downloaded: {photoNumberDownloaded}</p>
+      <p>Photos downloaded: {photosDownloadedCount}</p>
       {statusInternal === 'complete' ? (
         <h2>Complete!</h2>
       ) : (
@@ -59,7 +59,7 @@ Main.propTypes = {
   toggleVisualMode: PropTypes.func.isRequired,
   visualMode: PropTypes.bool.isRequired,
   handleChangeUserPhotoStart: PropTypes.func.isRequired,
-  photoNumberDownloaded: PropTypes.number.isRequired,
+  photosDownloadedCount: PropTypes.number.isRequired,
   photosTotal: PropTypes.number.isRequired,
   statusFriendly: PropTypes.string.isRequired,
   statusInternal: PropTypes.oneOf([
