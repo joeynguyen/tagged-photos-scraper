@@ -144,48 +144,48 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
   });
 
   // handle errors
-  // process.on('uncaughtException', async err => {
-  //   log.error('process uncaughtException error', err);
-  //   ipc.send(
-  //     'status-friendly',
-  //     `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
-  //   );
-  //   ipc.send('status-internal', 'crashed');
-  //   await page.close();
-  // });
-  // page.on('pageerror', async err => {
-  //   log.error('page uncaughtException error', err);
-  //   ipc.send(
-  //     'status-friendly',
-  //     `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
-  //   );
-  //   ipc.send('status-internal', 'crashed');
-  //   await page.close();
-  // });
-  // page.on('error', async err => {
-  //   log.error('puppeteer page crash error', err);
-  //   ipc.send(
-  //     'status-friendly',
-  //     `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
-  //   );
-  //   ipc.send('status-internal', 'crashed');
-  //   await page.close();
-  // });
-  // browser.on('disconnected', async () => {
-  //   log.warn('puppeteer browser disconnected');
-  //   await browser.close();
-  // });
-  // ipcMain.on('stop-scraper', () => {
-  //   // don't use async/await because we don't want to wait for other processes
-  //   // immediately shut down puppeteer
-  //   log.warn('puppeteer received a stop request');
-  //   ipc.send(
-  //     'status-friendly',
-  //     'The scraper was stopped. If you would like to continue downloading where you left off, click the button below.'
-  //   );
-  //   ipc.send('status-internal', 'failed');
-  //   page.close();
-  // });
+  process.on('uncaughtException', async err => {
+    log.error('process uncaughtException error', err);
+    ipc.send(
+      'status-friendly',
+      `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
+    );
+    ipc.send('status-internal', 'crashed');
+    await page.close();
+  });
+  page.on('pageerror', async err => {
+    log.error('page uncaughtException error', err);
+    ipc.send(
+      'status-friendly',
+      `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
+    );
+    ipc.send('status-internal', 'crashed');
+    await page.close();
+  });
+  page.on('error', async err => {
+    log.error('puppeteer page crash error', err);
+    ipc.send(
+      'status-friendly',
+      `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`
+    );
+    ipc.send('status-internal', 'crashed');
+    await page.close();
+  });
+  browser.on('disconnected', async () => {
+    log.warn('puppeteer browser disconnected');
+    await browser.close();
+  });
+  ipcMain.on('stop-scraper', () => {
+    // don't use async/await because we don't want to wait for other processes
+    // immediately shut down puppeteer
+    log.warn('puppeteer received a stop request');
+    ipc.send(
+      'status-friendly',
+      'The scraper was stopped. If you would like to continue downloading where you left off, click the button below.'
+    );
+    ipc.send('status-internal', 'failed');
+    page.close();
+  });
 
   // navigate to Facebook
   log.info('Going to facebook.com');
