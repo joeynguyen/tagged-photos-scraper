@@ -36,6 +36,9 @@ class App extends Component {
 
     ipcRenderer.on('status-internal', (event, status) => {
       this.setState({ scraperStatusInternal: status });
+      if (status === 'failed' || status === 'crashed') {
+        this.setState({ userRequestedPhotoIndexStart: null });
+      }
     });
 
     ipcRenderer.on('photos-found', (event, num) => {
