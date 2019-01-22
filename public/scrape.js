@@ -262,9 +262,9 @@ async function main(photoStartIndex, visualModeOptions, ipc, electronWindow) {
   });
   await $profileLink.click();
 
-  // Go to "Photos of You" page
-  log.info('Going to "Photos of You" page');
-  ipc.send('status-friendly', 'Going to "Photos of You" page');
+  // Go to "Photos" page
+  log.info('Going to "Photos" page');
+  ipc.send('status-friendly', 'Going to "Photos" page');
   await page.waitForSelector('[href^="/profile/wizard/refresher"]', {
     timeout: 5000,
   });
