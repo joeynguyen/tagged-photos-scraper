@@ -12,13 +12,6 @@ function downloadFile(url, filename, iter, page, ipc, electronWindow) {
     filename,
   })
     .then(downloadItem => {
-      const filesize = downloadItem.getTotalBytes();
-      if (filesize < 30000) {
-        ipc.send('small-filesize', { index: iter, url });
-        log.warn(
-          `Downloaded a small-size file at index ${iter} with URL ${url}`
-        );
-      }
       log.info(`Downloaded ${filename} successfully`);
       log.info(`Photo #${iter} downloaded`);
       ipc.send('photo-number-downloaded', iter);

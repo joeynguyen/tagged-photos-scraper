@@ -25,7 +25,6 @@ class App extends Component {
     photoNumberDownloaded: 0,
     scraperStatusFriendly: 'Ready',
     scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', 'complete']
-    smallPhotos: [],
     totalPhotosCount: 0,
     userRequestedPhotoIndexStart: null,
   };
@@ -45,10 +44,6 @@ class App extends Component {
 
     ipcRenderer.on('photo-number-downloaded', (event, photoNumber) => {
       this.setState({ photoNumberDownloaded: photoNumber });
-    });
-
-    ipcRenderer.on('small-filesize', (event, photoObj) => {
-      this.setState({ smallPhotos: this.state.smallPhotos.concat(photoObj) });
     });
   }
 
@@ -103,7 +98,6 @@ class App extends Component {
       photoNumberDownloaded,
       scraperStatusInternal,
       scraperStatusFriendly,
-      smallPhotos,
       totalPhotosCount,
       userRequestedPhotoIndexStart,
     } = this.state;
@@ -115,7 +109,6 @@ class App extends Component {
             visualMode={visualMode}
             handleChangeUserPhotoStart={this.handleChangeUserPhotoStart}
             photoNumberDownloaded={photoNumberDownloaded}
-            photosDownloadedSmall={smallPhotos}
             photosTotal={totalPhotosCount}
             statusFriendly={scraperStatusFriendly}
             statusInternal={scraperStatusInternal}

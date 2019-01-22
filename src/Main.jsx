@@ -6,7 +6,6 @@ function Main({
   visualMode,
   handleChangeUserPhotoStart,
   photoNumberDownloaded,
-  photosDownloadedSmall,
   photosTotal,
   statusFriendly,
   statusInternal,
@@ -52,14 +51,6 @@ function Main({
       {statusInternal === 'running' && (
         <button onClick={stopScraper}>Stop Scraper</button>
       )}
-      <p>{`Downloaded photos with small file sizes: ${
-        photosDownloadedSmall.length
-      }`}</p>
-      <ul>
-        {photosDownloadedSmall.map(photo => (
-          <li>{`#${photo.index} - ${photo.url}`}</li>
-        ))}
-      </ul>
     </>
   );
 }
@@ -69,12 +60,6 @@ Main.propTypes = {
   visualMode: PropTypes.bool.isRequired,
   handleChangeUserPhotoStart: PropTypes.func.isRequired,
   photoNumberDownloaded: PropTypes.number.isRequired,
-  photosDownloadedSmall: PropTypes.arrayOf(
-    PropTypes.exact({
-      index: PropTypes.number.isRequired,
-      url: PropTypes.string.isRequired,
-    })
-  ),
   photosTotal: PropTypes.number.isRequired,
   statusFriendly: PropTypes.string.isRequired,
   statusInternal: PropTypes.oneOf([
@@ -88,7 +73,6 @@ Main.propTypes = {
   userRequestedPhotoIndexStart: PropTypes.number,
 };
 Main.defaultProps = {
-  photosDownloadedSmall: [],
   userRequestedPhotoIndexStart: null,
 };
 
