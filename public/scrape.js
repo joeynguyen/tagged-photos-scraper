@@ -54,10 +54,13 @@ async function downloadAllPhotos(
     await $fullSizeLink.click();
     const newPage = await newPagePromise;
 
-    // await newPhotoPage.waitFor(1000);
+    // having these `.waitFor(1000)` methods help
+    // prevent Puppeteer scraping errors
+    await newPhotoPage.waitFor(1000);
     await newPhotoPage.close();
     await newPage.waitFor(1000);
     const imageSrc = await newPage.url();
+    log.info(`imageSrc: ${imageSrc}`);
 
     // grab filename of image from URL
     const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
