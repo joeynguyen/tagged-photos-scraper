@@ -6,9 +6,14 @@ const { TimeoutError } = require('puppeteer/Errors');
 const downloadAllPhotos = require('./downloadAllPhotos.js');
 const infiniteScrollPhotos = require('./infiniteScrollPhotos.js');
 
-require('dotenv').config();
-
-async function scrape(photoStartIndex, visualModeOptions, ipc, electronWindow) {
+async function scrape(
+  username,
+  password,
+  photoStartIndex,
+  visualModeOptions,
+  ipc,
+  electronWindow
+) {
   const { enabled, width, height } = visualModeOptions;
   // start puppeteer
   const browser = await puppeteer.launch({
@@ -82,9 +87,9 @@ async function scrape(photoStartIndex, visualModeOptions, ipc, electronWindow) {
   log.info('Logging in');
   ipc.send('status-friendly', 'Logging in');
   await page.focus('input[name="email"]');
-  await page.keyboard.type(process.env.USERNAME);
+  await page.keyboard.type(username);
   const $passField = await page.$('input[name="pass"]');
-  await $passField.type(process.env.PASSWORD);
+  await $passField.type(password);
   await $passField.press('Enter');
 
   // Bypass FB message to remember user on this browser
@@ -93,7 +98,7 @@ async function scrape(photoStartIndex, visualModeOptions, ipc, electronWindow) {
     $rememberUserButtonNo = await page.waitForSelector(
       '[href^="/login/save-device/cancel"]',
       {
-        timeout: 10000,
+        timeout: 5000,
       }
     );
   } catch (e) {
@@ -101,7 +106,7 @@ async function scrape(photoStartIndex, visualModeOptions, ipc, electronWindow) {
       // await page.waitForSelector('#reg-link', { timeout: 10000 })
       await page
         .waitForSelector('[aria-label="Did you forget your password?"]', {
-          timeout: 10000,
+          timeout: 2000,
         })
         .then(async () => {
           log.error('login credentails incorrect');
@@ -110,7 +115,7 @@ async function scrape(photoStartIndex, visualModeOptions, ipc, electronWindow) {
         })
         .catch(async () => {
           await page
-            .waitForSelector('[href^="/reg/"]', { timeout: 10000 })
+            .waitForSelector('[href^="/reg/"]', { timeout: 2000 })
             .then(async () => {
               log.error('login credentails incorrect');
               ipc.send('status-internal', 'failed');

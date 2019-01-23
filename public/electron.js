@@ -12,8 +12,6 @@ unhandled({
   logger: log.error,
 });
 
-console.log('log file location', log.transports.file.findLogPath());
-
 // install dev tools for debugging during development
 const installExtensions = async () => {
   const {
@@ -112,16 +110,27 @@ app.on('activate', function() {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-ipcMain.on('run-scraper', (event, photoStartIndex, visualMode) => {
-  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
-  const visualModeOptions = {
-    enabled: visualMode,
-    width,
-    height,
-  };
+ipcMain.on(
+  'run-scraper',
+  (event, username, password, photoStartIndex, visualMode) => {
+    const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
+    const visualModeOptions = {
+      enabled: visualMode,
+      width,
+      height,
+    };
 
-  log.info(`Starting scraper at photoStartIndex: ${photoStartIndex}`);
-  event.sender.send('status-friendly', 'Started');
-  event.sender.send('status-internal', 'running');
-  scrape(photoStartIndex, visualModeOptions, event.sender, mainWindow);
-});
+    log.info(`Starting scraper at photoStartIndex: ${photoStartIndex}`);
+    event.sender.send('status-friendly', 'Started');
+    event.sender.send('status-internal', 'running');
+    event.sender.send('log-file-location', log.transports.file.findLogPath());
+    scrape(
+      username,
+      password,
+      photoStartIndex,
+      visualModeOptions,
+      event.sender,
+      mainWindow
+    );
+  }
+);

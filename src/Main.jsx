@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Main({
+  logFileLocation,
   photosDownloadedCount,
   photosTotal,
   statusFriendly,
@@ -13,11 +14,17 @@ function Main({
       <p>Internal status: {statusInternal}</p>
       <p>Photos found: {photosTotal}</p>
       <p>Photos downloaded: {photosDownloadedCount}</p>
+      {logFileLocation && (
+        <p>
+          The location of the log file on this computer is: {logFileLocation}
+        </p>
+      )}
     </>
   );
 }
 
 Main.propTypes = {
+  logFileLocation: PropTypes.string.isRequired,
   photosDownloadedCount: PropTypes.number.isRequired,
   photosTotal: PropTypes.number.isRequired,
   statusFriendly: PropTypes.string.isRequired,

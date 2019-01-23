@@ -23,6 +23,7 @@ class App extends Component {
     scraperStatusFriendly: 'Ready',
     scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', 'complete']
     totalPhotosCount: 0,
+    logFileLocation: '',
   };
 
   componentDidMount() {
@@ -41,13 +42,16 @@ class App extends Component {
     ipcRenderer.on('photos-downloaded', (event, photoNumber) => {
       this.setState({ photosDownloadedCount: photoNumber });
     });
+    ipcRenderer.on('log-file-location', (event, location) => {
+      this.setState({ logFileLocation: location });
+    });
   }
 
   componentWillUnmount() {
     ipcRenderer.removeAllListeners();
   }
 
-  runScraper(userRequestedPhotoIndexStart, visualMode) {
+  runScraper(username, password, userRequestedPhotoIndexStart, visualMode) {
     let photoStartIndex = 0;
     const { scraperStatusInternal, photosDownloadedCount } = this.state;
 
@@ -65,7 +69,13 @@ class App extends Component {
       photoStartIndex = photosDownloadedCount;
     }
 
-    ipcRenderer.send('run-scraper', photoStartIndex, visualMode);
+    ipcRenderer.send(
+      'run-scraper',
+      username,
+      password,
+      photoStartIndex,
+      visualMode
+    );
   }
 
   stopScraper() {
@@ -74,6 +84,7 @@ class App extends Component {
 
   render() {
     const {
+      logFileLocation,
       photosDownloadedCount,
       scraperStatusInternal,
       scraperStatusFriendly,
@@ -88,6 +99,7 @@ class App extends Component {
             stopScraper={this.stopScraper}
           />
           <Main
+            logFileLocation={logFileLocation}
             photosDownloadedCount={photosDownloadedCount}
             photosTotal={totalPhotosCount}
             statusFriendly={scraperStatusFriendly}

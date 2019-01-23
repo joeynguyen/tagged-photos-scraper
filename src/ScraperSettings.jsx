@@ -4,13 +4,16 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 
 const initialValues = {
-  username: '',
+  email: '',
   password: '',
   userRequestedPhotoIndexStart: '',
   visualMode: false,
 };
 const settingsSchema = yup.object().shape({
-  username: yup.string().required(),
+  email: yup
+    .string()
+    .email()
+    .required(),
   password: yup.string().required(),
   userRequestedPhotoIndexStart: yup
     .number()
@@ -29,15 +32,20 @@ const ScraperSettings = ({ statusInternal, startScraper, stopScraper }) => {
       initialValues={initialValues}
       validationSchema={settingsSchema}
       onSubmit={values => {
-        const { userRequestedPhotoIndexStart, visualMode } = values;
-        startScraper(userRequestedPhotoIndexStart, visualMode);
+        const {
+          email,
+          password,
+          userRequestedPhotoIndexStart,
+          visualMode,
+        } = values;
+        startScraper(email, password, userRequestedPhotoIndexStart, visualMode);
       }}
     >
       {() => (
         <Form>
-          <label htmlFor="username">Username/Email</label>
-          <Field type="text" name="username" />
-          <ErrorMessage name="username" component="div" />
+          <label htmlFor="email">Email</label>
+          <Field type="text" name="email" />
+          <ErrorMessage name="email" component="div" />
           <br />
 
           <label htmlFor="password">Password</label>
