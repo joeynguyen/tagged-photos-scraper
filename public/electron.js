@@ -1,6 +1,6 @@
 // Modules to control application life and create native browser window
 const electron = require('electron');
-const { app, BrowserWindow, ipcMain } = electron;
+const { app, BrowserWindow, ipcMain, session } = electron;
 const path = require('path');
 const isDev = require('electron-is-dev');
 const log = require('electron-log');
@@ -11,6 +11,7 @@ const scrape = require('./lib/scrape.js');
 unhandled({
   logger: log.error,
 });
+
 console.log('log file location', log.transports.file.findLogPath());
 
 // install dev tools for debugging during development
@@ -79,6 +80,16 @@ app.on('ready', async () => {
   if (isDev) {
     await installExtensions();
   }
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self' 'unsafe-inline' http://localhost:3000 ws://localhost:3000",
+        ],
+      },
+    });
+  });
   createWindow();
 });
 
