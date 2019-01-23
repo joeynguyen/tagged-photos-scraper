@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import Main from './Main';
+import ScraperSettings from './ScraperSettings';
+
 const { ipcRenderer } = window.require('electron');
 const log = window.require('electron-log');
 const unhandled = window.require('electron-unhandled');
@@ -14,19 +16,13 @@ class App extends Component {
     super(props);
     this.runScraper = this.runScraper.bind(this);
     this.stopScraper = this.stopScraper.bind(this);
-    this.toggleVisualMode = this.toggleVisualMode.bind(this);
-    this.handleChangeUserPhotoStart = this.handleChangeUserPhotoStart.bind(
-      this
-    );
   }
 
   state = {
-    visualMode: false,
     photosDownloadedCount: 0,
     scraperStatusFriendly: 'Ready',
     scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', 'complete']
     totalPhotosCount: 0,
-    userRequestedPhotoIndexStart: null,
   };
 
   componentDidMount() {
@@ -36,9 +32,6 @@ class App extends Component {
 
     ipcRenderer.on('status-internal', (event, status) => {
       this.setState({ scraperStatusInternal: status });
-      if (status === 'failed' || status === 'crashed') {
-        this.setState({ userRequestedPhotoIndexStart: null });
-      }
     });
 
     ipcRenderer.on('photos-found', (event, num) => {
@@ -54,31 +47,11 @@ class App extends Component {
     ipcRenderer.removeAllListeners();
   }
 
-  toggleVisualMode() {
-    this.setState({
-      visualMode: !this.state.visualMode,
-    });
-  }
-
-  handleChangeUserPhotoStart(e) {
-    this.setState({
-      userRequestedPhotoIndexStart: parseInt(e.target.value, 10),
-    });
-  }
-
-  runScraper() {
+  runScraper(userRequestedPhotoIndexStart, visualMode) {
     let photoStartIndex = 0;
-    const {
-      scraperStatusInternal,
-      photosDownloadedCount,
-      userRequestedPhotoIndexStart,
-      visualMode,
-    } = this.state;
+    const { scraperStatusInternal, photosDownloadedCount } = this.state;
 
-    if (
-      userRequestedPhotoIndexStart !== null &&
-      !isNaN(userRequestedPhotoIndexStart)
-    ) {
+    if (userRequestedPhotoIndexStart) {
       // non-developers start counting at 1, not 0
       photoStartIndex = userRequestedPhotoIndexStart - 1;
     } else if (
@@ -101,27 +74,24 @@ class App extends Component {
 
   render() {
     const {
-      visualMode,
       photosDownloadedCount,
       scraperStatusInternal,
       scraperStatusFriendly,
       totalPhotosCount,
-      userRequestedPhotoIndexStart,
     } = this.state;
     return (
       <div className="App">
         <header className="App-header">
+          <ScraperSettings
+            statusInternal={scraperStatusInternal}
+            startScraper={this.runScraper}
+            stopScraper={this.stopScraper}
+          />
           <Main
-            toggleVisualMode={this.toggleVisualMode}
-            visualMode={visualMode}
-            handleChangeUserPhotoStart={this.handleChangeUserPhotoStart}
             photosDownloadedCount={photosDownloadedCount}
             photosTotal={totalPhotosCount}
             statusFriendly={scraperStatusFriendly}
             statusInternal={scraperStatusInternal}
-            startScraper={this.runScraper}
-            stopScraper={this.stopScraper}
-            userRequestedPhotoIndexStart={userRequestedPhotoIndexStart}
           />
         </header>
       </div>
