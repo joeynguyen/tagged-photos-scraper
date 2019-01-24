@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Grommet, Box } from 'grommet';
 import './App.css';
 import Main from './Main';
 import ScraperSettings from './ScraperSettings';
@@ -91,8 +92,8 @@ class App extends Component {
       totalPhotosCount,
     } = this.state;
     return (
-      <div className="App">
-        <header className="App-header">
+      <Grommet full>
+        <Box align="center" justify="center" background="dark-2">
           <ScraperSettings
             statusInternal={scraperStatusInternal}
             startScraper={this.runScraper}
@@ -105,8 +106,8 @@ class App extends Component {
             statusFriendly={scraperStatusFriendly}
             statusInternal={scraperStatusInternal}
           />
-        </header>
-      </div>
+        </Box>
+      </Grommet>
     );
   }
 }
