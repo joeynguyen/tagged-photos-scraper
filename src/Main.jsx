@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text } from 'grommet';
 
 function Main({
   logFileLocation,
@@ -11,14 +10,14 @@ function Main({
 }) {
   return (
     <>
-      <Text size="xlarge">Current status: {statusFriendly}</Text>
-      <Text size="xlarge">Internal status: {statusInternal}</Text>
-      <Text size="xlarge">Photos found: {photosTotal}</Text>
-      <Text size="xlarge">Photos downloaded: {photosDownloadedCount}</Text>
+      <h3>Current status: {statusFriendly}</h3>
+      <h3>Internal status: {statusInternal}</h3>
+      <h3>Photos found: {photosTotal}</h3>
+      <h3>Photos downloaded: {photosDownloadedCount}</h3>
       {logFileLocation && (
-        <Text size="large">
+        <h3>
           The location of the log file on this computer is: {logFileLocation}
-        </Text>
+        </h3>
       )}
     </>
   );
