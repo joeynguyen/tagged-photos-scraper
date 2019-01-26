@@ -22,6 +22,24 @@ function getSteps() {
 }
 
 export default class StatusSteps extends Component {
+  state = {
+    currentStep: this.props.status.statusCode,
+    currentMessage: this.props.status.message,
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    // Any time the current user changes,
+    // Reset any parts of state that are tied to that user.
+    // In this simple example, that's just the email.
+    if (props.status.statusCode < 98) {
+      return {
+        currentStep: props.status.statusCode,
+        currentMessage: props.status.message,
+      };
+    }
+    return null;
+  }
+
   static propTypes = {
     status: PropTypes.shape({
       statusCode: PropTypes.number.isRequired,
@@ -32,17 +50,18 @@ export default class StatusSteps extends Component {
   };
 
   render() {
-    const { message, statusCode } = this.props.status;
+    const { message } = this.props.status;
+    const { currentStep, currentMessage } = this.state;
     const steps = getSteps();
 
     return (
       <div style={{ width: '90%' }}>
-        <Stepper activeStep={statusCode} orientation="vertical">
+        <Stepper activeStep={currentStep} orientation="vertical">
           {steps.map(label => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
               <StepContent>
-                <Typography>{message}</Typography>
+                <Typography>{currentMessage}</Typography>
               </StepContent>
             </Step>
           ))}
