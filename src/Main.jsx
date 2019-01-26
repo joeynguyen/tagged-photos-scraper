@@ -26,6 +26,7 @@ function Main({ logFileLocation, photosDownloadedCount, photosTotal, status }) {
   }
   return (
     <>
+      <StatusSteps status={status} />
       <h3>Current status: {message}</h3>
       <h3>Internal status: {statusInternal}</h3>
       <h3>Photos found: {photosTotal}</h3>
