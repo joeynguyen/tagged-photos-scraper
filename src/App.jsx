@@ -20,7 +20,7 @@ class App extends Component {
 
   state = {
     photosDownloadedCount: 0,
-    scraperStatusFriendly: {
+    scraperStatus: {
       // -1: 'ready', 0: 'crashed', 1-98: 'running', 99: 'failed', 100: 'complete'
       statusCode: -1,
       message: 'Ready',
@@ -30,8 +30,8 @@ class App extends Component {
   };
 
   componentDidMount() {
-    ipcRenderer.on('status-friendly', (event, status) => {
-      this.setState({ scraperStatusFriendly: status });
+    ipcRenderer.on('status', (event, status) => {
+      this.setState({ scraperStatus: status });
     });
 
     ipcRenderer.on('photos-found', (event, num) => {
@@ -53,7 +53,7 @@ class App extends Component {
   runScraper(username, password, userRequestedPhotoIndexStart, visualMode) {
     let photoStartIndex = 0;
     const {
-      scraperStatusFriendly: { statusCode },
+      scraperStatus: { statusCode },
       photosDownloadedCount,
     } = this.state;
 
@@ -87,13 +87,13 @@ class App extends Component {
     const {
       logFileLocation,
       photosDownloadedCount,
-      scraperStatusFriendly,
+      scraperStatus,
       totalPhotosCount,
     } = this.state;
     return (
       <>
         <ScraperSettings
-          statusFriendly={scraperStatusFriendly}
+          status={scraperStatus}
           startScraper={this.runScraper}
           stopScraper={this.stopScraper}
         />
@@ -101,7 +101,7 @@ class App extends Component {
           logFileLocation={logFileLocation}
           photosDownloadedCount={photosDownloadedCount}
           photosTotal={totalPhotosCount}
-          statusFriendly={scraperStatusFriendly}
+          status={scraperStatus}
         />
       </>
     );

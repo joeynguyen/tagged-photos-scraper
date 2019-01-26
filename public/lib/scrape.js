@@ -14,7 +14,7 @@ async function scrape(
   ipc,
   electronWindow
 ) {
-  ipc.send('status-friendly', {
+  ipc.send('status', {
     statusCode: 1,
     message: 'Started',
   });
@@ -42,7 +42,7 @@ async function scrape(
   // handle errors
   process.on('uncaughtException', async err => {
     log.error('process uncaughtException error', err);
-    ipc.send('status-friendly', {
+    ipc.send('status', {
       statusCode: 0,
       message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
     });
@@ -50,7 +50,7 @@ async function scrape(
   });
   page.on('pageerror', async err => {
     log.error('page uncaughtException error', err);
-    ipc.send('status-friendly', {
+    ipc.send('status', {
       statusCode: 0,
       message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
     });
@@ -58,7 +58,7 @@ async function scrape(
   });
   page.on('error', async err => {
     log.error('puppeteer page crash error', err);
-    ipc.send('status-friendly', {
+    ipc.send('status', {
       statusCode: 0,
       message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
     });
@@ -70,7 +70,7 @@ async function scrape(
   });
   ipcMain.on('stop-scraper', () => {
     log.warn('puppeteer received a stop request');
-    ipc.send('status-friendly', {
+    ipc.send('status', {
       statusCode: 99,
       message:
         'The scraper was stopped. If you would like to continue downloading where you left off, click the button below.',
@@ -82,7 +82,7 @@ async function scrape(
 
   // navigate to Facebook
   log.info('Going to facebook.com');
-  ipc.send('status-friendly', {
+  ipc.send('status', {
     statusCode: 2,
     message: 'Going to facebook.com',
   });
@@ -90,7 +90,7 @@ async function scrape(
 
   // Submit login
   log.info('Logging in');
-  ipc.send('status-friendly', {
+  ipc.send('status', {
     statusCode: 3,
     message: 'Logging in',
   });
@@ -118,7 +118,7 @@ async function scrape(
         })
         .then(async () => {
           log.error('login credentails incorrect');
-          ipc.send('status-friendly', {
+          ipc.send('status', {
             statusCode: 99,
             message: 'The login credentials are incorrect',
           });
@@ -128,14 +128,14 @@ async function scrape(
             .waitForSelector('[href^="/reg/"]', { timeout: 2000 })
             .then(async () => {
               log.error('login credentails incorrect');
-              ipc.send('status-friendly', {
+              ipc.send('status', {
                 statusCode: 99,
                 message: "That account doesn't exist",
               });
             })
             .catch(async () => {
               log.error("Couldn't find profile_icon selector on homepage");
-              ipc.send('status-friendly', {
+              ipc.send('status', {
                 statusCode: 99,
                 message:
                   'The page is missing a required, expected link.  Please let the developer of this app know about this issue.',
@@ -152,7 +152,7 @@ async function scrape(
 
   // Go to Profile page from Homepage
   log.info('Going to your profile page');
-  ipc.send('status-friendly', {
+  ipc.send('status', {
     statusCode: 4,
     message: 'Going to your profile page',
   });
@@ -163,7 +163,7 @@ async function scrape(
 
   // Go to "Photos" page
   log.info('Going to "Photos" page');
-  ipc.send('status-friendly', {
+  ipc.send('status', {
     statusCode: 5,
     message: 'Going to "Photos" page',
   });
@@ -176,8 +176,8 @@ async function scrape(
 
   // scrape photos
   log.info('Searching for photos');
-  ipc.send('status-friendly', 'Searching for photos');
-  ipc.send('status-friendly', {
+  ipc.send('status', 'Searching for photos');
+  ipc.send('status', {
     statusCode: 5,
     message: 'Going to "Photos" page',
   });
@@ -186,7 +186,7 @@ async function scrape(
     log.error(
       "The number of the photo the user requested to start at was higher than the number of the user's tagged photos"
     );
-    ipc.send('status-friendly', {
+    ipc.send('status', {
       statusCode: 99,
       message:
         'The number of the photo you requested to start at was higher than the number of existing photos',
@@ -201,7 +201,7 @@ async function scrape(
       electronWindow
     );
     await page.waitFor(1000);
-    ipc.send('status-friendly', {
+    ipc.send('status', {
       statusCode: 100,
       message: 'Finished downloading all tagged photos!',
     });

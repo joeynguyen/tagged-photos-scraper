@@ -44,7 +44,7 @@ const settingsSchema = yup.object().shape({
 
 class ScraperSettings extends Component {
   static propTypes = {
-    statusFriendly: PropTypes.shape({
+    status: PropTypes.shape({
       statusCode: PropTypes.number.isRequired,
       message: PropTypes.string.isRequired,
     }).isRequired,
@@ -62,7 +62,7 @@ class ScraperSettings extends Component {
 
   render() {
     const {
-      statusFriendly: { statusCode },
+      status: { statusCode },
       startScraper,
       stopScraper,
     } = this.props;

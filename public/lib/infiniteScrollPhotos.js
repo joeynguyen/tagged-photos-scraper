@@ -10,7 +10,7 @@ async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
     let previousHeight = 0;
     let currentHeight = await page.evaluate('document.body.scrollHeight');
 
-    ipc.send('status-friendly', 'Scrolling down the page to load more photos');
+    ipc.send('status', 'Scrolling down the page to load more photos');
     // keep scrolling to the bottom of the page until there are no more photos to load
     while (previousHeight < currentHeight) {
       previousHeight = currentHeight;
@@ -31,7 +31,7 @@ async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
     // since there aren't any more photos left to load
     // do nothing with the error
     log.info("Can't scroll down anymore");
-    ipc.send('status-friendly', 'Found all of your tagged photos');
+    ipc.send('status', 'Found all of your tagged photos');
   }
 
   $taggedPhotos = await page.$$(photosQuerySelector);

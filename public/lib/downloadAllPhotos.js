@@ -10,7 +10,7 @@ async function downloadAllPhotos(
   ipc,
   electronWindow
 ) {
-  ipc.send('status-friendly', {
+  ipc.send('status', {
     statusCode: 6,
     message: 'Downloading photos...',
   });
@@ -55,7 +55,7 @@ async function downloadAllPhotos(
       $photo.dispose();
     } catch (e) {
       log.error(`error: ${e}`);
-      ipc.send('status-friendly', {
+      ipc.send('status', {
         statusCode: 99,
         message:
           'Downloading failed before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.',

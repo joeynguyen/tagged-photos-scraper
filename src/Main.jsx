@@ -1,14 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function Main({
-  logFileLocation,
-  photosDownloadedCount,
-  photosTotal,
-  statusFriendly,
-}) {
+function Main({ logFileLocation, photosDownloadedCount, photosTotal, status }) {
   let statusInternal;
-  const { message, statusCode } = statusFriendly;
+  const { message, statusCode } = status;
   switch (true) {
     case statusCode === -1:
       statusInternal = 'ready';
@@ -47,7 +42,7 @@ Main.propTypes = {
   logFileLocation: PropTypes.string.isRequired,
   photosDownloadedCount: PropTypes.number.isRequired,
   photosTotal: PropTypes.number.isRequired,
-  statusFriendly: PropTypes.shape({
+  status: PropTypes.shape({
     statusCode: PropTypes.number.isRequired,
     message: PropTypes.string.isRequired,
   }).isRequired,

@@ -18,7 +18,7 @@ function downloadFile(url, filename, iter, page, ipc, electronWindow) {
         1} before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.`;
       log.info(errMessage);
       log.error('error', err);
-      ipc.send('status-friendly', {
+      ipc.send('status', {
         statusCode: 0,
         message: errMessage,
       });
