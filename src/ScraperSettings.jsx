@@ -65,7 +65,7 @@ class ScraperSettings extends Component {
   };
 
   render() {
-    const { classes, statusInternal, startScraper, stopScraper } = this.props;
+    const { statusInternal, startScraper, stopScraper } = this.props;
     const buttonText =
       statusInternal === 'crashed' || statusInternal === 'failed'
         ? 'Retry'
@@ -101,6 +101,8 @@ class ScraperSettings extends Component {
                     <TextField
                       error={
                         form.touched[field.name] && form.errors[field.name]
+                          ? true
+                          : false
                       }
                       helperText={
                         form.touched[field.name] && form.errors[field.name]
@@ -132,6 +134,8 @@ class ScraperSettings extends Component {
                       {...field}
                       error={
                         form.touched[field.name] && form.errors[field.name]
+                          ? true
+                          : false
                       }
                       helperText={
                         form.touched[field.name] && form.errors[field.name]
@@ -193,6 +197,8 @@ class ScraperSettings extends Component {
                       {...field}
                       error={
                         form.touched[field.name] && form.errors[field.name]
+                          ? true
+                          : false
                       }
                       helperText={
                         form.touched[field.name] && form.errors[field.name]

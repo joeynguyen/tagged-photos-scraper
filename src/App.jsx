@@ -20,7 +20,10 @@ class App extends Component {
 
   state = {
     photosDownloadedCount: 0,
-    scraperStatusFriendly: 'Ready',
+    scraperStatusFriendly: {
+      statusCode: -1,
+      message: 'Ready',
+    },
     scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', 'complete']
     totalPhotosCount: 0,
     logFileLocation: '',
@@ -102,7 +105,6 @@ class App extends Component {
           photosDownloadedCount={photosDownloadedCount}
           photosTotal={totalPhotosCount}
           statusFriendly={scraperStatusFriendly}
-          statusInternal={scraperStatusInternal}
         />
       </>
     );

@@ -121,9 +121,7 @@ ipcMain.on(
     };
 
     log.info(`Starting scraper at photoStartIndex: ${photoStartIndex}`);
-    event.sender.send('status-friendly', 'Started');
-    event.sender.send('status-internal', 'running');
-    event.sender.send('log-file-location', log.transports.file.findLogPath());
+
     scrape(
       username,
       password,

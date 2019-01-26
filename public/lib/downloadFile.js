@@ -13,14 +13,14 @@ function downloadFile(url, filename, iter, page, ipc, electronWindow) {
       log.info(`${photosDownloaded} downloaded`);
       ipc.send('photos-downloaded', photosDownloaded);
     })
-    .catch(err => {
+    .catch(async err => {
       const errMessage = `Downloading failed at photo #${iter +
         1} before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.`;
       log.info(errMessage);
       log.error('error', err);
       ipc.send('status-friendly', errMessage);
       ipc.send('status-internal', 'crashed');
-      page.close();
+      await page.close();
     });
 }
 
