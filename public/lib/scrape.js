@@ -19,7 +19,7 @@ async function scrape(
 ) {
   ipc.send('status', {
     statusCode: 1,
-    message: 'Started',
+    message: 'Hold on to your butts!',
   });
   ipc.send('log-file-location', log.transports.file.findLogPath());
   const { enabled, width, height } = visualModeOptions;
@@ -86,14 +86,16 @@ async function scrape(
   log.info('Going to facebook.com');
   ipc.send('status', {
     statusCode: 2,
-    message: 'Going to facebook.com',
+    message: 'Navigating to the website...',
   });
   await page.goto('https://m.facebook.com').catch(async err => {
     log.error(`Error: ${err}`);
     ipc.send('status', {
       statusCode: 99,
       message:
-        'Error navigating to https://m.facebook.com.  Is there a problem with your Internet connection or is there something preventing you from going to this site in your browser?',
+        'Error navigating to https://m.facebook.com.  Is there a problem ' +
+        'with your Internet connection or is there something preventing ' +
+        'you from going to this site in your browser?',
     });
     await page.close();
   });
@@ -102,7 +104,8 @@ async function scrape(
   log.info('Logging in');
   ipc.send('status', {
     statusCode: 3,
-    message: 'Logging in',
+    message:
+      'This will only work if you provided the correct email and password.',
   });
   await page.focus('input[name="email"]');
   await page.keyboard.type(username);
@@ -148,7 +151,9 @@ async function scrape(
               ipc.send('status', {
                 statusCode: 99,
                 message:
-                  'The page is missing a required, expected link.  Please let the developer of this app know about this issue.',
+                  'The page is missing an expected link. Facebook may ' +
+                  'have changed their layout. Please let the developer ' +
+                  'of this tool know about this issue.',
               });
             })
             .finally(async () => {
@@ -164,7 +169,7 @@ async function scrape(
   log.info('Going to your profile page');
   ipc.send('status', {
     statusCode: 4,
-    message: 'Going to your profile page',
+    message: 'We need to go here to get to your Photos page.',
   });
   const $profileLink = await page.waitForSelector('#MComposer a', {
     timeout: 10000,
@@ -175,7 +180,7 @@ async function scrape(
   log.info('Going to "Photos" page');
   ipc.send('status', {
     statusCode: 5,
-    message: 'Going to "Photos" page',
+    message: 'How else would we find your photos?',
   });
   await page.waitForSelector('[href^="/profile/wizard/refresher"]', {
     timeout: 5000,
@@ -188,17 +193,19 @@ async function scrape(
   log.info('Searching for photos');
   ipc.send('status', {
     statusCode: 6,
-    message: 'Searching for photos',
+    message: 'Now for the important stuff.',
   });
   const $taggedPhotos = await infiniteScrollPhotos(page, ipc);
   if (photoStartIndex > $taggedPhotos.length) {
     log.error(
-      "The number of the photo the user requested to start at was higher than the number of the user's tagged photos"
+      'The number of the photo the user requested to start at was higher ' +
+        "than the number of the user's tagged photos"
     );
     ipc.send('status', {
       statusCode: 99,
       message:
-        'The number of the photo you requested to start at was higher than the number of existing photos',
+        'The number of the photo you requested to start at was ' +
+        'higher than the number of tagged photos found',
     });
   } else {
     await downloadAllPhotos(
@@ -212,7 +219,7 @@ async function scrape(
     await page.waitFor(1000);
     ipc.send('status', {
       statusCode: 100,
-      message: 'Finished downloading all tagged photos!',
+      message: 'Congratulations! All photos have been downloaded successfully!',
     });
   }
 

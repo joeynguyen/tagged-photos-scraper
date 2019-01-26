@@ -78,9 +78,7 @@ export default class StatusSteps extends Component {
         </Stepper>
         {isSuccess && (
           <Paper square elevation={0}>
-            <Typography>
-              Congratulations! All photos have been downloaded successfully!
-            </Typography>
+            <Typography>{message}</Typography>
           </Paper>
         )}
       </div>
