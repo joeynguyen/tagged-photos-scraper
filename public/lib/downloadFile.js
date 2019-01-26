@@ -16,10 +16,10 @@ function downloadFile(url, filename, iter, page, ipc, electronWindow) {
     .catch(async err => {
       const errMessage = `Downloading failed at photo #${iter +
         1} before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.`;
-      log.info(errMessage);
+      log.error(errMessage);
       log.error('error', err);
       ipc.send('status', {
-        statusCode: 0,
+        statusCode: 99,
         message: errMessage,
       });
       await page.close();

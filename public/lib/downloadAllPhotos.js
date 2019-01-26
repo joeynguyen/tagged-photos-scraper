@@ -11,7 +11,7 @@ async function downloadAllPhotos(
   electronWindow
 ) {
   ipc.send('status', {
-    statusCode: 6,
+    statusCode: 9,
     message: 'Downloading photos...',
   });
 

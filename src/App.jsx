@@ -21,8 +21,8 @@ class App extends Component {
   state = {
     photosDownloadedCount: 0,
     scraperStatus: {
-      // -1: 'ready', 0: 'crashed', 1-98: 'running', 99: 'failed', 100: 'complete'
-      statusCode: -1,
+      // 0: 'ready', 1-97: 'running', 98: 'crashed', 99: 'failed', 100: 'complete'
+      statusCode: 0,
       message: 'Ready',
     },
     totalPhotosCount: 0,
@@ -61,7 +61,7 @@ class App extends Component {
       // non-developers start counting at 1, not 0
       photoStartIndex = userRequestedPhotoIndexStart - 1;
     } else if (
-      (statusCode === 0 || statusCode === 99) &&
+      (statusCode === 98 || statusCode === 99) &&
       photosDownloadedCount !== 0
     ) {
       // index starts at 0 so it's 1 behind the number downloaded

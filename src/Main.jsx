@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import StatusSteps from './StatusSteps';
 
 function Main({ logFileLocation, photosDownloadedCount, photosTotal, status }) {
   let statusInternal;
   const { message, statusCode } = status;
   switch (true) {
-    case statusCode === -1:
+    case statusCode === 0:
       statusInternal = 'ready';
       break;
-    case statusCode === 0:
-      statusInternal = 'crashed';
-      break;
-    case statusCode > 0 && statusCode < 99:
+    case statusCode > 0 && statusCode < 98:
       statusInternal = 'running';
+      break;
+    case statusCode === 98:
+      statusInternal = 'crashed';
       break;
     case statusCode === 99:
       statusInternal = 'failed';

@@ -67,7 +67,7 @@ class ScraperSettings extends Component {
       stopScraper,
     } = this.props;
     const buttonText =
-      statusCode === 0 || statusCode === 99 ? 'Retry' : 'Start';
+      statusCode === 98 || statusCode === 99 ? 'Retry' : 'Start';
     return (
       <Formik
         initialValues={initialValues}
@@ -227,12 +227,12 @@ class ScraperSettings extends Component {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  disabled={statusCode > 0 && statusCode < 99}
+                  disabled={statusCode > 0 && statusCode < 98}
                 >
                   {buttonText}
                 </Button>
               )}
-              {statusCode > 0 && statusCode < 99 && (
+              {statusCode > 0 && statusCode < 98 && (
                 <Button
                   type="button"
                   variant="contained"

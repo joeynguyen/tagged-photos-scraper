@@ -43,7 +43,7 @@ async function scrape(
   process.on('uncaughtException', async err => {
     log.error('process uncaughtException error', err);
     ipc.send('status', {
-      statusCode: 0,
+      statusCode: 98,
       message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
     });
     await page.close();
@@ -51,7 +51,7 @@ async function scrape(
   page.on('pageerror', async err => {
     log.error('page uncaughtException error', err);
     ipc.send('status', {
-      statusCode: 0,
+      statusCode: 98,
       message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
     });
     await page.close();
@@ -59,7 +59,7 @@ async function scrape(
   page.on('error', async err => {
     log.error('puppeteer page crash error', err);
     ipc.send('status', {
-      statusCode: 0,
+      statusCode: 98,
       message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
     });
     await page.close();
@@ -176,10 +176,9 @@ async function scrape(
 
   // scrape photos
   log.info('Searching for photos');
-  ipc.send('status', 'Searching for photos');
   ipc.send('status', {
-    statusCode: 5,
-    message: 'Going to "Photos" page',
+    statusCode: 6,
+    message: 'Searching for photos',
   });
   const $taggedPhotos = await infiniteScrollPhotos(page, ipc);
   if (photoStartIndex > $taggedPhotos.length) {
