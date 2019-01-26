@@ -90,14 +90,9 @@ class ScraperSettings extends Component {
         }}
       >
         <Form>
-          <Grid
-            container
-            className={classes.root}
-            spacing={24}
-            direction="column"
-            alignItems="baseline"
-          >
-            <Grid item xs={12}>
+          <Grid container>
+            <Grid item xs />
+            <Grid item xs={8} sm={4} md={3}>
               <Field
                 type="text"
                 name="email"
@@ -116,6 +111,8 @@ class ScraperSettings extends Component {
                       label="Email"
                       margin="normal"
                       variant="outlined"
+                      style={{ marginBottom: '20px' }}
+                      fullWidth
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -127,9 +124,6 @@ class ScraperSettings extends Component {
                   );
                 }}
               />
-            </Grid>
-
-            <Grid item xs={12}>
               <Field
                 name="password"
                 render={({ field, form }) => {
@@ -146,6 +140,8 @@ class ScraperSettings extends Component {
                       variant="outlined"
                       type={this.state.showPassword ? 'text' : 'password'}
                       label="Password"
+                      style={{ marginBottom: '5px' }}
+                      fullWidth
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -171,9 +167,6 @@ class ScraperSettings extends Component {
                   );
                 }}
               />
-            </Grid>
-
-            <Grid item xs={12}>
               <Field
                 name="visualMode"
                 render={({ field, form }) => {
@@ -191,9 +184,6 @@ class ScraperSettings extends Component {
                   );
                 }}
               />
-            </Grid>
-
-            <Grid item xs={12}>
               <Field
                 type="number"
                 name="userRequestedPhotoIndexStart"
@@ -213,6 +203,8 @@ class ScraperSettings extends Component {
                       placeholder="1"
                       margin="normal"
                       variant="outlined"
+                      style={{ marginBottom: '20px' }}
+                      fullWidth
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -224,9 +216,6 @@ class ScraperSettings extends Component {
                   );
                 }}
               />
-            </Grid>
-
-            <Grid item xs={12}>
               {statusInternal === 'complete' ? (
                 <h2>Complete!</h2>
               ) : (
@@ -250,6 +239,7 @@ class ScraperSettings extends Component {
                 </Button>
               )}
             </Grid>
+            <Grid item xs />
           </Grid>
         </Form>
       </Formik>
