@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Main from './Main';
 import ScraperSettings from './ScraperSettings';
+import StatusSteps from './StatusSteps';
 
 const { ipcRenderer } = window.require('electron');
 const log = window.require('electron-log');
@@ -96,6 +97,11 @@ class App extends Component {
           status={scraperStatus}
           startScraper={this.runScraper}
           stopScraper={this.stopScraper}
+        />
+        <StatusSteps
+          photosFound={totalPhotosCount}
+          photosDownloaded={photosDownloadedCount}
+          status={scraperStatus}
         />
         <Main
           logFileLocation={logFileLocation}
