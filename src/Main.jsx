@@ -9,7 +9,7 @@ function Main({ logFileLocation, photosDownloadedCount, photosTotal, status }) {
     case statusCode === 0:
       statusInternal = 'ready';
       break;
-    case statusCode > 0 && statusCode < 98:
+    case statusCode < 98:
       statusInternal = 'running';
       break;
     case statusCode === 98:
