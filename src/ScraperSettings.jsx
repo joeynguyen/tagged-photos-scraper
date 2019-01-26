@@ -157,9 +157,9 @@ class ScraperSettings extends Component {
                               onClick={this.handleClickShowPassword}
                             >
                               {this.state.showPassword ? (
-                                <VisibilityOff />
-                              ) : (
                                 <Visibility />
+                              ) : (
+                                <VisibilityOff />
                               )}
                             </IconButton>
                           </InputAdornment>
