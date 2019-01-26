@@ -55,9 +55,20 @@ export default class StatusSteps extends Component {
   render() {
     const steps = getSteps();
     const { currentStep, currentMessage } = this.state;
-    const { message, statusCode } = this.props.status;
+    const {
+      photosDownloaded,
+      photosFound,
+      status: { message, statusCode },
+    } = this.props;
     const hasError = statusCode === 98 || statusCode === 99;
-    const isSuccess = statusCode === 100;
+    const isSuccessful = statusCode === 100;
+    let additionalInfo = currentMessage;
+    if (currentStep === 8) {
+      additionalInfo = `${photosFound} photos found.`;
+    }
+    if (currentStep === 9) {
+      additionalInfo = `${currentMessage} Downloaded photo #${photosDownloaded} of ${photosFound} photos found.`;
+    }
 
     return (
       <div style={{ width: '90%' }}>
@@ -69,14 +80,14 @@ export default class StatusSteps extends Component {
               </StepLabel>
               <StepContent>
                 <Typography color={hasError ? 'error' : 'default'}>
-                  {currentMessage}
+                  {additionalInfo}
                 </Typography>
                 {hasError && <Typography color="error">{message}</Typography>}
               </StepContent>
             </Step>
           ))}
         </Stepper>
-        {isSuccess && (
+        {isSuccessful && (
           <Paper square elevation={0}>
             <Typography>{message}</Typography>
           </Paper>

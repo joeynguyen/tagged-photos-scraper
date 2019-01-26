@@ -182,7 +182,7 @@ async function scrape(
     statusCode: 5,
     message: 'How else would we find your photos?',
   });
-  await page.waitForSelector('[href^="/profile/wizard/refresher"]', {
+  await page.waitForSelector('#timelineBody', {
     timeout: 5000,
   });
   const userProfileUrl = await page.url();

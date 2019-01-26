@@ -221,7 +221,7 @@ class ScraperSettings extends Component {
                 }}
               />
               {statusCode === 100 ? (
-                <h2>Complete!</h2>
+                <h2>Success!</h2>
               ) : (
                 <Button
                   variant="contained"
