@@ -4,7 +4,6 @@ import { Formik, Form, Field } from 'formik';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Switch from '@material-ui/core/Switch';
@@ -88,163 +87,153 @@ class ScraperSettings extends Component {
         }}
       >
         <Form>
-          <Grid container>
-            <Grid item xs />
-            <Grid item xs={8} sm={4} md={3}>
-              <Field
-                type="text"
-                name="email"
-                render={({ field, form }) => {
-                  return (
-                    <TextField
-                      error={
-                        form.touched[field.name] && form.errors[field.name]
-                          ? true
-                          : false
-                      }
-                      helperText={
-                        form.touched[field.name] && form.errors[field.name]
-                      }
-                      {...field}
-                      id={field.name}
-                      type="text"
-                      label="Email"
-                      margin="normal"
-                      variant="outlined"
-                      style={{ marginBottom: '20px' }}
-                      fullWidth
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Email />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  );
-                }}
-              />
-              <Field
-                name="password"
-                render={({ field, form }) => {
-                  return (
-                    <TextField
-                      {...field}
-                      error={
-                        form.touched[field.name] && form.errors[field.name]
-                          ? true
-                          : false
-                      }
-                      helperText={
-                        form.touched[field.name] && form.errors[field.name]
-                      }
-                      id={field.name}
-                      variant="outlined"
-                      type={this.state.showPassword ? 'text' : 'password'}
-                      label="Password"
-                      style={{ marginBottom: '5px' }}
-                      fullWidth
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <LockOpen />
-                          </InputAdornment>
-                        ),
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="Toggle password visibility"
-                              onClick={this.handleClickShowPassword}
-                            >
-                              {this.state.showPassword ? (
-                                <Visibility />
-                              ) : (
-                                <VisibilityOff />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  );
-                }}
-              />
-              <Field
-                name="visualMode"
-                render={({ field, form }) => {
-                  return (
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          {...field}
-                          checked={field.value}
-                          color="primary"
-                        />
-                      }
-                      label="Visual Mode"
-                    />
-                  );
-                }}
-              />
-              <Field
-                type="number"
-                name="userRequestedPhotoIndexStart"
-                render={({ field, form }) => {
-                  return (
-                    <TextField
-                      {...field}
-                      error={
-                        form.touched[field.name] && form.errors[field.name]
-                          ? true
-                          : false
-                      }
-                      helperText={
-                        form.touched[field.name] && form.errors[field.name]
-                      }
-                      id={field.name}
-                      type="number"
-                      label="Starting Photo Number"
-                      placeholder="1"
-                      margin="normal"
-                      variant="outlined"
-                      style={{ marginBottom: '20px' }}
-                      fullWidth
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Photo />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  );
-                }}
-              />
-              {statusCode === 100 ? (
-                <h2>Success!</h2>
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={statusCode > 0 && statusCode < 98}
-                >
-                  {buttonText}
-                </Button>
-              )}
-              {statusCode > 0 && statusCode < 98 && (
-                <Button
-                  type="button"
-                  variant="contained"
-                  color="secondary"
-                  onClick={stopScraper}
-                >
-                  Stop Scraper
-                </Button>
-              )}
-            </Grid>
-            <Grid item xs />
-          </Grid>
+          <Field
+            type="text"
+            name="email"
+            render={({ field, form }) => {
+              return (
+                <TextField
+                  error={
+                    form.touched[field.name] && form.errors[field.name]
+                      ? true
+                      : false
+                  }
+                  helperText={
+                    form.touched[field.name] && form.errors[field.name]
+                  }
+                  {...field}
+                  id={field.name}
+                  type="text"
+                  label="Email"
+                  margin="normal"
+                  variant="outlined"
+                  style={{ marginBottom: '20px' }}
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Email />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              );
+            }}
+          />
+          <Field
+            name="password"
+            render={({ field, form }) => {
+              return (
+                <TextField
+                  {...field}
+                  error={
+                    form.touched[field.name] && form.errors[field.name]
+                      ? true
+                      : false
+                  }
+                  helperText={
+                    form.touched[field.name] && form.errors[field.name]
+                  }
+                  id={field.name}
+                  variant="outlined"
+                  type={this.state.showPassword ? 'text' : 'password'}
+                  label="Password"
+                  style={{ marginBottom: '5px' }}
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockOpen />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="Toggle password visibility"
+                          onClick={this.handleClickShowPassword}
+                        >
+                          {this.state.showPassword ? (
+                            <Visibility />
+                          ) : (
+                            <VisibilityOff />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              );
+            }}
+          />
+          <Field
+            name="visualMode"
+            render={({ field, form }) => {
+              return (
+                <FormControlLabel
+                  control={
+                    <Switch {...field} checked={field.value} color="primary" />
+                  }
+                  label="Visual Mode"
+                />
+              );
+            }}
+          />
+          <Field
+            type="number"
+            name="userRequestedPhotoIndexStart"
+            render={({ field, form }) => {
+              return (
+                <TextField
+                  {...field}
+                  error={
+                    form.touched[field.name] && form.errors[field.name]
+                      ? true
+                      : false
+                  }
+                  helperText={
+                    form.touched[field.name] && form.errors[field.name]
+                  }
+                  id={field.name}
+                  type="number"
+                  label="Starting Photo Number"
+                  placeholder="1"
+                  margin="normal"
+                  variant="outlined"
+                  style={{ marginBottom: '20px' }}
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Photo />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              );
+            }}
+          />
+          {statusCode === 100 ? (
+            <h2>Success!</h2>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={statusCode > 0 && statusCode < 98}
+            >
+              {buttonText}
+            </Button>
+          )}
+          {statusCode > 0 && statusCode < 98 && (
+            <Button
+              type="button"
+              variant="contained"
+              color="secondary"
+              onClick={stopScraper}
+            >
+              Stop Scraper
+            </Button>
+          )}
         </Form>
       </Formik>
     );

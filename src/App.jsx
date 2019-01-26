@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import './App.css';
+import Grid from '@material-ui/core/Grid';
 import Main from './Main';
 import ScraperSettings from './ScraperSettings';
 import StatusSteps from './StatusSteps';
+import 'typeface-roboto'; // used by material-ui
 
 const { ipcRenderer } = window.require('electron');
 const log = window.require('electron-log');
@@ -92,24 +93,32 @@ class App extends Component {
       totalPhotosCount,
     } = this.state;
     return (
-      <>
-        <ScraperSettings
-          status={scraperStatus}
-          startScraper={this.runScraper}
-          stopScraper={this.stopScraper}
-        />
-        <StatusSteps
-          photosFound={totalPhotosCount}
-          photosDownloaded={photosDownloadedCount}
-          status={scraperStatus}
-        />
-        <Main
-          logFileLocation={logFileLocation}
-          photosDownloadedCount={photosDownloadedCount}
-          photosTotal={totalPhotosCount}
-          status={scraperStatus}
-        />
-      </>
+      <Grid container>
+        <Grid item xs={4}>
+          <StatusSteps
+            photosFound={totalPhotosCount}
+            photosDownloaded={photosDownloadedCount}
+            status={scraperStatus}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <ScraperSettings
+            status={scraperStatus}
+            startScraper={this.runScraper}
+            stopScraper={this.stopScraper}
+          />
+        </Grid>
+        <Grid item xs={1} />
+        <Grid item xs={4}>
+          <Main
+            logFileLocation={logFileLocation}
+            photosDownloadedCount={photosDownloadedCount}
+            photosTotal={totalPhotosCount}
+            status={scraperStatus}
+          />
+        </Grid>
+        <Grid item xs />
+      </Grid>
     );
   }
 }
