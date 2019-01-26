@@ -18,7 +18,6 @@ async function scrape(
     statusCode: 1,
     message: 'Started',
   });
-  ipc.send('status-internal', 'running');
   ipc.send('log-file-location', log.transports.file.findLogPath());
   const { enabled, width, height } = visualModeOptions;
   // start puppeteer
@@ -47,7 +46,6 @@ async function scrape(
       statusCode: 0,
       message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
     });
-    ipc.send('status-internal', 'crashed');
     await page.close();
   });
   page.on('pageerror', async err => {
@@ -56,7 +54,6 @@ async function scrape(
       statusCode: 0,
       message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
     });
-    ipc.send('status-internal', 'crashed');
     await page.close();
   });
   page.on('error', async err => {
@@ -65,7 +62,6 @@ async function scrape(
       statusCode: 0,
       message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
     });
-    ipc.send('status-internal', 'crashed');
     await page.close();
   });
   browser.on('disconnected', async () => {
@@ -79,7 +75,6 @@ async function scrape(
       message:
         'The scraper was stopped. If you would like to continue downloading where you left off, click the button below.',
     });
-    ipc.send('status-internal', 'failed');
     // don't use async/await because we don't want to wait for other processes
     // immediately shut down puppeteer
     page.close();
@@ -123,7 +118,6 @@ async function scrape(
         })
         .then(async () => {
           log.error('login credentails incorrect');
-          ipc.send('status-internal', 'failed');
           ipc.send('status-friendly', {
             statusCode: 99,
             message: 'The login credentials are incorrect',
@@ -134,7 +128,6 @@ async function scrape(
             .waitForSelector('[href^="/reg/"]', { timeout: 2000 })
             .then(async () => {
               log.error('login credentails incorrect');
-              ipc.send('status-internal', 'failed');
               ipc.send('status-friendly', {
                 statusCode: 99,
                 message: "That account doesn't exist",
@@ -142,7 +135,6 @@ async function scrape(
             })
             .catch(async () => {
               log.error("Couldn't find profile_icon selector on homepage");
-              ipc.send('status-internal', 'failed');
               ipc.send('status-friendly', {
                 statusCode: 99,
                 message:
@@ -194,7 +186,6 @@ async function scrape(
     log.error(
       "The number of the photo the user requested to start at was higher than the number of the user's tagged photos"
     );
-    ipc.send('status-internal', 'failed');
     ipc.send('status-friendly', {
       statusCode: 99,
       message:
@@ -214,7 +205,6 @@ async function scrape(
       statusCode: 100,
       message: 'Finished downloading all tagged photos!',
     });
-    ipc.send('status-internal', 'complete');
   }
 
   // stop puppeteer

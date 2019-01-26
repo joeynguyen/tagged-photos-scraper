@@ -25,7 +25,6 @@ class App extends Component {
       statusCode: -1,
       message: 'Ready',
     },
-    scraperStatusInternal: 'ready', // one of ['ready', 'running', 'crashed', 'failed', 'complete']
     totalPhotosCount: 0,
     logFileLocation: '',
   };
@@ -33,10 +32,6 @@ class App extends Component {
   componentDidMount() {
     ipcRenderer.on('status-friendly', (event, status) => {
       this.setState({ scraperStatusFriendly: status });
-    });
-
-    ipcRenderer.on('status-internal', (event, status) => {
-      this.setState({ scraperStatusInternal: status });
     });
 
     ipcRenderer.on('photos-found', (event, num) => {
@@ -57,14 +52,16 @@ class App extends Component {
 
   runScraper(username, password, userRequestedPhotoIndexStart, visualMode) {
     let photoStartIndex = 0;
-    const { scraperStatusInternal, photosDownloadedCount } = this.state;
+    const {
+      scraperStatusFriendly: { statusCode },
+      photosDownloadedCount,
+    } = this.state;
 
     if (userRequestedPhotoIndexStart) {
       // non-developers start counting at 1, not 0
       photoStartIndex = userRequestedPhotoIndexStart - 1;
     } else if (
-      (scraperStatusInternal === 'crashed' ||
-        scraperStatusInternal === 'failed') &&
+      (statusCode === 0 || statusCode === 99) &&
       photosDownloadedCount !== 0
     ) {
       // index starts at 0 so it's 1 behind the number downloaded

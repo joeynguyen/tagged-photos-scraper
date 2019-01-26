@@ -10,7 +10,10 @@ async function downloadAllPhotos(
   ipc,
   electronWindow
 ) {
-  ipc.send('status-friendly', 'Downloading photos...');
+  ipc.send('status-friendly', {
+    statusCode: 6,
+    message: 'Downloading photos...',
+  });
 
   for (let i = photoStartIndex; i < $photos.length; i++) {
     try {
@@ -52,11 +55,11 @@ async function downloadAllPhotos(
       $photo.dispose();
     } catch (e) {
       log.error(`error: ${e}`);
-      ipc.send('status-internal', 'failed');
-      ipc.send(
-        'status-friendly',
-        'Downloading failed before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.'
-      );
+      ipc.send('status-friendly', {
+        statusCode: 99,
+        message:
+          'Downloading failed before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.',
+      });
       await page.close();
     }
   }
