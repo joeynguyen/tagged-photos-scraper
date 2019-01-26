@@ -86,7 +86,15 @@ async function scrape(
     statusCode: 2,
     message: 'Going to facebook.com',
   });
-  await page.goto('https://m.facebook.com');
+  await page.goto('https://m.facebook.com').catch(async err => {
+    log.error(`Error: ${err}`);
+    ipc.send('status', {
+      statusCode: 99,
+      message:
+        'Error navigating to https://m.facebook.com.  Is there a problem with your Internet connection or is there something preventing you from going to this site in your browser?',
+    });
+    await page.close();
+  });
 
   // Submit login
   log.info('Logging in');
