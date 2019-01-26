@@ -4,6 +4,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
+import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
 function getSteps() {
@@ -27,11 +28,13 @@ export default class StatusSteps extends Component {
     currentMessage: this.props.status.message,
   };
 
-  static getDerivedStateFromProps(props, state) {
-    // Any time the current user changes,
-    // Reset any parts of state that are tied to that user.
-    // In this simple example, that's just the email.
-    if (props.status.statusCode < 98) {
+  static getDerivedStateFromProps(props) {
+    // if the statusCode is not 98 (crashed) or 99 (failed),
+    // update the current step
+    const { statusCode } = props.status;
+    const hasError = statusCode === 98 || statusCode === 99;
+
+    if (!hasError) {
       return {
         currentStep: props.status.statusCode,
         currentMessage: props.status.message,
@@ -46,34 +49,40 @@ export default class StatusSteps extends Component {
       message: PropTypes.string.isRequired,
     }).isRequired,
     photosDownloaded: PropTypes.number.isRequired,
-    photosFound: PropTypes.func.isRequired,
+    photosFound: PropTypes.number.isRequired,
   };
 
   render() {
-    const { message } = this.props.status;
-    const { currentStep, currentMessage } = this.state;
     const steps = getSteps();
+    const { currentStep, currentMessage } = this.state;
+    const { message, statusCode } = this.props.status;
+    const hasError = statusCode === 98 || statusCode === 99;
+    const isSuccess = statusCode === 100;
 
     return (
       <div style={{ width: '90%' }}>
         <Stepper activeStep={currentStep} orientation="vertical">
-          {steps.map(label => (
+          {steps.map((label, index) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel error={index === currentStep && hasError}>
+                {label}
+              </StepLabel>
               <StepContent>
-                <Typography>{currentMessage}</Typography>
+                <Typography color={hasError ? 'error' : 'default'}>
+                  {currentMessage}
+                </Typography>
+                {hasError && <Typography color="error">{message}</Typography>}
               </StepContent>
             </Step>
           ))}
         </Stepper>
-        {/* {activeStep === steps.length && (
-          <Paper square elevation={0} className={classes.resetContainer}>
-            <Typography>All steps completed - you&apos;re finished</Typography>
-            <Button onClick={this.handleReset} className={classes.button}>
-              Reset
-            </Button>
+        {isSuccess && (
+          <Paper square elevation={0}>
+            <Typography>
+              Congratulations! All photos have been downloaded successfully!
+            </Typography>
           </Paper>
-        )} */}
+        )}
       </div>
     );
   }
