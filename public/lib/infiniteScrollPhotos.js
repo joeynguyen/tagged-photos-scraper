@@ -12,7 +12,11 @@ async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
 
     ipc.send('status', {
       statusCode: 7,
-      message: 'Scrolling down the page to load more photos',
+      message:
+        'Facebook.com uses a feature called infinite scrolling to load ' +
+        'additional photos as you scroll down the page. This tool imitates ' +
+        'that scrolling behavior so that it can trigger the loading of ' +
+        'additional photos.',
     });
     // keep scrolling to the bottom of the page until there are no more photos to load
     while (previousHeight < currentHeight) {

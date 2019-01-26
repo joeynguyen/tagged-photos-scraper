@@ -24,7 +24,7 @@ class App extends Component {
     scraperStatus: {
       // 0: 'ready', 1-97: 'running', 98: 'crashed', 99: 'failed', 100: 'complete'
       statusCode: 0,
-      message: 'Ready',
+      message: 'Fill out the form and click the Start/Retry  button to begin',
     },
     totalPhotosCount: 0,
     logFileLocation: '',

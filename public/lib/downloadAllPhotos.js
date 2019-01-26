@@ -1,6 +1,9 @@
 const log = require('electron-log');
 
 const downloadFile = require('./downloadFile.js');
+const RETRY_MESSAGE =
+  'If you would like to continue downloading ' +
+  'where you left off, click the "Retry" button.';
 
 async function downloadAllPhotos(
   photoStartIndex,
@@ -12,7 +15,8 @@ async function downloadAllPhotos(
 ) {
   ipc.send('status', {
     statusCode: 9,
-    message: 'Downloading photos...',
+    message:
+      'Getting the full quality version of your photos and downloading them.',
   });
 
   for (let i = photoStartIndex; i < $photos.length; i++) {
@@ -57,8 +61,7 @@ async function downloadAllPhotos(
       log.error(`error: ${e}`);
       ipc.send('status', {
         statusCode: 99,
-        message:
-          'Downloading failed before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.',
+        message: `Downloading failed before all photos were downloaded. ${RETRY_MESSAGE}`,
       });
       await page.close();
     }

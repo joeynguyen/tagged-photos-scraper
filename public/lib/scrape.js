@@ -5,6 +5,9 @@ const { TimeoutError } = require('puppeteer/Errors');
 
 const downloadAllPhotos = require('./downloadAllPhotos.js');
 const infiniteScrollPhotos = require('./infiniteScrollPhotos.js');
+const RETRY_MESSAGE =
+  'If you would like to continue downloading ' +
+  'where you left off, click the "Retry" button.';
 
 async function scrape(
   username,
@@ -44,7 +47,7 @@ async function scrape(
     log.error('process uncaughtException error', err);
     ipc.send('status', {
       statusCode: 98,
-      message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
+      message: `The scraper crashed unexpectedly with an error: ${err}. ${RETRY_MESSAGE}`,
     });
     await page.close();
   });
@@ -52,7 +55,7 @@ async function scrape(
     log.error('page uncaughtException error', err);
     ipc.send('status', {
       statusCode: 98,
-      message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
+      message: `The scraper crashed unexpectedly with an error: ${err}. ${RETRY_MESSAGE}`,
     });
     await page.close();
   });
@@ -60,7 +63,7 @@ async function scrape(
     log.error('puppeteer page crash error', err);
     ipc.send('status', {
       statusCode: 98,
-      message: `The scraper crashed unexpectedly with an error: ${err}. If you would like to continue downloading where you left off, click the button below.`,
+      message: `The scraper crashed unexpectedly with an error: ${err}. ${RETRY_MESSAGE}`,
     });
     await page.close();
   });
@@ -72,8 +75,7 @@ async function scrape(
     log.warn('puppeteer received a stop request');
     ipc.send('status', {
       statusCode: 99,
-      message:
-        'The scraper was stopped. If you would like to continue downloading where you left off, click the button below.',
+      message: `The scraper was stopped. ${RETRY_MESSAGE}`,
     });
     // don't use async/await because we don't want to wait for other processes
     // immediately shut down puppeteer

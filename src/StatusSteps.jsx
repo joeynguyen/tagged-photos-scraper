@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 
 function getSteps() {
   return [
-    'Ready to begin',
+    'Ready',
     'Starting up the scraping engine',
     'Going to facebook.com',
     'Logging into your account',

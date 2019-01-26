@@ -1,6 +1,9 @@
 const { app } = require('electron');
 const { download } = require('electron-dl');
 const log = require('electron-log');
+const RETRY_MESSAGE =
+  'If you would like to continue downloading ' +
+  'where you left off, click the "Retry" button.';
 
 function downloadFile(url, filename, iter, page, ipc, electronWindow) {
   download(electronWindow, url, {
@@ -15,7 +18,7 @@ function downloadFile(url, filename, iter, page, ipc, electronWindow) {
     })
     .catch(async err => {
       const errMessage = `Downloading failed at photo #${iter +
-        1} before all photos were downloaded. If you would like to continue from the last downloaded photo, click the button below.`;
+        1} before all photos were downloaded. ${RETRY_MESSAGE}`;
       log.error(errMessage);
       log.error('error', err);
       ipc.send('status', {
