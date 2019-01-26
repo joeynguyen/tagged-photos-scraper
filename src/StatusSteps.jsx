@@ -4,6 +4,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
+import Typography from '@material-ui/core/Typography';
 
 function getSteps() {
   return [
@@ -54,7 +55,7 @@ function StatusSteps({
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
             <StepContent>
-              {/* <Typography>{getStepContent(index)}</Typography> */}
+              <Typography>{message}</Typography>
             </StepContent>
           </Step>
         ))}
