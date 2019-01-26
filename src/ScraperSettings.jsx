@@ -23,7 +23,6 @@ const styles = theme => ({
     flexGrow: 1,
   },
 });
-
 const initialValues = {
   email: '',
   password: '',
@@ -45,13 +44,10 @@ const settingsSchema = yup.object().shape({
 
 class ScraperSettings extends Component {
   static propTypes = {
-    statusInternal: PropTypes.oneOf([
-      'ready',
-      'running',
-      'crashed',
-      'failed',
-      'complete',
-    ]).isRequired,
+    statusFriendly: PropTypes.shape({
+      statusCode: PropTypes.number.isRequired,
+      message: PropTypes.string.isRequired,
+    }).isRequired,
     startScraper: PropTypes.func.isRequired,
     stopScraper: PropTypes.func.isRequired,
   };
@@ -65,11 +61,13 @@ class ScraperSettings extends Component {
   };
 
   render() {
-    const { statusInternal, startScraper, stopScraper } = this.props;
+    const {
+      statusFriendly: { statusCode },
+      startScraper,
+      stopScraper,
+    } = this.props;
     const buttonText =
-      statusInternal === 'crashed' || statusInternal === 'failed'
-        ? 'Retry'
-        : 'Start';
+      statusCode === 0 || statusCode === 99 ? 'Retry' : 'Start';
     return (
       <Formik
         initialValues={initialValues}
@@ -222,19 +220,19 @@ class ScraperSettings extends Component {
                   );
                 }}
               />
-              {statusInternal === 'complete' ? (
+              {statusCode === 100 ? (
                 <h2>Complete!</h2>
               ) : (
                 <Button
                   variant="contained"
                   color="primary"
                   type="submit"
-                  disabled={statusInternal === 'running'}
+                  disabled={statusCode > 0 && statusCode < 99}
                 >
                   {buttonText}
                 </Button>
               )}
-              {statusInternal === 'running' && (
+              {statusCode > 0 && statusCode < 99 && (
                 <Button
                   type="button"
                   variant="contained"

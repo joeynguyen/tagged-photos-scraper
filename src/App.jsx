@@ -21,6 +21,7 @@ class App extends Component {
   state = {
     photosDownloadedCount: 0,
     scraperStatusFriendly: {
+      // -1: 'ready', 0: 'crashed', 1-98: 'running', 99: 'failed', 100: 'complete'
       statusCode: -1,
       message: 'Ready',
     },
@@ -89,14 +90,13 @@ class App extends Component {
     const {
       logFileLocation,
       photosDownloadedCount,
-      scraperStatusInternal,
       scraperStatusFriendly,
       totalPhotosCount,
     } = this.state;
     return (
       <>
         <ScraperSettings
-          statusInternal={scraperStatusInternal}
+          statusFriendly={scraperStatusFriendly}
           startScraper={this.runScraper}
           stopScraper={this.stopScraper}
         />
