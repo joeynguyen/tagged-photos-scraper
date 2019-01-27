@@ -125,6 +125,7 @@ class App extends Component {
             </Typography>
           </>
         )}
+        <div style={{ marginTop: '20px' }} />
         <Grid container>
           <Grid item xs={4}>
             <StatusSteps

@@ -171,10 +171,10 @@ class ScraperSettings extends Component {
             render={({ field }) => {
               return (
                 <Tooltip
+                  placement="right"
                   title="Allows you to see what this tool does behind
                   the scenes. Note that enabling this mode may decrease
                   stability and performance."
-                  placement="right"
                 >
                   <FormControlLabel
                     control={
@@ -195,32 +195,44 @@ class ScraperSettings extends Component {
             name="userRequestedPhotoIndexStart"
             render={({ field, form }) => {
               return (
-                <TextField
-                  {...field}
-                  error={
-                    form.touched[field.name] && form.errors[field.name]
-                      ? true
-                      : false
-                  }
-                  helperText={
-                    form.touched[field.name] && form.errors[field.name]
-                  }
-                  id={field.name}
-                  type="number"
-                  label="Starting Photo Number"
-                  placeholder="1"
-                  margin="normal"
-                  variant="outlined"
-                  style={{ marginBottom: '20px' }}
-                  fullWidth
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Photo />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                <Tooltip
+                  placement="bottom"
+                  title="By default, this tool downloads all of your tagged
+                  photos, starting with the first one it finds in your Photos
+                  page. However, you are free to make it start at whichever
+                  number you wish. One use case may be - if this program crashes
+                  while you're using it, you can check the highest number of
+                  the photos it downloaded in the 'tagged-photos-scraper' folder
+                  inside your computer's Downloads folder and begin downloading
+                  from that number."
+                >
+                  <TextField
+                    {...field}
+                    error={
+                      form.touched[field.name] && form.errors[field.name]
+                        ? true
+                        : false
+                    }
+                    helperText={
+                      form.touched[field.name] && form.errors[field.name]
+                    }
+                    id={field.name}
+                    type="number"
+                    label="Starting Photo Number (optional)"
+                    placeholder="1"
+                    margin="normal"
+                    variant="outlined"
+                    style={{ marginBottom: '20px' }}
+                    fullWidth
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Photo />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Tooltip>
               );
             }}
           />
