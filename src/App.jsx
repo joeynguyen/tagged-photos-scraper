@@ -142,14 +142,13 @@ class App extends Component {
             />
           </Grid>
           <Grid item xs={1} />
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Main
               downloadFolderLocation={downloadFolderLocation}
               openDownloadFolder={this.openDownloadFolder}
               logFileLocation={logFileLocation}
               photosDownloadedCount={photosDownloadedCount}
               photosTotal={totalPhotosCount}
-              status={scraperStatus}
             />
           </Grid>
         </Grid>
