@@ -22,6 +22,21 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
   },
+  htmlTooltip: {
+    backgroundColor: 'rgba(0, 0, 0, 0.90)',
+    color: theme.palette.common.white,
+    boxShadow: theme.shadows[1],
+    fontSize: theme.typography.pxToRem(13),
+    border: '1px solid #dadde9',
+  },
+  htmlTooltipSmall: {
+    backgroundColor: 'rgba(0, 0, 0, 0.90)',
+    color: theme.palette.common.white,
+    boxShadow: theme.shadows[1],
+    fontSize: theme.typography.pxToRem(13),
+    border: '1px solid #dadde9',
+    maxWidth: 230,
+  },
 });
 const initialValues = {
   email: '',
@@ -62,6 +77,7 @@ class ScraperSettings extends Component {
 
   render() {
     const {
+      classes,
       status: { statusCode },
       startScraper,
       stopScraper,
@@ -172,6 +188,9 @@ class ScraperSettings extends Component {
               return (
                 <Tooltip
                   placement="right"
+                  classes={{
+                    tooltip: classes.htmlTooltipSmall,
+                  }}
                   title="Allows you to see what this tool does behind
                   the scenes. Note that enabling this mode may decrease
                   stability and performance."
@@ -197,6 +216,9 @@ class ScraperSettings extends Component {
               return (
                 <Tooltip
                   placement="bottom"
+                  classes={{
+                    tooltip: classes.htmlTooltip,
+                  }}
                   title="By default, this tool downloads all of your tagged
                   photos, starting with the first one it finds in your Photos
                   page. However, you are free to make it start at whichever
