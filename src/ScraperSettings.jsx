@@ -8,7 +8,8 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
-
+import Tooltip from '@material-ui/core/Tooltip';
+// icons
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Email from '@material-ui/icons/Email';
@@ -167,14 +168,25 @@ class ScraperSettings extends Component {
           />
           <Field
             name="visualMode"
-            render={({ field, form }) => {
+            render={({ field }) => {
               return (
-                <FormControlLabel
-                  control={
-                    <Switch {...field} checked={field.value} color="primary" />
-                  }
-                  label="Visual Mode"
-                />
+                <Tooltip
+                  title="Allows you to see what this tool does behind
+                  the scenes. Note that enabling this mode may decrease
+                  stability and performance."
+                  placement="right"
+                >
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        {...field}
+                        checked={field.value}
+                        color="primary"
+                      />
+                    }
+                    label="Visual Mode"
+                  />
+                </Tooltip>
               );
             }}
           />
