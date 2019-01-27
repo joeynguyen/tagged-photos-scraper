@@ -67,7 +67,7 @@ export default class StatusSteps extends Component {
       additionalInfo = `${photosFound} photos found.`;
     }
     if (currentStep === 9) {
-      additionalInfo = `${currentMessage} Downloaded photo #${photosDownloaded} of ${photosFound} photos found.`;
+      additionalInfo = `${currentMessage} Downloaded photo ${photosDownloaded} of ${photosFound} photos found.`;
     }
 
     return (

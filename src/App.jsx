@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
 import Main from './Main';
 import ScraperSettings from './ScraperSettings';
 import StatusSteps from './StatusSteps';
@@ -103,10 +104,15 @@ class App extends Component {
       <>
         {searchingForPhotos && <LinearProgress />}
         {foundAllPhotos && (
-          <LinearProgress
-            variant="determinate"
-            value={calculateCompletion(photosDownloadedCount)}
-          />
+          <>
+            <LinearProgress
+              variant="determinate"
+              value={calculateCompletion(photosDownloadedCount)}
+            />
+            <Typography variant="body1" align="center" color="primary">
+              {`Downloaded photo ${photosDownloadedCount} of ${totalPhotosCount}`}
+            </Typography>
+          </>
         )}
         <Grid container>
           <Grid item xs={4}>
