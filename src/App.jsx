@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Main from './Main';
 import ScraperSettings from './ScraperSettings';
 import StatusSteps from './StatusSteps';
@@ -92,33 +93,48 @@ class App extends Component {
       scraperStatus,
       totalPhotosCount,
     } = this.state;
+    const { statusCode } = scraperStatus;
+    const searchingForPhotos = statusCode > 0 && statusCode < 8;
+    const foundAllPhotos =
+      statusCode === 8 || statusCode === 9 || statusCode === 100;
+    const calculateCompletion = value =>
+      Math.floor((value * 100) / totalPhotosCount);
     return (
-      <Grid container>
-        <Grid item xs={4}>
-          <StatusSteps
-            photosFound={totalPhotosCount}
-            photosDownloaded={photosDownloadedCount}
-            status={scraperStatus}
+      <>
+        {searchingForPhotos && <LinearProgress />}
+        {foundAllPhotos && (
+          <LinearProgress
+            variant="determinate"
+            value={calculateCompletion(photosDownloadedCount)}
           />
+        )}
+        <Grid container>
+          <Grid item xs={4}>
+            <StatusSteps
+              photosFound={totalPhotosCount}
+              photosDownloaded={photosDownloadedCount}
+              status={scraperStatus}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <ScraperSettings
+              status={scraperStatus}
+              startScraper={this.runScraper}
+              stopScraper={this.stopScraper}
+            />
+          </Grid>
+          <Grid item xs={1} />
+          <Grid item xs={4}>
+            <Main
+              logFileLocation={logFileLocation}
+              photosDownloadedCount={photosDownloadedCount}
+              photosTotal={totalPhotosCount}
+              status={scraperStatus}
+            />
+          </Grid>
+          <Grid item xs />
         </Grid>
-        <Grid item xs={3}>
-          <ScraperSettings
-            status={scraperStatus}
-            startScraper={this.runScraper}
-            stopScraper={this.stopScraper}
-          />
-        </Grid>
-        <Grid item xs={1} />
-        <Grid item xs={4}>
-          <Main
-            logFileLocation={logFileLocation}
-            photosDownloadedCount={photosDownloadedCount}
-            photosTotal={totalPhotosCount}
-            status={scraperStatus}
-          />
-        </Grid>
-        <Grid item xs />
-      </Grid>
+      </>
     );
   }
 }
