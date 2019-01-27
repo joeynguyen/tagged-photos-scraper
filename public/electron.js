@@ -120,6 +120,8 @@ ipcMain.on(
       height,
     };
 
+    const downloadFolder = app.getPath('downloads') + '/tagged-photos-scraper/';
+    event.sender.send('download-folder', downloadFolder);
     log.info(`Starting scraper at photoStartIndex: ${photoStartIndex}`);
 
     scrape(

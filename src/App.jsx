@@ -7,7 +7,7 @@ import ScraperSettings from './ScraperSettings';
 import StatusSteps from './StatusSteps';
 import 'typeface-roboto'; // used by material-ui
 
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer, shell } = window.require('electron');
 const log = window.require('electron-log');
 const unhandled = window.require('electron-unhandled');
 
@@ -18,11 +18,13 @@ unhandled({
 class App extends Component {
   constructor(props) {
     super(props);
+    this.openDownloadFolder = this.openDownloadFolder.bind(this);
     this.runScraper = this.runScraper.bind(this);
     this.stopScraper = this.stopScraper.bind(this);
   }
 
   state = {
+    downloadFolderLocation: null,
     photosDownloadedCount: 0,
     scraperStatus: {
       // 0: 'ready', 1-97: 'running', 98: 'crashed', 99: 'failed', 100: 'complete'
@@ -30,12 +32,16 @@ class App extends Component {
       message: 'Fill out the form and click the Start/Retry  button to begin',
     },
     totalPhotosCount: 0,
-    logFileLocation: '',
+    logFileLocation: null,
   };
 
   componentDidMount() {
     ipcRenderer.on('status', (event, status) => {
       this.setState({ scraperStatus: status });
+    });
+
+    ipcRenderer.on('download-folder', (event, location) => {
+      this.setState({ downloadFolderLocation: location });
     });
 
     ipcRenderer.on('photos-found', (event, num) => {
@@ -52,6 +58,10 @@ class App extends Component {
 
   componentWillUnmount() {
     ipcRenderer.removeAllListeners();
+  }
+
+  openDownloadFolder() {
+    shell.openItem(this.state.downloadFolderLocation);
   }
 
   runScraper(username, password, userRequestedPhotoIndexStart, visualMode) {
@@ -89,6 +99,7 @@ class App extends Component {
 
   render() {
     const {
+      downloadFolderLocation,
       logFileLocation,
       photosDownloadedCount,
       scraperStatus,
@@ -132,13 +143,14 @@ class App extends Component {
           <Grid item xs={1} />
           <Grid item xs={4}>
             <Main
+              downloadFolderLocation={downloadFolderLocation}
+              openDownloadFolder={this.openDownloadFolder}
               logFileLocation={logFileLocation}
               photosDownloadedCount={photosDownloadedCount}
               photosTotal={totalPhotosCount}
               status={scraperStatus}
             />
           </Grid>
-          <Grid item xs />
         </Grid>
       </>
     );

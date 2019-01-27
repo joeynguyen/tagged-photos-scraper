@@ -1,7 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
 
-function Main({ logFileLocation, photosDownloadedCount, photosTotal, status }) {
+function Main({
+  downloadFolderLocation,
+  openDownloadFolder,
+  logFileLocation,
+  photosDownloadedCount,
+  photosTotal,
+  status,
+}) {
   let statusInternal;
   const { message, statusCode } = status;
   switch (true) {
@@ -34,18 +42,34 @@ function Main({ logFileLocation, photosDownloadedCount, photosTotal, status }) {
           The location of the log file on this computer is: {logFileLocation}
         </h3>
       )}
+      {downloadFolderLocation && photosDownloadedCount > 0 && (
+        <Button
+          variant="outlined"
+          color="primary"
+          type="button"
+          onClick={openDownloadFolder}
+        >
+          Go to downloaded photos
+        </Button>
+      )}
     </>
   );
 }
 
 Main.propTypes = {
-  logFileLocation: PropTypes.string.isRequired,
+  downloadFolderLocation: PropTypes.string,
+  openDownloadFolder: PropTypes.func.isRequired,
+  logFileLocation: PropTypes.string,
   photosDownloadedCount: PropTypes.number.isRequired,
   photosTotal: PropTypes.number.isRequired,
   status: PropTypes.shape({
     statusCode: PropTypes.number.isRequired,
     message: PropTypes.string.isRequired,
   }).isRequired,
+};
+Main.defaultTypes = {
+  downloadFolderLocation: null,
+  logFileLocation: null,
 };
 
 export default Main;

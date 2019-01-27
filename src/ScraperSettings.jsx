@@ -223,7 +223,7 @@ class ScraperSettings extends Component {
             >
               {buttonText}
             </Button>
-          )}
+          )}{' '}
           {statusCode > 0 && statusCode < 98 && (
             <Button
               type="button"
