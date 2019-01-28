@@ -5,7 +5,7 @@
   "author": "Joey Nguyen",
   "license": "GPL-3.0-or-later",
   "homepage": "./",
-  "main": "public/electron.js",
+  "main": "./public/electron.js",
   "dependencies": {
     "@material-ui/core": "3.9.0",
     "@material-ui/icons": "3.0.2",
@@ -53,11 +53,8 @@
     "Electron >= 4.0.0"
   ],
   "build": {
+    "asar": false,
     "appId": "com.joeynguyen.tagged-photos-scraper",
-    "files": [
-      "build",
-      "node_modules"
-    ],
     "productName": "Tagged Photos Scraper",
     "mac": {
       "category": "public.app-category.utilities"

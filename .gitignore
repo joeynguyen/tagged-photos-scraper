@@ -1,8 +1,5 @@
 node_modules/
 build/
 dist/
-backup*/
-*.png
-*.jpg
 .vscode/
 .env
