@@ -9,7 +9,7 @@ function Main({ logFileLocation, openLogFileLocation }) {
       <Typography variant="subtitle1">
         If you have any questions, problems, or feedback, please send them to:{' '}
         <Typography inline color="primary">
-          email@email.com
+          tagged.photos.scraper@gmail.com
         </Typography>
         <br />
         <br />
