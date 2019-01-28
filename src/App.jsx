@@ -18,6 +18,7 @@ unhandled({
 class App extends Component {
   constructor(props) {
     super(props);
+    this.openLogFileLocation = this.openLogFileLocation.bind(this);
     this.openDownloadFolder = this.openDownloadFolder.bind(this);
     this.runScraper = this.runScraper.bind(this);
     this.stopScraper = this.stopScraper.bind(this);
@@ -62,6 +63,10 @@ class App extends Component {
 
   openDownloadFolder() {
     shell.openItem(this.state.downloadFolderLocation);
+  }
+
+  openLogFileLocation() {
+    shell.showItemInFolder(this.state.logFileLocation);
   }
 
   runScraper(username, password, userRequestedPhotoIndexStart, visualMode) {
@@ -147,6 +152,7 @@ class App extends Component {
               downloadFolderLocation={downloadFolderLocation}
               openDownloadFolder={this.openDownloadFolder}
               logFileLocation={logFileLocation}
+              openLogFileLocation={this.openLogFileLocation}
               photosDownloadedCount={photosDownloadedCount}
               photosTotal={totalPhotosCount}
             />

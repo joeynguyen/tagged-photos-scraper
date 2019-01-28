@@ -7,12 +7,13 @@ function Main({
   downloadFolderLocation,
   openDownloadFolder,
   logFileLocation,
+  openLogFileLocation,
   photosDownloadedCount,
   photosTotal,
 }) {
   const isSuccessful = photosTotal > 0 && photosTotal === photosDownloadedCount;
   return (
-    <>
+    <div style={{ marginTop: '10px' }}>
       <Typography variant="subtitle1">
         If you have any questions, problems, or feedback, please send them to:{' '}
         <Typography inline color="primary">
@@ -24,11 +25,22 @@ function Main({
         helpful.
       </Typography>
       {logFileLocation && (
-        <Typography variant="subtitle1">
-          If the tool crashed or failed while you were trying to download your
-          photos, please include the log file in your email. The log file is
-          located on this computer at: {logFileLocation}
-        </Typography>
+        <>
+          <br />
+          <Typography variant="subtitle1">
+            If the tool crashed or failed while you were trying to download your
+            photos, please include the log file in your email. The log file is
+            located on this computer at: {logFileLocation}
+          </Typography>
+          <Button
+            variant="outlined"
+            color="primary"
+            type="button"
+            onClick={openLogFileLocation}
+          >
+            Go to log file
+          </Button>
+        </>
       )}
       <br />
       {downloadFolderLocation && photosDownloadedCount > 0 && (
@@ -65,7 +77,7 @@ function Main({
           </Typography>
         </Typography>
       )}
-    </>
+    </div>
   );
 }
 
@@ -73,6 +85,7 @@ Main.propTypes = {
   downloadFolderLocation: PropTypes.string,
   openDownloadFolder: PropTypes.func.isRequired,
   logFileLocation: PropTypes.string,
+  openLogFileLocation: PropTypes.func.isRequired,
   photosDownloadedCount: PropTypes.number.isRequired,
   photosTotal: PropTypes.number.isRequired,
 };

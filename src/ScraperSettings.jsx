@@ -9,6 +9,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 // icons
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -259,7 +260,9 @@ class ScraperSettings extends Component {
             }}
           />
           {statusCode === 100 ? (
-            <h2>Success!</h2>
+            <Typography variant="h5" color="primary">
+              Success!
+            </Typography>
           ) : (
             <Button
               variant="contained"
