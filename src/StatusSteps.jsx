@@ -63,8 +63,11 @@ export default class StatusSteps extends Component {
     const hasError = statusCode === 98 || statusCode === 99;
     const isSuccessful = statusCode === 100;
     let additionalInfo = currentMessage;
+    if (currentStep === 7) {
+      additionalInfo = `${currentMessage} ${photosFound} photos found so far.`;
+    }
     if (currentStep === 8) {
-      additionalInfo = `${photosFound} photos found.`;
+      additionalInfo = `${photosFound} photos found total.`;
     }
     if (currentStep === 9) {
       additionalInfo = `${currentMessage} Downloaded photo ${photosDownloaded} of ${photosFound} photos found.`;
