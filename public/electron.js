@@ -1,6 +1,6 @@
 // Modules to control application life and create native browser window
 const electron = require('electron');
-const { app, BrowserWindow, ipcMain, session } = electron;
+const { app, BrowserWindow, ipcMain, Menu, session } = electron;
 const path = require('path');
 const isDev = require('electron-is-dev');
 const log = require('electron-log');
@@ -72,6 +72,71 @@ function createWindow() {
   });
 }
 
+function createMenu() {
+  const application = {
+    label: 'Application',
+    submenu: [
+      {
+        label: 'About Application',
+        selector: 'orderFrontStandardAboutPanel:',
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: 'Quit',
+        accelerator: 'Command+Q',
+        click: () => {
+          app.quit();
+        },
+      },
+    ],
+  };
+
+  const edit = {
+    label: 'Edit',
+    submenu: [
+      {
+        label: 'Undo',
+        accelerator: 'CmdOrCtrl+Z',
+        selector: 'undo:',
+      },
+      {
+        label: 'Redo',
+        accelerator: 'Shift+CmdOrCtrl+Z',
+        selector: 'redo:',
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: 'Cut',
+        accelerator: 'CmdOrCtrl+X',
+        selector: 'cut:',
+      },
+      {
+        label: 'Copy',
+        accelerator: 'CmdOrCtrl+C',
+        selector: 'copy:',
+      },
+      {
+        label: 'Paste',
+        accelerator: 'CmdOrCtrl+V',
+        selector: 'paste:',
+      },
+      {
+        label: 'Select All',
+        accelerator: 'CmdOrCtrl+A',
+        selector: 'selectAll:',
+      },
+    ],
+  };
+
+  const template = [application, edit];
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -90,6 +155,7 @@ app.on('ready', async () => {
     });
   });
   createWindow();
+  createMenu();
 });
 
 // Quit when all windows are closed.

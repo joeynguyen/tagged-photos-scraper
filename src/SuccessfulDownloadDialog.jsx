@@ -31,12 +31,11 @@ function SuccessfulDownloadDialog({ onClose, successDialogVisible }) {
           go about the rest of your day.
           <br />
           <br />
-          And no need to send the developer money or anything (I won't accept
-          it), but if you would like to show your appreciation (and no worries
-          if you don't), please make a donation of whatever amount you feel is
-          appropriate to:
+          And no need to send the developer money or anything, but if you would
+          like to show your appreciation (and no worries if you don't), please
+          make a donation of whatever amount you feel is appropriate to:
           <Typography color="primary">
-            https://donate.doctorswithoutborders.org/
+            https://donate.doctorswithoutborders.org
           </Typography>
         </Typography>
       </DialogContent>
