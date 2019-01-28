@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
@@ -145,6 +146,19 @@ class App extends Component {
               startScraper={this.runScraper}
               stopScraper={this.stopScraper}
             />
+            {downloadFolderLocation && photosDownloadedCount > 0 && (
+              <>
+                <div style={{ marginTop: '15px' }} />
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  type="button"
+                  onClick={this.openDownloadFolder}
+                >
+                  Go to downloaded photos
+                </Button>
+              </>
+            )}
           </Grid>
           <Grid item xs={1} />
           <Grid item xs={3}>

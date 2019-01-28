@@ -4,8 +4,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 function Main({
-  downloadFolderLocation,
-  openDownloadFolder,
   logFileLocation,
   openLogFileLocation,
   photosDownloadedCount,
@@ -43,16 +41,6 @@ function Main({
         </>
       )}
       <br />
-      {downloadFolderLocation && photosDownloadedCount > 0 && (
-        <Button
-          variant="outlined"
-          color="primary"
-          type="button"
-          onClick={openDownloadFolder}
-        >
-          Go to downloaded photos
-        </Button>
-      )}
       <br />
       {isSuccessful && (
         <Typography variant="subtitle1">
@@ -82,15 +70,12 @@ function Main({
 }
 
 Main.propTypes = {
-  downloadFolderLocation: PropTypes.string,
-  openDownloadFolder: PropTypes.func.isRequired,
   logFileLocation: PropTypes.string,
   openLogFileLocation: PropTypes.func.isRequired,
   photosDownloadedCount: PropTypes.number.isRequired,
   photosTotal: PropTypes.number.isRequired,
 };
 Main.defaultTypes = {
-  downloadFolderLocation: null,
   logFileLocation: null,
 };
 
