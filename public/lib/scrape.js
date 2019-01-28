@@ -19,7 +19,8 @@ async function scrape(
 ) {
   ipc.send('status', {
     statusCode: 1,
-    message: 'Hold on to your butts!',
+    message:
+      "This tool uses Google's Puppeteer library (https://developers.google.com/web/tools/puppeteer/) under the hood to download your photos.",
   });
   ipc.send('log-file-location', log.transports.file.findLogPath());
   const { enabled, width, height } = visualModeOptions;
