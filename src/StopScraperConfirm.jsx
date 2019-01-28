@@ -22,9 +22,9 @@ function StopScraperConfirm({ onClose, stopConfirmationVisible, stopScraper }) {
       disableBackdropClick
       disableEscapeKeyDown
       maxWidth="sm"
-      aria-labelledby="confirmation-dialog-title"
+      aria-labelledby="stop-confirmation-title"
     >
-      <DialogTitle id="confirmation-dialog-title">Are you sure?</DialogTitle>
+      <DialogTitle id="stop-confirmation-title">Are you sure?</DialogTitle>
       <DialogContent>
         <Typography>
           Stopping the scraper will stop the downloading of your photos.

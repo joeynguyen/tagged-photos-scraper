@@ -163,12 +163,8 @@ class App extends Component {
           <Grid item xs={1} />
           <Grid item xs={3}>
             <Main
-              downloadFolderLocation={downloadFolderLocation}
-              openDownloadFolder={this.openDownloadFolder}
               logFileLocation={logFileLocation}
               openLogFileLocation={this.openLogFileLocation}
-              photosDownloadedCount={photosDownloadedCount}
-              photosTotal={totalPhotosCount}
             />
           </Grid>
         </Grid>

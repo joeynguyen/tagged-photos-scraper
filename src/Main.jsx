@@ -3,13 +3,7 @@ import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-function Main({
-  logFileLocation,
-  openLogFileLocation,
-  photosDownloadedCount,
-  photosTotal,
-}) {
-  const isSuccessful = photosTotal > 0 && photosTotal === photosDownloadedCount;
+function Main({ logFileLocation, openLogFileLocation }) {
   return (
     <div style={{ marginTop: '10px' }}>
       <Typography variant="subtitle1">
@@ -40,31 +34,6 @@ function Main({
           </Button>
         </>
       )}
-      <br />
-      <br />
-      {isSuccessful && (
-        <Typography variant="subtitle1">
-          Are you excited about having all of your photos downloaded to your
-          computer?
-          <br />
-          Are you overjoyed by all of the time you saved versus downloading them
-          manually yourself?
-          <br />
-          <br />
-          If you answered "yes" to both questions, this tool has served its
-          purpose. Nothing else to do here. Feel free to quit this program and
-          go about the rest of your day.
-          <br />
-          <br />
-          No need to send me money or anything (I won't accept it), but if
-          you're feeling especially appreciative and generous (and no pressure
-          if you're not), feel free to make a donation of whatever amount you
-          feel is appropriate to:
-          <Typography color="primary">
-            https://donate.doctorswithoutborders.org/
-          </Typography>
-        </Typography>
-      )}
     </div>
   );
 }
@@ -72,8 +41,6 @@ function Main({
 Main.propTypes = {
   logFileLocation: PropTypes.string,
   openLogFileLocation: PropTypes.func.isRequired,
-  photosDownloadedCount: PropTypes.number.isRequired,
-  photosTotal: PropTypes.number.isRequired,
 };
 Main.defaultTypes = {
   logFileLocation: null,

@@ -7,6 +7,8 @@ import StepContent from '@material-ui/core/StepContent';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
+import SuccessfulDownloadDialog from './SuccessfulDownloadDialog';
+
 function getSteps() {
   return [
     'Ready',
@@ -26,6 +28,7 @@ export default class StatusSteps extends Component {
   state = {
     currentStep: this.props.status.statusCode,
     currentMessage: this.props.status.message,
+    successDialogVisible: false,
   };
 
   static getDerivedStateFromProps(props) {
@@ -52,6 +55,23 @@ export default class StatusSteps extends Component {
     photosFound: PropTypes.number.isRequired,
   };
 
+  showSuccessDialog = () => {
+    this.setState({ successDialogVisible: true });
+  };
+
+  hideSuccessDialog = () => {
+    this.setState({ successDialogVisible: false });
+  };
+
+  componentDidUpdate(prevProps) {
+    const {
+      status: { statusCode },
+    } = this.props;
+    if (statusCode === 100 && statusCode !== prevProps.status.statusCode) {
+      this.showSuccessDialog();
+    }
+  }
+
   render() {
     const steps = getSteps();
     const { currentStep, currentMessage } = this.state;
@@ -75,6 +95,10 @@ export default class StatusSteps extends Component {
 
     return (
       <div style={{ width: '90%' }}>
+        <SuccessfulDownloadDialog
+          onClose={this.hideSuccessDialog}
+          successDialogVisible={this.state.successDialogVisible}
+        />
         <Stepper activeStep={currentStep} orientation="vertical">
           {steps.map((label, index) => (
             <Step key={label}>
