@@ -9,6 +9,7 @@ const unhandled = require('electron-unhandled');
 const scrape = require('./lib/scrape.js');
 
 unhandled({
+  showDialog: false,
   logger: log.error,
 });
 

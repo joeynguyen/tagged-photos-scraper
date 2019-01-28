@@ -13,6 +13,7 @@ const log = window.require('electron-log');
 const unhandled = window.require('electron-unhandled');
 
 unhandled({
+  showDialog: false,
   logger: log.error,
 });
 
