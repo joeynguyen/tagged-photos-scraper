@@ -21,8 +21,10 @@ function Main({ logFileLocation, openLogFileLocation }) {
           <br />
           <Typography variant="subtitle1">
             If the tool crashed or failed while you were trying to download your
-            photos, please include the log file in your email. The log file is
-            located on this computer at: {logFileLocation}
+            photos, please include the log file in your email. Don't worry, it
+            doesn't contain your email or password (this tool doesn't record
+            that info anywhere). The log file is located on this computer at:
+            {logFileLocation}
           </Typography>
           <Button
             variant="outlined"
