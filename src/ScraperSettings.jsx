@@ -17,6 +17,8 @@ import Email from '@material-ui/icons/Email';
 import LockOpen from '@material-ui/icons/LockOpen';
 import Photo from '@material-ui/icons/Photo';
 
+import StopScraperConfirm from './StopScraperConfirm';
+
 import * as yup from 'yup';
 
 const styles = theme => ({
@@ -70,10 +72,19 @@ class ScraperSettings extends Component {
 
   state = {
     showPassword: false,
+    stopConfirmationVisible: false,
   };
 
   handleClickShowPassword = () => {
     this.setState(state => ({ showPassword: !state.showPassword }));
+  };
+
+  showStopConfirmation = () => {
+    this.setState({ stopConfirmationVisible: true });
+  };
+
+  hideStopConfirmation = () => {
+    this.setState({ stopConfirmationVisible: false });
   };
 
   render() {
@@ -86,149 +97,68 @@ class ScraperSettings extends Component {
     const buttonText =
       statusCode === 98 || statusCode === 99 ? 'Retry' : 'Start';
     return (
-      <Formik
-        initialValues={initialValues}
-        validationSchema={settingsSchema}
-        onSubmit={values => {
-          const {
-            email,
-            password,
-            userRequestedPhotoIndexStart,
-            visualMode,
-          } = values;
-          startScraper(
-            email,
-            password,
-            userRequestedPhotoIndexStart,
-            visualMode
-          );
-        }}
-      >
-        <Form>
-          <Field
-            type="text"
-            name="email"
-            render={({ field, form }) => {
-              return (
-                <TextField
-                  error={
-                    form.touched[field.name] && form.errors[field.name]
-                      ? true
-                      : false
-                  }
-                  helperText={
-                    form.touched[field.name] && form.errors[field.name]
-                  }
-                  {...field}
-                  id={field.name}
-                  type="text"
-                  label="Email"
-                  margin="normal"
-                  variant="outlined"
-                  style={{ marginBottom: '20px' }}
-                  fullWidth
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Email />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              );
-            }}
-          />
-          <Field
-            name="password"
-            render={({ field, form }) => {
-              return (
-                <TextField
-                  {...field}
-                  error={
-                    form.touched[field.name] && form.errors[field.name]
-                      ? true
-                      : false
-                  }
-                  helperText={
-                    form.touched[field.name] && form.errors[field.name]
-                  }
-                  id={field.name}
-                  variant="outlined"
-                  type={this.state.showPassword ? 'text' : 'password'}
-                  label="Password"
-                  style={{ marginBottom: '5px' }}
-                  fullWidth
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockOpen />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="Toggle password visibility"
-                          onClick={this.handleClickShowPassword}
-                        >
-                          {this.state.showPassword ? (
-                            <Visibility />
-                          ) : (
-                            <VisibilityOff />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              );
-            }}
-          />
-          <Field
-            name="visualMode"
-            render={({ field }) => {
-              return (
-                <Tooltip
-                  placement="right"
-                  classes={{
-                    tooltip: classes.htmlTooltipSmall,
-                  }}
-                  title="Allows you to see what this tool does behind
-                  the scenes. Note that enabling this mode may decrease
-                  stability and performance."
-                >
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        {...field}
-                        checked={field.value}
-                        color="primary"
-                      />
+      <>
+        <StopScraperConfirm
+          onClose={this.hideStopConfirmation}
+          stopConfirmationVisible={this.state.stopConfirmationVisible}
+          stopScraper={stopScraper}
+        />
+        <Formik
+          initialValues={initialValues}
+          validationSchema={settingsSchema}
+          onSubmit={values => {
+            const {
+              email,
+              password,
+              userRequestedPhotoIndexStart,
+              visualMode,
+            } = values;
+            startScraper(
+              email,
+              password,
+              userRequestedPhotoIndexStart,
+              visualMode
+            );
+          }}
+        >
+          <Form>
+            <Field
+              type="text"
+              name="email"
+              render={({ field, form }) => {
+                return (
+                  <TextField
+                    error={
+                      form.touched[field.name] && form.errors[field.name]
+                        ? true
+                        : false
                     }
-                    label="Visual Mode"
+                    helperText={
+                      form.touched[field.name] && form.errors[field.name]
+                    }
+                    {...field}
+                    id={field.name}
+                    type="text"
+                    label="Email"
+                    margin="normal"
+                    variant="outlined"
+                    style={{ marginBottom: '20px' }}
+                    fullWidth
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Email />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
-                </Tooltip>
-              );
-            }}
-          />
-          <Field
-            type="number"
-            name="userRequestedPhotoIndexStart"
-            render={({ field, form }) => {
-              return (
-                <Tooltip
-                  placement="bottom"
-                  classes={{
-                    tooltip: classes.htmlTooltip,
-                  }}
-                  title="By default, this tool downloads all of your tagged
-                  photos, starting with the first one it finds in your Photos
-                  page. However, you are free to make it start at whichever
-                  number you wish. One use case may be - if this program crashes
-                  while you're using it, you can check the highest number of
-                  the photos it downloaded in the 'tagged-photos-scraper' folder
-                  inside your computer's Downloads folder and begin downloading
-                  from that number."
-                >
+                );
+              }}
+            />
+            <Field
+              name="password"
+              render={({ field, form }) => {
+                return (
                   <TextField
                     {...field}
                     error={
@@ -240,51 +170,140 @@ class ScraperSettings extends Component {
                       form.touched[field.name] && form.errors[field.name]
                     }
                     id={field.name}
-                    type="number"
-                    label="Starting Photo Number (optional)"
-                    placeholder="1"
-                    margin="normal"
                     variant="outlined"
-                    style={{ marginBottom: '20px' }}
+                    type={this.state.showPassword ? 'text' : 'password'}
+                    label="Password"
+                    style={{ marginBottom: '5px' }}
                     fullWidth
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Photo />
+                          <LockOpen />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="Toggle password visibility"
+                            onClick={this.handleClickShowPassword}
+                          >
+                            {this.state.showPassword ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
                         </InputAdornment>
                       ),
                     }}
                   />
-                </Tooltip>
-              );
-            }}
-          />
-          {statusCode === 100 ? (
-            <Typography variant="h5" color="primary">
-              Success!
-            </Typography>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={statusCode > 0 && statusCode < 98}
-            >
-              {buttonText}
-            </Button>
-          )}{' '}
-          {statusCode > 0 && statusCode < 98 && (
-            <Button
-              type="button"
-              variant="contained"
-              color="secondary"
-              onClick={stopScraper}
-            >
-              Stop Scraper
-            </Button>
-          )}
-        </Form>
-      </Formik>
+                );
+              }}
+            />
+            <Field
+              name="visualMode"
+              render={({ field }) => {
+                return (
+                  <Tooltip
+                    placement="right"
+                    classes={{
+                      tooltip: classes.htmlTooltipSmall,
+                    }}
+                    title="Allows you to see what this tool does behind
+                    the scenes. Note that enabling this mode may decrease
+                    stability and performance."
+                  >
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          {...field}
+                          checked={field.value}
+                          color="primary"
+                        />
+                      }
+                      label="Visual Mode"
+                    />
+                  </Tooltip>
+                );
+              }}
+            />
+            <Field
+              type="number"
+              name="userRequestedPhotoIndexStart"
+              render={({ field, form }) => {
+                return (
+                  <Tooltip
+                    placement="bottom"
+                    classes={{
+                      tooltip: classes.htmlTooltip,
+                    }}
+                    title="By default, this tool downloads all of your tagged
+                    photos, starting with the first one it finds in your Photos
+                    page. However, you are free to make it start at whichever
+                    number you wish. One use case may be - if this program crashes
+                    while you're using it, you can check the highest number of
+                    the photos it downloaded in the 'tagged-photos-scraper' folder
+                    inside your computer's Downloads folder and begin downloading
+                    from that number."
+                  >
+                    <TextField
+                      {...field}
+                      error={
+                        form.touched[field.name] && form.errors[field.name]
+                          ? true
+                          : false
+                      }
+                      helperText={
+                        form.touched[field.name] && form.errors[field.name]
+                      }
+                      id={field.name}
+                      type="number"
+                      label="Starting Photo Number (optional)"
+                      placeholder="1"
+                      margin="normal"
+                      variant="outlined"
+                      style={{ marginBottom: '20px' }}
+                      fullWidth
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Photo />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Tooltip>
+                );
+              }}
+            />
+            {statusCode === 100 ? (
+              <Typography variant="h5" color="primary">
+                Success!
+              </Typography>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={statusCode > 0 && statusCode < 98}
+              >
+                {buttonText}
+              </Button>
+            )}{' '}
+            {statusCode > 0 && statusCode < 98 && (
+              <Button
+                type="button"
+                variant="contained"
+                color="secondary"
+                // onClick={stopScraper}
+                onClick={this.showStopConfirmation}
+              >
+                Stop Scraper
+              </Button>
+            )}
+          </Form>
+        </Formik>
+      </>
     );
   }
 }
