@@ -42,7 +42,7 @@
     "eject": "react-scripts eject",
     "electron-start": "electron .",
     "builder:pack": "electron-builder --dir",
-    "builder:dist": "yarn build && electron-builder -m",
+    "builder:dist": "yarn build && electron-builder -lmw",
     "postinstall": "electron-builder install-app-deps",
     "analyze:react": "yarn build --stats && webpack-bundle-analyzer build/bundle-stats.json",
     "lint": "eslint --debug src/",
