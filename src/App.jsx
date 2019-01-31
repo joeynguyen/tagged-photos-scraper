@@ -6,6 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import Main from './Main';
 import ScraperSettings from './ScraperSettings';
 import StatusSteps from './StatusSteps';
+import DisclaimerDialog from './DisclaimerDialog';
+
 import 'typeface-roboto'; // used by material-ui
 
 const { ipcRenderer, shell } = window.require('electron');
@@ -27,7 +29,9 @@ class App extends Component {
   }
 
   state = {
+    disclaimerDialogVisible: true,
     downloadFolderLocation: null,
+    logFileLocation: null,
     photosDownloadedCount: 0,
     scraperStatus: {
       // 0: 'ready', 1-97: 'running', 98: 'crashed', 99: 'failed', 100: 'complete'
@@ -35,7 +39,6 @@ class App extends Component {
       message: 'Fill out the form and click the Start/Retry  button to begin',
     },
     totalPhotosCount: 0,
-    logFileLocation: null,
   };
 
   componentDidMount() {
@@ -62,6 +65,10 @@ class App extends Component {
   componentWillUnmount() {
     ipcRenderer.removeAllListeners();
   }
+
+  hideDisclaimerDialog = () => {
+    this.setState({ disclaimerDialogVisible: false });
+  };
 
   openDownloadFolder() {
     shell.openItem(this.state.downloadFolderLocation);
@@ -106,6 +113,7 @@ class App extends Component {
 
   render() {
     const {
+      disclaimerDialogVisible,
       downloadFolderLocation,
       logFileLocation,
       photosDownloadedCount,
@@ -169,6 +177,10 @@ class App extends Component {
             />
           </Grid>
         </Grid>
+        <DisclaimerDialog
+          onClose={this.hideDisclaimerDialog}
+          isVisible={disclaimerDialogVisible}
+        />
       </>
     );
   }
