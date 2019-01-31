@@ -4,9 +4,9 @@
 
 This tool's sole function is to download all of the photos you've been tagged in on Facebook to your computer.  It **doesn't** track you, look at your personal data or your friends' data, save your login info for me or anyone else to use later, or anything else. If you’re someone who knows how to read and understand JavaScript, you can explore the code yourself to verify.  Or ask your friendly neighborhood web/software developer to take a look (buy her/him a coffee, beer, boba tea, or their BEVERAGE_OF_CHOICE as thanks).
 
-To be extra careful, I also recommend using this tool only on your own personal home WiFi network and not on a public WiFi network like a coffee shop.
+To be extra careful, I also recommend using this tool only on your own personal home network and not on a public WiFi network like a coffee shop.
 
-The speed of your computer and your WiFi also play a big part in how well this tool performs.  I recommend being on a network with at least 25 Mbps which you can test by going to https://www.speedtest.net/.
+The speed of your computer and WiFi also play a big part in how well this tool performs.  I recommend being on a network with at least 25 Mbps which you can test by going to https://www.speedtest.net/.
 
 ## Why this tool exists
 
@@ -14,7 +14,7 @@ Currently, Facebook gives you the ability, with the click of a button, to downlo
 
 Reasons why you may want to download your tagged photos:
 
-- You want to print out the photos for a physical photo album and want the best quality version on Facebook.
+- You want to print out the photos for a physical photo album and want the best quality version available on Facebook.
 - You want a local copy so that you can view offline.
 - You're worried a Facebook bug will occur where they lose the photos you're tagged in.
 - You're afraid a friend may deactivate or delete their account and you'll no longer have access to the photos they have of you.
@@ -23,7 +23,7 @@ Reasons why you may want to download your tagged photos:
 
 ## Why I decided to build it
 
-I wanted to find a solution to a need that I felt was unaddressed.  In the past, I found different implementations that others built, such as another third party app that connected to Facebook, an IFTTT applet, and a browser extension, but they all had limitations that weren't acceptable to me:
+I wanted to find a solution to a need that I felt was unaddressed.  In the past, I found different implementations that others built, such as another third party app that connected to Facebook, an [IFTTT](https://ifttt.com/) applet, and a browser extension, but they all had limitations that weren't acceptable to me:
 
 - The IFTTT applet I found only worked for **new** photos you got tagged in, not existing ones.
 - The browser extension gave me very low quality versions of my photos (it only downloaded the thumbnail versions, not the full quality ones).
