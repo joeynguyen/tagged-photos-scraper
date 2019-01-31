@@ -65,6 +65,13 @@ function DisclaimerDialog({ onClose, isVisible }) {
           because Visual Mode uses more of your computer's resources.
           <br />
           <br />
+          IMPORTANT NOTE: Facebook can easily make changes to their website that
+          will break the functionality of this tool so if that happens and this
+          tool isn't working for you, please send an email to the address you'll
+          find on the next screen. Hopefully I'll be able find a workaround to
+          fix it but no guarantees.
+          <br />
+          <br />
           By using this tool, you agree that you're using it at your own risk
           and won't hold the developer liable for any issues that may occur as a
           result of using it. As far as I know, there aren’t any privacy or

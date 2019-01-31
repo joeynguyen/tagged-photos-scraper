@@ -33,9 +33,15 @@ The other reason I built this tool was to get my hands dirty and learn some tech
 
 ## Why I didn't charge for this tool
 
+(addressing it because some people will probably ask)
+
 Like I said, I built this tool mainly for a need I had and for me to learn some new skills along the way.  So it was really built for those purposes, not to make money. But once I had accomplished that, I figured others would find it useful as well so I decided to wrap it up in a nice-looking user interface that non-developers can use too.  And since I wanted as many people as possible to benefit from this tool, by choosing not to profit from it, I don't have to worry about hiding its source code. Having the code out in the open allows anyone to poke and prod at it and see that nothing dishonest is being done with their account data and personal info.
 
 Another reason is because this tool uses all [open-source technologies](https://en.wikipedia.org/wiki/Open-source_software), which means that it was built using technologies that thousands of individuals and company have spent their time and energy contributing to, many of whom did it for free. The spirit of OSS and sharing of knowledge is what makes working in the technology field so great and sets it apart from most other industries. And in that tradition, I'm releasing this code open-source as well. Anyone who wants to build some software using similar technologies can learn from and use my code as a reference.
+
+## Why not put this in the Mac App Store
+
+Going through the process of doing that requires more time and energy than I'm interested in taking on.  Plus, Facebook can easily make changes to their website that can break the functionality of this tool so if that happens, there'll be a bunch of frustrated users leaving bad reviews.
 
 ## Credits
 
