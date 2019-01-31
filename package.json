@@ -44,7 +44,7 @@
     "electron-start": "electron .",
     "builder:pack": "electron-builder --dir",
     "builder:dist": "yarn build && electron-builder -lmw",
-    "publish": "yarn build && electron-builder -lmw -publish always",
+    "publish": "yarn build && electron-builder -lmw --publish always",
     "postinstall": "electron-builder install-app-deps",
     "analyze:react": "yarn build --stats && webpack-bundle-analyzer build/bundle-stats.json",
     "lint": "eslint --debug src/",
