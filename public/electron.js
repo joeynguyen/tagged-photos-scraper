@@ -158,7 +158,10 @@ app.on('ready', async () => {
     });
   });
   createWindow();
-  createMenu();
+  if (process.platform === 'darwin') {
+    // only required for Mac app to have copy/paste functionality once packaged
+    createMenu();
+  }
 });
 
 // Quit when all windows are closed.
