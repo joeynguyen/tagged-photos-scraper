@@ -1,13 +1,18 @@
 const puppeteer = require('puppeteer');
+const { TimeoutError } = require('puppeteer/Errors');
 const log = require('electron-log');
 const { ipcMain } = require('electron');
-const { TimeoutError } = require('puppeteer/Errors');
 
 const downloadAllPhotos = require('./downloadAllPhotos.js');
 const infiniteScrollPhotos = require('./infiniteScrollPhotos.js');
 const RETRY_MESSAGE =
   'If you would like to continue downloading ' +
   'where you left off, click the "Retry" button.';
+
+function getChromiumExecPath() {
+  // https://github.com/GoogleChrome/puppeteer/issues/2134#issuecomment-408221446
+  return puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked');
+}
 
 async function scrape(
   username,
@@ -23,6 +28,7 @@ async function scrape(
       "This tool uses Google's Puppeteer library (https://developers.google.com/web/tools/puppeteer/) under the hood to download your photos.",
   });
   ipc.send('log-file-location', log.transports.file.findLogPath());
+
   const { enabled, width, height } = visualModeOptions;
   // start puppeteer
   const browser = await puppeteer.launch({
@@ -31,6 +37,7 @@ async function scrape(
       width: enabled ? width : 3440,
       height: enabled ? height : 1440,
     },
+    executablePath: getChromiumExecPath(),
     // even if the user's focus isn't on this app,
     // don't throttle this app's performance
     webPreferences: { backgroundThrottling: false },

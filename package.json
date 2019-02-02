@@ -55,12 +55,8 @@
     "Electron >= 4.0.0"
   ],
   "build": {
-    "asar": false,
     "appId": "com.joeynguyen.tagged-photos-scraper",
     "productName": "Tagged Photos Scraper",
-    "mac": {
-      "category": "public.app-category.utilities"
-    },
     "publish": [{
       "provider": "github",
       "owner": "joeynguyen",
