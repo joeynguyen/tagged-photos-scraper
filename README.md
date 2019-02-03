@@ -10,7 +10,7 @@ The speed of your computer and WiFi also play a big part in how well this tool p
 
 ## Why this tool exists
 
-Currently, Facebook gives you the ability, with the click of a button, to download full photo albums that you yourself have uploaded to your Facebook account.  However as far as I know, at this moment there's no option on Facebook.com or through their mobile app for you to download all of the photos that you've been tagged in by others.
+Currently, Facebook gives you the ability to download full photo albums that you yourself have uploaded to your Facebook account. This [video](https://www.youtube.com/watch?v=Qw6g1Db48Ok) shows you how to do that. You can download [all of the data about your account history](https://www.facebook.com/dyi/?x=AdkH-JV_BQLXYF_Q). However as far as I know, at this moment there's no option on Facebook.com or through their mobile app for you to download all of the photos that you've been tagged in by others.
 
 Reasons why you may want to download your tagged photos:
 
