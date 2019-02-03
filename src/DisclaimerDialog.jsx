@@ -26,8 +26,10 @@ function DisclaimerDialog({ onClose, isVisible }) {
           <br />I promise I’m not trying to store your account login information
           nor is this tool programmed to gather any information about you while
           it’s logged into your account. But even if you do trust me, I still
-          recommend changing your password after you're done using this tool,
-          preferably to a secure one that you don't use on any other site (
+          recommend changing your password after you're done using any
+          unofficial tool not made by the company that owns the official
+          website, preferably to a secure password that you don't use on any
+          other site (
           <Typography inline color="primary">
             https://www.wikihow.tech/Create-a-Secure-Password
           </Typography>
@@ -44,8 +46,8 @@ function DisclaimerDialog({ onClose, isVisible }) {
           </Typography>
           <br />
           <br />
-          Also, this tool isn’t able to handle 2-factor authentication. If you
-          have it enabled, you need to temporarily disable it before running
+          By the way, this tool isn’t able to handle 2-factor authentication. If
+          you have it enabled, you need to temporarily disable it before running
           this tool. Remember to re-enable it afterward. If you’re not currently
           using 2-factor authentication, I highly recommend that you enable it
           for your own security - (

@@ -24,7 +24,7 @@ function Main({ logFileLocation, openLogFileLocation }) {
             photos, please include the log file in your email. Don't worry, it
             doesn't contain your email or password (this tool doesn't record
             that info anywhere). The log file is located on this computer at:
-            {logFileLocation}
+            {' ' + logFileLocation}
           </Typography>
           <Button
             variant="outlined"

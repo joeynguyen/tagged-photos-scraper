@@ -29,14 +29,14 @@ const styles = theme => ({
     backgroundColor: 'rgba(0, 0, 0, 0.90)',
     color: theme.palette.common.white,
     boxShadow: theme.shadows[1],
-    fontSize: theme.typography.pxToRem(13),
+    fontSize: theme.typography.pxToRem(16),
     border: '1px solid #dadde9',
   },
   htmlTooltipSmall: {
     backgroundColor: 'rgba(0, 0, 0, 0.90)',
     color: theme.palette.common.white,
     boxShadow: theme.shadows[1],
-    fontSize: theme.typography.pxToRem(13),
+    fontSize: theme.typography.pxToRem(16),
     border: '1px solid #dadde9',
     maxWidth: 230,
   },
@@ -238,13 +238,13 @@ class ScraperSettings extends Component {
                       tooltip: classes.htmlTooltip,
                     }}
                     title="By default, this tool downloads all of your tagged
-                    photos, starting with the first one it finds in your Photos
-                    page. However, you are free to make it start at whichever
-                    number you wish. One use case may be - if this program crashes
-                    while you're using it, you can check the highest number of
-                    the photos it downloaded in the 'tagged-photos-scraper' folder
-                    inside your computer's Downloads folder and begin downloading
-                    from that number."
+                    photos, starting with the first one it finds on your Photos
+                    page. However, you have the option to make it start at
+                    whichever number you wish. One use case may be - if this
+                    program crashes while you're using it, check the photos it
+                    downloaded in the 'tagged-photos-scraper' folder inside your
+                    computer's Downloads folder. Find the the highest number
+                    photo and begin downloading from that number."
                   >
                     <TextField
                       {...field}
