@@ -27,11 +27,13 @@ async function downloadAllPhotos(
       const newPhotoPage = await browser.newPage();
       await newPhotoPage.goto(photoUrl);
 
-      const $fullSizeLink = await newPhotoPage.waitForSelector(
-        '[href^="/photo/view_full_size"]',
+      // XPath to query text because "href" doesn't have a consistent pattern
+      // can be "/photo/view_full_size"
+      // or "https://scontent-dfw5-1.xx.fbcdn.net"
+      const $fullSizeLink = await newPhotoPage.waitForXPath(
+        '//a[text()="View Full Size"]',
         { timeout: 10000 }
       );
-      /* eslint-disable no-await-in-loop */
       const newPagePromise = new Promise(x => {
         return browser.once('targetcreated', target => x(target.page()));
       });
