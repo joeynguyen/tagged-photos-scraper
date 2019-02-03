@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
+// material-ui
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
+import 'typeface-roboto'; // used by material-ui
+
 import Main from './Main';
 import ScraperSettings from './ScraperSettings';
 import StatusSteps from './StatusSteps';
 import DisclaimerDialog from './DisclaimerDialog';
-
-import 'typeface-roboto'; // used by material-ui
 
 const { ipcRenderer, shell } = window.require('electron');
 const log = window.require('electron-log');
