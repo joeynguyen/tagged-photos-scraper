@@ -121,12 +121,6 @@ async function scrape(
   await $passField.type(password);
   await $passField.press('Enter');
 
-  // Go to Profile page from Homepage
-  log.info('Going to your profile page');
-  ipc.send('status', {
-    statusCode: 4,
-    message: 'We need to go here to get to your Photos page.',
-  });
   let $profileLink;
   try {
     $profileLink = await page.waitFor('div[data-click="profile_icon"] a', {
@@ -161,6 +155,12 @@ async function scrape(
     }
   }
 
+  // Go to Profile page from Homepage
+  log.info('Going to your profile page');
+  ipc.send('status', {
+    statusCode: 4,
+    message: 'We need to go here to get to your Photos page.',
+  });
   await $profileLink.click();
 
   // Go to "Photos of You" page

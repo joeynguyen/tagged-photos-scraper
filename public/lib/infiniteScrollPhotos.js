@@ -1,7 +1,8 @@
 const log = require('electron-log');
 
 async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
-  const photosQuerySelector = 'ul.fbPhotosRedesignBorderOverlay > li > a';
+  const photosQuerySelector =
+    'ul.fbPhotosRedesignBorderOverlay > li > a.uiMediaThumb';
   let $taggedPhotos = await page.$$(photosQuerySelector);
   log.info(`Found ${$taggedPhotos.length} photos`);
   ipc.send('photos-found', $taggedPhotos.length);

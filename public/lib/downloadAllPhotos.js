@@ -30,22 +30,15 @@ async function downloadAllPhotos(
       // XPath to query text because "href" doesn't have a consistent pattern
       // can be "/photo/view_full_size"
       // or "https://scontent-dfw5-1.xx.fbcdn.net"
-      const $fullSizeLink = await newPhotoPage.waitForXPath(
-        '//a[text()="View Full Size"]',
+      await newPhotoPage.waitForSelector(
+        '[data-action-type="open_options_flyout"]',
         { timeout: 10000 }
       );
-      const newPagePromise = new Promise(x => {
-        return browser.once('targetcreated', target => x(target.page()));
-      });
-      await $fullSizeLink.click();
-      const newPage = await newPagePromise;
 
-      // having these `.waitFor(1000)` methods help
-      // prevent Puppeteer scraping errors
-      await newPhotoPage.waitFor(1000);
-      await newPhotoPage.close();
-      await newPage.waitFor(1000);
-      const imageSrc = await newPage.url();
+      const imageSrc = await newPhotoPage.$eval(
+        '.fbPhotoSnowliftPopup img.spotlight',
+        el => el.src
+      );
 
       // grab filename of image from URL
       const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
@@ -55,10 +48,14 @@ async function downloadAllPhotos(
       filename = `${i + 1}-${filename}`;
 
       await downloadFile(imageSrc, filename, i, page, ipc, electronWindow);
-      await newPage.close();
 
       // stop referencing the element handle
       $photo.dispose();
+
+      // having these `.waitFor(1000)` methods help
+      // prevent Puppeteer scraping errors
+      await newPhotoPage.waitFor(1000);
+      await newPhotoPage.close();
     } catch (e) {
       log.error(`error: ${e}`);
       ipc.send('status', {

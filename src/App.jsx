@@ -129,7 +129,14 @@ class App extends Component {
       Math.floor((value * 100) / totalPhotosCount);
     return (
       <>
-        {searchingForPhotos && <LinearProgress />}
+        {searchingForPhotos && (
+          <>
+            <LinearProgress />
+            <Typography variant="body1" align="center" color="primary">
+              {`${totalPhotosCount} photos found so far`}
+            </Typography>
+          </>
+        )}
         {foundAllPhotos && (
           <>
             <LinearProgress
