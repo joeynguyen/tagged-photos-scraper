@@ -96,12 +96,12 @@ async function scrape(
     statusCode: 2,
     message: 'Navigating to the website...',
   });
-  await page.goto('https://m.facebook.com').catch(async err => {
+  await page.goto('https://www.facebook.com').catch(async err => {
     log.error(`Error: ${err}`);
     ipc.send('status', {
       statusCode: 99,
       message:
-        'Error navigating to https://m.facebook.com.  Is there a problem ' +
+        'Error navigating to https://www.facebook.com.  Is there a problem ' +
         'with your Internet connection or is there something preventing ' +
         'you from going to this site in your browser?',
     });
@@ -115,28 +115,31 @@ async function scrape(
     message:
       'This will only work if you provided the correct email and password.',
   });
-  await page.focus('input[name="email"]');
+  await page.focus('#email');
   await page.keyboard.type(username);
-  const $passField = await page.$('input[name="pass"]');
+  const $passField = await page.$('input#pass');
   await $passField.type(password);
   await $passField.press('Enter');
 
-  // Bypass FB message to remember user on this browser
-  let $rememberUserButtonNo;
+  // Go to Profile page from Homepage
+  log.info('Going to your profile page');
+  ipc.send('status', {
+    statusCode: 4,
+    message: 'We need to go here to get to your Photos page.',
+  });
+  let $profileLink;
   try {
-    $rememberUserButtonNo = await page.waitForSelector(
-      '[href^="/login/save-device/cancel"]',
-      {
-        timeout: 5000,
-      }
-    );
+    $profileLink = await page.waitFor('div[data-click="profile_icon"] a', {
+      timeout: 5000,
+    });
   } catch (e) {
     if (e instanceof TimeoutError) {
       // await page.waitForSelector('#reg-link', { timeout: 10000 })
       await page
-        .waitForSelector('[aria-label="Did you forget your password?"]', {
-          timeout: 2000,
-        })
+        .waitForSelector(
+          '[href^="https://www.facebook.com/recover/initiate"]',
+          { timeout: 10000 }
+        )
         .then(async () => {
           log.error('login credentails incorrect');
           ipc.send('status', {
@@ -145,57 +148,31 @@ async function scrape(
           });
         })
         .catch(async () => {
-          await page
-            .waitForSelector('[href^="/reg/"]', { timeout: 2000 })
-            .then(async () => {
-              log.error('login credentails incorrect');
-              ipc.send('status', {
-                statusCode: 99,
-                message: "That account doesn't exist",
-              });
-            })
-            .catch(async () => {
-              log.error("Couldn't find profile_icon selector on homepage");
-              ipc.send('status', {
-                statusCode: 99,
-                message:
-                  'The page is missing an expected link. Facebook may ' +
-                  'have changed their layout. Please let the developer ' +
-                  'of this tool know about this issue.',
-              });
-            })
-            .finally(async () => {
-              await page.close();
-            });
+          log.error("Couldn't find profile_icon selector on homepage");
+          ipc.send('status-internal', 'failed');
+          ipc.send(
+            'status-friendly',
+            'The page is missing a required, expected link.  Please let the developer of this app know about this issue.'
+          );
+        })
+        .finally(async () => {
+          await page.close();
         });
     }
   }
-  await $rememberUserButtonNo.click();
-  await page.waitForNavigation();
 
-  // Go to Profile page from Homepage
-  log.info('Going to your profile page');
-  ipc.send('status', {
-    statusCode: 4,
-    message: 'We need to go here to get to your Photos page.',
-  });
-  const $profileLink = await page.waitForSelector('#MComposer a', {
-    timeout: 10000,
-  });
   await $profileLink.click();
 
-  // Go to "Photos" page
-  log.info('Going to "Photos" page');
+  // Go to "Photos of You" page
+  log.info('Going to "Photos of You" page');
   ipc.send('status', {
     statusCode: 5,
     message: 'How else would we find your photos?',
   });
-  await page.waitForSelector('#timelineBody', {
-    timeout: 5000,
-  });
-  const userProfileUrl = await page.url();
-  console.log('userProfileUrl', userProfileUrl);
-  await page.goto(`${userProfileUrl}/photos`);
+  const $photosLink = await page.waitFor('a[data-tab-key="photos"]');
+  await $photosLink.click();
+  await page.waitFor('a[name="Photos of You"]');
+  await page.waitFor(1000);
 
   // scrape photos
   log.info('Searching for photos');
