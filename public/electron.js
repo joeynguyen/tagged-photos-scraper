@@ -4,7 +4,6 @@ const { app, BrowserWindow, ipcMain, Menu, session } = electron;
 const path = require('path');
 const isDev = require('electron-is-dev');
 const log = require('electron-log');
-const { autoUpdater } = require('electron-updater');
 const unhandled = require('electron-unhandled');
 
 const scrape = require('./lib/scrape.js');
@@ -144,8 +143,6 @@ function createMenu() {
 app.on('ready', async () => {
   if (isDev) {
     await installExtensions();
-  } else {
-    autoUpdater.checkForUpdatesAndNotify();
   }
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
