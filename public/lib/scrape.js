@@ -11,6 +11,11 @@ const RETRY_MESSAGE =
 
 function getChromiumExecPath() {
   // https://github.com/GoogleChrome/puppeteer/issues/2134#issuecomment-408221446
+  // let chromiumPath = puppeteer.executablePath();
+  // if (process.platform === 'darwin') {
+  //   chromiumPath = chromiumPath.replace('app.asar', 'app.asar.unpacked');
+  // }
+  // return chromiumPath;
   return puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked');
 }
 
