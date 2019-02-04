@@ -121,14 +121,11 @@ async function scrape(
   await $passField.type(password);
   await $passField.press('Enter');
 
-  let $profileLink;
-  try {
-    $profileLink = await page.waitFor('div[data-click="profile_icon"] a', {
+  const $profileLink = await page
+    .waitForSelector('div[data-click="profile_icon"] a', {
       timeout: 5000,
-    });
-  } catch (e) {
-    if (e instanceof TimeoutError) {
-      // await page.waitForSelector('#reg-link', { timeout: 10000 })
+    })
+    .catch(async () => {
       await page
         .waitForSelector(
           '[href^="https://www.facebook.com/recover/initiate"]',
@@ -148,12 +145,17 @@ async function scrape(
             'status-friendly',
             'The page is missing a required, expected link.  Please let the developer of this app know about this issue.'
           );
-        })
-        .finally(async () => {
-          await page.close();
         });
-    }
+    })
+    .finally(async () => {
+      await page.close();
+    });
+
+  if (!$profileLink) {
+    return;
   }
+
+  await $profileLink.click();
 
   // Go to Profile page from Homepage
   log.info('Going to your profile page');
@@ -161,7 +163,6 @@ async function scrape(
     statusCode: 4,
     message: 'We need to go here to get to your Photos page.',
   });
-  await $profileLink.click();
 
   // Go to "Photos of You" page
   log.info('Going to "Photos of You" page');
@@ -169,9 +170,9 @@ async function scrape(
     statusCode: 5,
     message: 'How else would we find your photos?',
   });
-  const $photosLink = await page.waitFor('a[data-tab-key="photos"]');
+  const $photosLink = await page.waitForSelector('a[data-tab-key="photos"]');
   await $photosLink.click();
-  await page.waitFor('a[name="Photos of You"]');
+  await page.waitForSelector('a[name="Photos of You"]');
   await page.waitFor(1000);
 
   // scrape photos
