@@ -229,6 +229,7 @@ async function scrape(
       electronWindow
     );
     await page.waitFor(1000);
+    log.warn('SUCCESSFUL RUN');
     ipc.send('status', {
       statusCode: 100,
       message: 'Congratulations! All photos have been downloaded successfully!',

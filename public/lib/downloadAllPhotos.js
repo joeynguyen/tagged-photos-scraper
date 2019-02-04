@@ -27,9 +27,6 @@ async function downloadAllPhotos(
       const newPhotoPage = await browser.newPage();
       await newPhotoPage.goto(photoUrl);
 
-      // XPath to query text because "href" doesn't have a consistent pattern
-      // can be "/photo/view_full_size"
-      // or "https://scontent-dfw5-1.xx.fbcdn.net"
       const $optionsButton = await newPhotoPage
         .waitForSelector('[data-action-type="open_options_flyout"]')
         .catch(async () => {
