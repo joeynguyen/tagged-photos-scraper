@@ -36,21 +36,21 @@
     "webpack-bundle-analyzer": "3.0.3"
   },
   "scripts": {
-    "start": "concurrently 'npm run react-start' 'wait-on http://localhost:3000/ && npm run electron-start'",
+    "start": "concurrently 'yarn react-start' 'wait-on http://localhost:3000/ && yarn electron-start'",
     "react-start": "cross-env BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "electron-start": "electron .",
-    "builder:pack": "electron-builder --dir",
-    "builder:lin": "npm run build && electron-builder -l",
-    "builder:mac": "npm run build && electron-builder -m",
-    "builder:win": "npm run build && electron-builder -w",
-    "publish:lin": "npm run build && electron-builder -l --publish always",
-    "publish:mac": "npm run build && electron-builder -m --publish always",
-    "publish:win": "npm run build && electron-builder -w --publish always",
+    "builder:pack": "yarn build && electron-builder --dir",
+    "builder:lin": "yarn build && electron-builder -l",
+    "builder:mac": "yarn build && electron-builder -m",
+    "builder:win": "yarn build && electron-builder -w",
+    "publish:lin": "yarn build && electron-builder -l --publish always",
+    "publish:mac": "yarn build && electron-builder -m --publish always",
+    "publish:win": "yarn build && electron-builder -w --publish always",
     "postinstall": "electron-builder install-app-deps",
-    "analyze:react": "npm run build --stats && webpack-bundle-analyzer build/bundle-stats.json",
+    "analyze:react": "yarn build --stats && webpack-bundle-analyzer build/bundle-stats.json",
     "lint": "eslint --debug src/",
     "lint:write": "eslint --debug src/ --fix",
     "prettier": "prettier --write './src/**/*.{ts,tsx,js,jsx,scss,css,json}'"
@@ -76,8 +76,8 @@
   },
   "lint-staged": {
     "*.(js|jsx|ts|tsx)": [
-      "npm run lint:write",
-      "npm run prettier",
+      "yarn lint:write",
+      "yarn prettier",
       "git add"
     ]
   }
