@@ -122,14 +122,12 @@ async function scrape(
   await $passField.press('Enter');
 
   const $profileLink = await page
-    .waitForSelector('div[data-click="profile_icon"] a', {
-      timeout: 5000,
-    })
+    .waitForSelector('div[data-click="profile_icon"] a', { timeout: 10000 })
     .catch(async () => {
       await page
         .waitForSelector(
           '[href^="https://www.facebook.com/recover/initiate"]',
-          { timeout: 10000 }
+          { timeout: 5000 }
         )
         .then(async () => {
           log.error('login credentails incorrect');
@@ -140,15 +138,15 @@ async function scrape(
         })
         .catch(async () => {
           log.error("Couldn't find profile_icon selector on homepage");
-          ipc.send('status-internal', 'failed');
-          ipc.send(
-            'status-friendly',
-            'The page is missing a required, expected link.  Please let the developer of this app know about this issue.'
-          );
+          ipc.send('status', {
+            statusCode: 99,
+            message:
+              'The page is missing a required, expected link.  Please let the developer of this app know about this issue.',
+          });
+        })
+        .finally(async () => {
+          await page.close();
         });
-    })
-    .finally(async () => {
-      await page.close();
     });
 
   if (!$profileLink) {
@@ -170,10 +168,38 @@ async function scrape(
     statusCode: 5,
     message: 'How else would we find your photos?',
   });
-  const $photosLink = await page.waitForSelector('a[data-tab-key="photos"]');
+  const $photosLink = await page
+    .waitForSelector('a[data-tab-key="photos"]')
+    .catch(async () => {
+      log.error('Couldn\'t find a[data-tab-key="photos"] selector on homepage');
+      ipc.send('status', {
+        statusCode: 99,
+        message:
+          'The page is missing a required, expected link.  Please let the developer of this app know about this issue.',
+      });
+      await page.close();
+    });
+
+  if (!$photosLink) {
+    return;
+  }
   await $photosLink.click();
-  await page.waitForSelector('a[name="Photos of You"]');
-  await page.waitFor(1000);
+
+  const $photosOfYou = await page
+    .waitForSelector('a[name="Photos of You"]')
+    .catch(async () => {
+      log.error('Couldn\'t find a[name="Photos of You"] selector on homepage');
+      ipc.send('status', {
+        statusCode: 99,
+        message:
+          'The page is missing a required, expected link.  Please let the developer of this app know about this issue.',
+      });
+      await page.close();
+    });
+
+  if (!$photosOfYou) {
+    return;
+  }
 
   // scrape photos
   log.info('Searching for photos');

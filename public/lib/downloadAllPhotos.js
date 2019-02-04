@@ -30,15 +30,41 @@ async function downloadAllPhotos(
       // XPath to query text because "href" doesn't have a consistent pattern
       // can be "/photo/view_full_size"
       // or "https://scontent-dfw5-1.xx.fbcdn.net"
-      await newPhotoPage.waitForSelector(
-        '[data-action-type="open_options_flyout"]',
-        { timeout: 10000 }
-      );
+      const $optionsButton = await newPhotoPage
+        .waitForSelector('[data-action-type="open_options_flyout"]')
+        .catch(async () => {
+          log.error(
+            'Couldn\'t find [data-action-type="open_options_flyout"] selector on homepage'
+          );
+          ipc.send('status', {
+            statusCode: 99,
+            message:
+              'The page is missing a required, expected link.  Please let the developer of this app know about this issue.',
+          });
+          await page.close();
+        });
 
-      const imageSrc = await newPhotoPage.$eval(
-        '.fbPhotoSnowliftPopup img.spotlight',
-        el => el.src
-      );
+      if (!$optionsButton) {
+        return;
+      }
+
+      const imageSrc = await newPhotoPage
+        .$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src)
+        .catch(async () => {
+          log.error(
+            "Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on homepage"
+          );
+          ipc.send('status', {
+            statusCode: 99,
+            message:
+              'The page is missing a required, expected item.  Please let the developer of this app know about this issue.',
+          });
+          await page.close();
+        });
+
+      if (!imageSrc) {
+        return;
+      }
 
       // grab filename of image from URL
       const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
