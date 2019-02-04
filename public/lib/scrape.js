@@ -35,7 +35,7 @@ async function scrape(
     headless: !enabled,
     defaultViewport: {
       width: enabled ? width : 3440,
-      height: enabled ? height : 1440,
+      height: enabled ? height : 3440,
     },
     executablePath: getChromiumExecPath(),
     // even if the user's focus isn't on this app,
