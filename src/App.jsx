@@ -10,6 +10,7 @@ import Main from './Main';
 import ScraperSettings from './ScraperSettings';
 import StatusSteps from './StatusSteps';
 import DisclaimerDialog from './DisclaimerDialog';
+import PhotoStartAlert from './PhotoStartAlert';
 
 const { ipcRenderer, shell } = window.require('electron');
 const log = window.require('electron-log');
@@ -34,6 +35,8 @@ class App extends Component {
     downloadFolderLocation: null,
     logFileLocation: null,
     photosDownloadedCount: 0,
+    photoStartAlertVisible: false,
+    photoStartNumber: 1,
     scraperStatus: {
       // 0: 'ready', 1-97: 'running', 98: 'crashed', 99: 'failed', 100: 'complete'
       statusCode: 0,
@@ -71,6 +74,17 @@ class App extends Component {
     this.setState({ disclaimerDialogVisible: false });
   };
 
+  showPhotoStartAlert = (num = 1) => {
+    this.setState({
+      photoStartAlertVisible: true,
+      photoStartNumber: num,
+    });
+  };
+
+  hidePhotoStartAlert = () => {
+    this.setState({ photoStartAlertVisible: false });
+  };
+
   openDownloadFolder() {
     shell.openItem(this.state.downloadFolderLocation);
   }
@@ -89,6 +103,7 @@ class App extends Component {
     if (userRequestedPhotoIndexStart) {
       // non-developers start counting at 1, not 0
       photoStartIndex = userRequestedPhotoIndexStart - 1;
+      this.showPhotoStartAlert(userRequestedPhotoIndexStart);
     } else if (
       (statusCode === 98 || statusCode === 99) &&
       photosDownloadedCount !== 0
@@ -97,6 +112,9 @@ class App extends Component {
       // for example, if photo #2 was last downloaded successfully,
       // we restart at index 2 to begin downloading photo #3
       photoStartIndex = photosDownloadedCount;
+      this.showPhotoStartAlert(photosDownloadedCount + 1);
+    } else {
+      this.showPhotoStartAlert(1);
     }
 
     ipcRenderer.send(
@@ -188,6 +206,11 @@ class App extends Component {
         <DisclaimerDialog
           onClose={this.hideDisclaimerDialog}
           isVisible={disclaimerDialogVisible}
+        />
+        <PhotoStartAlert
+          onClose={this.hidePhotoStartAlert}
+          isVisible={this.state.photoStartAlertVisible}
+          startNumber={this.state.photoStartNumber}
         />
       </>
     );
