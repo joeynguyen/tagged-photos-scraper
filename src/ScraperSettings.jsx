@@ -235,7 +235,7 @@ class ScraperSettings extends Component {
               render={({ field, form }) => {
                 return (
                   <Tooltip
-                    placement="bottom"
+                    placement="right"
                     classes={{
                       tooltip: classes.htmlTooltip,
                     }}
