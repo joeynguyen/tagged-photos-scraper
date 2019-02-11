@@ -80,6 +80,21 @@ class ScraperSettings extends Component {
     this.setState(state => ({ showPassword: !state.showPassword }));
   };
 
+  handleSubmit = values => {
+    const {
+      email,
+      password,
+      userRequestedPhotoIndexStart,
+      visualMode,
+    } = values;
+    this.props.startScraper(
+      email,
+      password,
+      userRequestedPhotoIndexStart,
+      visualMode
+    );
+  };
+
   showStopConfirmation = () => {
     this.setState({ stopConfirmationVisible: true });
   };
@@ -92,7 +107,6 @@ class ScraperSettings extends Component {
     const {
       classes,
       status: { statusCode },
-      startScraper,
       stopScraper,
     } = this.props;
     const buttonText =
@@ -107,20 +121,7 @@ class ScraperSettings extends Component {
         <Formik
           initialValues={initialValues}
           validationSchema={settingsSchema}
-          onSubmit={values => {
-            const {
-              email,
-              password,
-              userRequestedPhotoIndexStart,
-              visualMode,
-            } = values;
-            startScraper(
-              email,
-              password,
-              userRequestedPhotoIndexStart,
-              visualMode
-            );
-          }}
+          onSubmit={this.handleSubmit}
         >
           <Form>
             <Field
@@ -296,7 +297,6 @@ class ScraperSettings extends Component {
                 type="button"
                 variant="contained"
                 color="secondary"
-                // onClick={stopScraper}
                 onClick={this.showStopConfirmation}
               >
                 Stop Scraper
