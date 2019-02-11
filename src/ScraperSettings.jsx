@@ -72,12 +72,12 @@ class ScraperSettings extends Component {
   };
 
   state = {
-    showPassword: false,
+    passwordVisible: false,
     stopConfirmationVisible: false,
   };
 
   handleClickShowPassword = () => {
-    this.setState(state => ({ showPassword: !state.showPassword }));
+    this.setState(state => ({ passwordVisible: !state.passwordVisible }));
   };
 
   handleSubmit = values => {
@@ -173,7 +173,7 @@ class ScraperSettings extends Component {
                     }
                     id={field.name}
                     variant="outlined"
-                    type={this.state.showPassword ? 'text' : 'password'}
+                    type={this.state.passwordVisible ? 'text' : 'password'}
                     label="Password"
                     style={{ marginBottom: '5px' }}
                     fullWidth
@@ -189,7 +189,7 @@ class ScraperSettings extends Component {
                             aria-label="Toggle password visibility"
                             onClick={this.handleClickShowPassword}
                           >
-                            {this.state.showPassword ? (
+                            {this.state.passwordVisible ? (
                               <Visibility />
                             ) : (
                               <VisibilityOff />
