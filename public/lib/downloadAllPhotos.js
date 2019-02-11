@@ -83,7 +83,7 @@ async function downloadAllPhotos(
       log.error(`error: ${e}`);
       ipc.send('status', {
         statusCode: 99,
-        message: `Downloading failed before all photos were downloaded. ${RETRY_MESSAGE}`,
+        message: `Downloading failed before all photos were retrieved successfully. ${RETRY_MESSAGE}`,
       });
       await page.close();
     }

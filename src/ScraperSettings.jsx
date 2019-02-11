@@ -18,6 +18,7 @@ import Email from '@material-ui/icons/Email';
 import LockOpen from '@material-ui/icons/LockOpen';
 import Photo from '@material-ui/icons/Photo';
 
+import FailedScrapeDialog from './FailedScrapeDialog';
 import StopScraperConfirm from './StopScraperConfirm';
 
 import * as yup from 'yup';
@@ -72,9 +73,17 @@ class ScraperSettings extends Component {
   };
 
   state = {
+    failedScrapeDialogVisible: false,
     passwordVisible: false,
     stopConfirmationVisible: false,
   };
+
+  componentDidUpdate(prevProps) {
+    const { statusCode } = this.props.status;
+    if (statusCode !== prevProps.status.statusCode && statusCode === 99) {
+      this.showFailedScrapeDialog();
+    }
+  }
 
   handleClickShowPassword = () => {
     this.setState(state => ({ passwordVisible: !state.passwordVisible }));
@@ -103,14 +112,24 @@ class ScraperSettings extends Component {
     this.setState({ stopConfirmationVisible: false });
   };
 
+  showFailedScrapeDialog = () => {
+    this.setState({ failedScrapeDialogVisible: true });
+  };
+
+  hideFailedScrapeDialog = () => {
+    this.setState({ failedScrapeDialogVisible: false });
+  };
+
   render() {
     const {
       classes,
       status: { statusCode },
       stopScraper,
     } = this.props;
-    const buttonText =
-      statusCode === 98 || statusCode === 99 ? 'Retry' : 'Start';
+    const scraperRunning = statusCode > 0 && statusCode < 98;
+    const scraperFailed = statusCode === 98 || statusCode === 99;
+    const scraperSuccess = statusCode === 100;
+    const buttonText = scraperFailed ? 'Retry' : 'Start';
     return (
       <>
         <StopScraperConfirm
@@ -123,8 +142,13 @@ class ScraperSettings extends Component {
           validationSchema={settingsSchema}
           onSubmit={this.handleSubmit}
         >
-          {({ values }) => (
+          {({ submitForm, values }) => (
             <Form>
+              <FailedScrapeDialog
+                onClose={this.hideFailedScrapeDialog}
+                isVisible={this.state.failedScrapeDialogVisible}
+                retryScraper={submitForm}
+              />
               <Field
                 type="text"
                 name="email"
@@ -279,7 +303,7 @@ class ScraperSettings extends Component {
                   );
                 }}
               />
-              {statusCode === 100 ? (
+              {scraperSuccess ? (
                 <Typography variant="h5" color="primary">
                   Success!
                 </Typography>
@@ -288,12 +312,12 @@ class ScraperSettings extends Component {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  disabled={statusCode > 0 && statusCode < 98}
+                  disabled={scraperRunning}
                 >
                   {buttonText}
                 </Button>
               )}{' '}
-              {statusCode > 0 && statusCode < 98 && (
+              {scraperRunning && (
                 <>
                   <Button
                     type="button"
