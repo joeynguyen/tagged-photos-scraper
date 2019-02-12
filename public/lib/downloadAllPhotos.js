@@ -1,9 +1,12 @@
 const log = require('electron-log');
 
 const downloadFile = require('./downloadFile.js');
-const RETRY_MESSAGE =
-  'If you would like to continue downloading ' +
-  'where you left off, click the "Retry" button.';
+const {
+  RETRY_MESSAGE,
+  statusGetFullPhotos,
+  statusMissingElement,
+  statusFailed,
+} = require('./statusTypes.js');
 
 async function downloadAllPhotos(
   photoStartIndex,
@@ -13,11 +16,8 @@ async function downloadAllPhotos(
   ipc,
   electronWindow
 ) {
-  ipc.send('status', {
-    statusCode: 9,
-    message:
-      'Getting the full quality version of your photos and downloading them.',
-  });
+  log.info('Downloading all photos');
+  ipc.send('status', statusGetFullPhotos());
 
   for (let i = photoStartIndex; i < $photos.length; i++) {
     try {
@@ -33,11 +33,7 @@ async function downloadAllPhotos(
           log.error(
             'Couldn\'t find [data-action-type="open_options_flyout"] selector on homepage'
           );
-          ipc.send('status', {
-            statusCode: 99,
-            message:
-              'The page is missing a required, expected link.  Please let the developer of this app know about this issue.',
-          });
+          ipc.send('status', statusMissingElement());
           await page.close();
         });
 
@@ -51,11 +47,7 @@ async function downloadAllPhotos(
           log.error(
             "Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on homepage"
           );
-          ipc.send('status', {
-            statusCode: 99,
-            message:
-              'The page is missing a required, expected item.  Please let the developer of this app know about this issue.',
-          });
+          ipc.send('status', statusMissingElement());
           await page.close();
         });
 
@@ -65,6 +57,7 @@ async function downloadAllPhotos(
 
       // grab filename of image from URL
       const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
+      console.log('regx.exec(imageSrc)', regx.exec(imageSrc));
       let filename = regx.exec(imageSrc)[0];
       // append index number + 1 in front of filename for user to
       // reference once they download in case tool fails while running
@@ -81,10 +74,12 @@ async function downloadAllPhotos(
       await newPhotoPage.close();
     } catch (e) {
       log.error(`error: ${e}`);
-      ipc.send('status', {
-        statusCode: 99,
-        message: `Downloading failed before all photos were retrieved successfully. ${RETRY_MESSAGE}`,
-      });
+      ipc.send(
+        'status',
+        statusFailed(
+          `Downloading failed before all photos were retrieved successfully. ${RETRY_MESSAGE}`
+        )
+      );
       await page.close();
     }
   }

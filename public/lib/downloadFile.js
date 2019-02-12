@@ -1,9 +1,7 @@
 const { app } = require('electron');
 const { download } = require('electron-dl');
 const log = require('electron-log');
-const RETRY_MESSAGE =
-  'If you would like to continue downloading ' +
-  'where you left off, click the "Retry" button.';
+const { RETRY_MESSAGE, statusFailed } = require('./statusTypes.js');
 
 function downloadFile(url, filename, iter, page, ipc, electronWindow) {
   download(electronWindow, url, {
@@ -21,10 +19,7 @@ function downloadFile(url, filename, iter, page, ipc, electronWindow) {
         1} before all photos were downloaded. ${RETRY_MESSAGE}`;
       log.error(errMessage);
       log.error('error', err);
-      ipc.send('status', {
-        statusCode: 99,
-        message: errMessage,
-      });
+      ipc.send('status', statusFailed(errMessage));
       await page.close();
     });
 }

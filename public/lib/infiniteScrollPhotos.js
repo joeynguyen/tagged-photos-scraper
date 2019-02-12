@@ -1,4 +1,8 @@
 const log = require('electron-log');
+const {
+  statusInfiniteScroll,
+  statusFoundAllPhotos,
+} = require('./statusTypes.js');
 
 async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
   const photosQuerySelector =
@@ -11,14 +15,7 @@ async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
     let previousHeight = 0;
     let currentHeight = await page.evaluate('document.body.scrollHeight');
 
-    ipc.send('status', {
-      statusCode: 7,
-      message:
-        'Facebook.com uses a feature called infinite scrolling to load ' +
-        'additional photos as you scroll down the page. This tool imitates ' +
-        'that scrolling behavior so that it can trigger the loading of ' +
-        'additional photos.',
-    });
+    ipc.send('status', statusInfiniteScroll());
     // keep scrolling to the bottom of the page until there are no more photos to load
     while (previousHeight < currentHeight) {
       previousHeight = currentHeight;
@@ -39,10 +36,7 @@ async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
     // since there aren't any more photos left to load
     // do nothing with the error
     log.info("Can't scroll down anymore");
-    ipc.send('status', {
-      statusCode: 8,
-      message: 'Found all of your tagged photos',
-    });
+    ipc.send('status', statusFoundAllPhotos());
   }
 
   $taggedPhotos = await page.$$(photosQuerySelector);
