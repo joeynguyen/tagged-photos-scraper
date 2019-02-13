@@ -118,9 +118,11 @@ class ScraperSettings extends Component {
       status: { statusCode },
       stopScraper,
     } = this.props;
-    const scraperRunning = statusCode > 0 && statusCode < 98;
+    // using statusCode > 1 because 1 is before puppeteer has initialized
+    const scraperRunning = statusCode > 1 && statusCode < 98;
     const scraperFailed = statusCode === 98 || statusCode === 99;
     const scraperSuccess = statusCode === 100;
+    const readyToStart = statusCode === 0 || scraperFailed;
     const buttonText = scraperFailed ? 'Retry' : 'Start';
     return (
       <>
@@ -250,20 +252,11 @@ class ScraperSettings extends Component {
                 photosDownloadedCount={photosDownloadedCount}
                 statusCode={statusCode}
               />
-              {scraperSuccess ? (
-                <Typography variant="h5" color="primary">
-                  Success!
-                </Typography>
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={scraperRunning}
-                >
+              {readyToStart && (
+                <Button variant="contained" color="primary" type="submit">
                   {buttonText}
                 </Button>
-              )}{' '}
+              )}
               {scraperRunning && (
                 <>
                   <Button
@@ -285,6 +278,11 @@ class ScraperSettings extends Component {
                   Last photo downloaded: #{photosDownloadedCount}
                 </Typography>
               ) : null}
+              {scraperSuccess && (
+                <Typography variant="h5" color="primary">
+                  Success!
+                </Typography>
+              )}{' '}
             </Form>
           )}
         </Formik>
