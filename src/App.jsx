@@ -159,6 +159,7 @@ class App extends Component {
           </Grid>
           <Grid item xs={3}>
             <ScraperSettings
+              photosDownloadedCount={photosDownloadedCount}
               status={scraperStatus}
               startScraper={this.runScraper}
               stopScraper={this.stopScraper}
