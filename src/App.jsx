@@ -81,22 +81,10 @@ class App extends Component {
 
   runScraper(username, password, userRequestedPhotoIndexStart, visualMode) {
     let photoStartIndex = 0;
-    const {
-      scraperStatus: { statusCode },
-      photosDownloadedCount,
-    } = this.state;
 
     if (userRequestedPhotoIndexStart) {
       // non-developers start counting at 1, not 0
       photoStartIndex = userRequestedPhotoIndexStart - 1;
-    } else if (
-      (statusCode === 98 || statusCode === 99) &&
-      photosDownloadedCount !== 0
-    ) {
-      // index starts at 0 so it's 1 behind the number downloaded
-      // for example, if photo #2 was last downloaded successfully,
-      // we restart at index 2 to begin downloading photo #3
-      photoStartIndex = photosDownloadedCount;
     }
 
     ipcRenderer.send(
