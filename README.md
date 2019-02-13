@@ -8,6 +8,8 @@ To be extra careful, I also recommend using this tool only on your own personal 
 
 The speed of your computer and WiFi also play a big part in how well this tool performs.  I recommend being on a network with at least 25 Mbps which you can test by going to https://www.speedtest.net/.
 
+As far as I know, this tool only supports users using the United States version of the Facebook.com website. I don't know whether or not international users will be able to benefit from it, but feel free to try it out if you're not in the U.S. and let me know how it goes for you!
+
 ## Why this tool exists
 
 Currently, Facebook gives you the ability to download full photo albums that you yourself have uploaded to your Facebook account. This [video](https://www.youtube.com/watch?v=Qw6g1Db48Ok) shows you how to do that. You can download [all of the data about your account history](https://www.facebook.com/settings?tab=your_facebook_information). However as far as I know, at this moment there's no option on Facebook.com or through their mobile app for you to download all of the photos that you've been tagged in by others.

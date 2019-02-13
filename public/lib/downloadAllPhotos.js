@@ -31,7 +31,7 @@ async function downloadAllPhotos(
         .waitForSelector('[data-action-type="open_options_flyout"]')
         .catch(async () => {
           log.error(
-            'Couldn\'t find [data-action-type="open_options_flyout"] selector on homepage'
+            'Couldn\'t find [data-action-type="open_options_flyout"] selector on photo'
           );
           ipc.send('status', statusMissingElement());
           await page.close();
@@ -41,23 +41,42 @@ async function downloadAllPhotos(
         return;
       }
 
-      const imageSrc = await newPhotoPage
+      let imageSrc = await newPhotoPage
         .$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src)
         .catch(async () => {
           log.error(
-            "Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on homepage"
+            "Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on photo"
           );
           ipc.send('status', statusMissingElement());
           await page.close();
         });
 
+      // sometimes imageSrc will be a URL like
+      // "https://static.xx.fbcdn.net/rsrc.php/v3/y4/r/-PAXP-deijE.gif"
+      // which is a placeholder image until the full quality photo is loaded
+      while (imageSrc.includes('.php')) {
+        log.warn(`imageSrc includes .php: ${imageSrc}`);
+        await newPhotoPage.waitFor(1000);
+        imageSrc = await newPhotoPage
+          .$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src)
+          .catch(async () => {
+            log.error(
+              "Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on photo"
+            );
+            ipc.send('status', statusMissingElement());
+            await page.close();
+          });
+      }
+
       if (!imageSrc) {
+        log.error("Couldn't find 'imageSrc' for the photo");
+        ipc.send('status', statusMissingElement());
+        await page.close();
         return;
       }
 
       // grab filename of image from URL
       const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
-      console.log('regx.exec(imageSrc)', regx.exec(imageSrc));
       let filename = regx.exec(imageSrc)[0];
       // append index number + 1 in front of filename for user to
       // reference once they download in case tool fails while running

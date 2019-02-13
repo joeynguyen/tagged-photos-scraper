@@ -163,13 +163,12 @@ async function scrape(
   log.info('Going to your profile page');
   ipc.send('status', statusNavToProfile());
 
-  // Go to "Photos of You" page
-  log.info('Going to "Photos of You" page');
-  ipc.send('status', statusNavToPhotos());
   const $photosLink = await page
     .waitForSelector('a[data-tab-key="photos"]')
     .catch(async () => {
-      log.error('Couldn\'t find a[data-tab-key="photos"] selector on homepage');
+      log.error(
+        'Couldn\'t find a[data-tab-key="photos"] selector on Profile page'
+      );
       ipc.send('status', statusMissingElement());
       await page.close();
     });
@@ -177,12 +176,17 @@ async function scrape(
   if (!$photosLink) {
     return;
   }
+  // Go to Photos page
+  log.info('Going to your Photos page');
+  ipc.send('status', statusNavToPhotos());
   await $photosLink.click();
 
   const $photosOfYou = await page
     .waitForSelector('a[name="Photos of You"]')
     .catch(async () => {
-      log.error('Couldn\'t find a[name="Photos of You"] selector on homepage');
+      log.error(
+        'Couldn\'t find a[name="Photos of You"] selector on Photos page'
+      );
       ipc.send('status', statusMissingElement());
       await page.close();
     });
