@@ -111,8 +111,7 @@ class App extends Component {
     } = this.state;
     const { statusCode } = scraperStatus;
     const searchingForPhotos = statusCode > 0 && statusCode < 8;
-    const foundAllPhotos =
-      statusCode === 8 || statusCode === 9 || statusCode === 100;
+    const foundAllPhotos = statusCode >= 8;
     const calculateCompletion = value =>
       Math.floor((value * 100) / totalPhotosCount);
     return (
