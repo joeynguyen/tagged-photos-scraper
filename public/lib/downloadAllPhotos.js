@@ -38,7 +38,7 @@ async function downloadAllPhotos(
         });
 
       if (!$optionsButton) {
-        return;
+        throw new Error("Couldn't find $optionsButton");
       }
 
       let imageSrc = await newPhotoPage
@@ -72,7 +72,7 @@ async function downloadAllPhotos(
         log.error("Couldn't find 'imageSrc' for the photo");
         ipc.send('status', statusMissingElement());
         await page.close();
-        return;
+        throw new Error("Couldn't find imageSrc");
       }
 
       // grab filename of image from URL
@@ -82,7 +82,15 @@ async function downloadAllPhotos(
       // reference once they download in case tool fails while running
       filename = `${i + 1}-${filename}`;
 
-      await downloadFile(imageSrc, filename, i, page, ipc, electronWindow);
+      await downloadFile(
+        imageSrc,
+        filename,
+        i,
+        $photos.length,
+        page,
+        ipc,
+        electronWindow
+      );
 
       // stop referencing the element handle
       $photo.dispose();

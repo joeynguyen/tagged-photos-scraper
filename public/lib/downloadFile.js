@@ -1,9 +1,21 @@
 const { app } = require('electron');
 const { download } = require('electron-dl');
 const log = require('electron-log');
-const { RETRY_MESSAGE, statusFailed } = require('./statusTypes.js');
+const {
+  RETRY_MESSAGE,
+  statusFailed,
+  statusSuccess,
+} = require('./statusTypes.js');
 
-function downloadFile(url, filename, iter, page, ipc, electronWindow) {
+function downloadFile(
+  url,
+  filename,
+  iter,
+  totalPhotosCount,
+  page,
+  ipc,
+  electronWindow
+) {
   download(electronWindow, url, {
     directory: app.getPath('downloads') + '/tagged-photos-scraper',
     filename,
@@ -13,6 +25,10 @@ function downloadFile(url, filename, iter, page, ipc, electronWindow) {
       log.info(`Downloaded ${filename} successfully`);
       log.info(`${photosDownloaded} downloaded`);
       ipc.send('photos-downloaded', photosDownloaded);
+      if (iter === totalPhotosCount) {
+        log.warn('SUCCESSFUL RUN');
+        ipc.send('status', statusSuccess());
+      }
     })
     .catch(async err => {
       const errMessage = `Downloading failed at photo #${iter +

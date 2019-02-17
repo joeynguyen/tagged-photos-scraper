@@ -15,7 +15,6 @@ const {
   statusStopped,
   statusMissingElement,
   statusFailed,
-  statusSuccess,
 } = require('./statusTypes.js');
 
 function getChromiumExecPath() {
@@ -55,38 +54,37 @@ async function scrape(
 
   // Go to website
   const page = await browser.newPage();
-  page.on('close', async () => {
+  page.once('close', async () => {
     log.info('page closed, closing browser as well');
     await browser.close();
   });
 
   // handle errors
-  process.on('uncaughtException', async err => {
+  process.once('uncaughtException', async err => {
     log.error('process uncaughtException error', err);
     ipc.send('status', statusCrashed(err));
     await page.close();
   });
-  page.on('pageerror', async err => {
+  page.once('pageerror', async err => {
     log.error('page uncaughtException error', err);
     ipc.send('status', statusCrashed(err));
     await page.close();
   });
-  page.on('error', async err => {
+  page.once('error', async err => {
     log.error('puppeteer page crash error', err);
     ipc.send('status', statusCrashed(err));
     await page.close();
   });
-  browser.on('disconnected', async () => {
+  browser.once('disconnected', async () => {
     log.warn('puppeteer browser disconnected');
     await browser.close();
   });
-  ipcMain.on('stop-scraper', () => {
+  ipcMain.once('stop-scraper', async event => {
+    console.log("'stop-scraper' received");
     log.warn('puppeteer received a stop request');
-    ipc.send('status', statusStopped());
-    // don't use async/await because we don't want to wait for other processes
-    // immediately shut down puppeteer
-    page.close();
-    browser.close();
+    event.sender.send('status', statusStopped());
+    await page.close();
+    await browser.close();
   });
 
   // navigate to Facebook
@@ -220,11 +218,9 @@ async function scrape(
       ipc,
       electronWindow
     );
-    await page.waitFor(1000);
-    log.warn('SUCCESSFUL RUN');
-    ipc.send('status', statusSuccess());
   }
 
+  await page.waitFor(1000);
   // stop puppeteer
   log.info('Stopping puppeteer');
   await page.close();
