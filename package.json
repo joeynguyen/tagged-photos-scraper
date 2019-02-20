@@ -1,6 +1,6 @@
 {
   "name": "tagged-photos-scraper",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Scrape Facebook for photos you're tagged in",
   "author": "Joey Nguyen",
   "license": "GPL-3.0-or-later",
@@ -16,8 +16,8 @@
     "formik": "1.4.2",
     "prop-types": "15.6.2",
     "puppeteer": "1.12.1",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
     "typeface-roboto": "0.0.54",
     "yup": "0.26.7"
   },
