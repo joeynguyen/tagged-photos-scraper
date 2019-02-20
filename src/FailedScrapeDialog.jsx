@@ -25,7 +25,7 @@ function FailedScrapeDialog({ isVisible, onClose, retryScraper }) {
       maxWidth="sm"
       aria-labelledby="stop-confirmation-title"
     >
-      <DialogTitle id="stop-confirmation-title">Are you sure?</DialogTitle>
+      <DialogTitle id="stop-confirmation-title">Download Failed</DialogTitle>
       <DialogContent>
         <Typography>
           Downloading failed before all photos were retrieved successfully.
