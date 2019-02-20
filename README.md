@@ -1,4 +1,4 @@
-# About this application
+# Tagged Photos Scraper
 
 ## What this tool does
 
@@ -33,19 +33,15 @@ I wanted to find a solution to a need that I felt was unaddressed.  In the past,
 
 The other reason I built this tool was to get my hands dirty and learn some technologies that I've been interested in, specifically Electron.js and Puppeteer.  For a software developer, like any other profession that involves creating things, the best way to learn a new skill is to create something with it, and this project gave me a good opportunity to do that.  So mostly, I built this tool for myself.
 
-## Why I didn't charge for this tool
-
-Since I wanted as many people as possible to benefit from this tool, by choosing not to profit from it, I don't have to worry about hiding its source code. Having the code out in the open allows anyone to poke and prod at it and see that nothing dishonest is being done with their account data and personal info.
-
-Another reason is because this tool uses all [open-source technologies](https://en.wikipedia.org/wiki/Open-source_software), which means that it was built using technologies that thousands of individuals and company have spent their time and energy contributing to, many of whom did it for free. The spirit of OSS and sharing of knowledge is what makes working in the technology field so great and sets it apart from most other industries. And in that tradition, I'm releasing this code open-source as well. Anyone who wants to build some software using similar technologies can learn from and use my code as a reference.
-
 ## Why not put this in the Mac App Store
 
-Going through the process of doing that requires more time and energy than I'm interested in taking on.  Plus, Facebook can easily make changes to their website that can break the functionality of this tool so if that happens, there'll be a bunch of frustrated users leaving bad reviews. As a wise woman once said, "Ain't nobody got time for that".
+Going through the process of doing that requires more time and energy than I'm interested in taking on.  Plus, Facebook can easily make changes to their website that can break the functionality of this tool so if that happens, there'll be a bunch of frustrated users leaving bad reviews. As a wise woman once said, "Ain't nobody got time for that!".
 
-## Credits
+## Acknowledgments
 
-### Technologies used that were built by big companies you may know
+I was able to build this app thanks to the work of many other open-source projects.
+
+### Technologies used that were created by big companies you may know
 
 - Puppeteer by Google - web scraping technology used to emulate a user navigating to and around a website
 - Electron by Github - software to enable using web technologies to build desktop apps

@@ -33,8 +33,8 @@ const installExtensions = async () => {
       });
     })
   )
-    .then(name => console.log(`Added Extensions: ${name}`))
-    .catch(err => console.log('An error occurred: ', err));
+    .then(name => log.info(`Added Extensions: ${name}`))
+    .catch(err => log.error('An error occurred: ', err));
 };
 
 // Keep a global reference of the window object, if you don't, the window will
