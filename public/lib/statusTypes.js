@@ -111,6 +111,11 @@ function statusSuccess() {
   };
 }
 
+function userForcedStop(message) {
+  // closed is usually proceeded with either: "Target", "Session", or "Connection"
+  return message.includes('Protocol error') && message.includes('closed');
+}
+
 module.exports = {
   RETRY_MESSAGE,
   statusStarting,
@@ -127,4 +132,5 @@ module.exports = {
   statusMissingElement,
   statusFailed,
   statusSuccess,
+  userForcedStop,
 };
