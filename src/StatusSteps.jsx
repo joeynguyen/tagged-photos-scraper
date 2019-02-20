@@ -48,6 +48,7 @@ export default class StatusSteps extends Component {
   }
 
   static propTypes = {
+    failedDownloadPhotos: PropTypes.array.isRequired,
     status: PropTypes.shape({
       statusCode: PropTypes.number.isRequired,
       message: PropTypes.string.isRequired,
@@ -77,6 +78,7 @@ export default class StatusSteps extends Component {
     const steps = getSteps();
     const { currentStep, currentMessage } = this.state;
     const {
+      failedDownloadPhotos,
       photosDownloaded,
       photosFound,
       status: { message, statusCode },
@@ -97,6 +99,7 @@ export default class StatusSteps extends Component {
     return (
       <div style={{ width: '90%' }}>
         <SuccessfulDownloadDialog
+          failedDownloadPhotos={failedDownloadPhotos}
           onClose={this.hideSuccessDialog}
           successDialogVisible={this.state.successDialogVisible}
         />

@@ -79,10 +79,9 @@ async function scrape(
     log.warn('puppeteer browser disconnected');
     await browser.close();
   });
-  ipcMain.once('stop-scraper', async event => {
-    console.log("'stop-scraper' received");
+  ipcMain.once('stop-scraper', async () => {
     log.warn('puppeteer received a stop request');
-    event.sender.send('status', statusStopped());
+    ipc.send('status', statusStopped());
     await page.close();
     await browser.close();
   });
@@ -102,6 +101,10 @@ async function scrape(
     );
     await page.close();
   });
+  const context = browser.defaultBrowserContext();
+  await context.overridePermissions('https://www.facebook.com', [
+    'notifications',
+  ]);
 
   // Submit login
   log.info('Logging in');
@@ -213,7 +216,6 @@ async function scrape(
     await downloadAllPhotos(
       photoStartIndex,
       $taggedPhotos,
-      page,
       browser,
       ipc,
       electronWindow

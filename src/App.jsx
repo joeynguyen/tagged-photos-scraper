@@ -32,6 +32,7 @@ class App extends Component {
   state = {
     disclaimerDialogVisible: true,
     downloadFolderLocation: null,
+    failedDownloadPhotos: [],
     logFileLocation: null,
     photosDownloadedCount: 0,
     scraperStatus: {
@@ -58,6 +59,15 @@ class App extends Component {
     ipcRenderer.on('photos-downloaded', (event, photoNumber) => {
       this.setState({ photosDownloadedCount: photoNumber });
     });
+
+    ipcRenderer.on('photo-download-failed', (event, photoNumber) => {
+      this.setState({
+        failedDownloadPhotos: this.state.failedDownloadPhotos.concat(
+          photoNumber
+        ),
+      });
+    });
+
     ipcRenderer.on('log-file-location', (event, location) => {
       this.setState({ logFileLocation: location });
     });
@@ -104,6 +114,7 @@ class App extends Component {
     const {
       disclaimerDialogVisible,
       downloadFolderLocation,
+      failedDownloadPhotos,
       logFileLocation,
       photosDownloadedCount,
       scraperStatus,
@@ -139,6 +150,7 @@ class App extends Component {
         <Grid container>
           <Grid item xs={4}>
             <StatusSteps
+              failedDownloadPhotos={failedDownloadPhotos}
               photosFound={totalPhotosCount}
               photosDownloaded={photosDownloadedCount}
               status={scraperStatus}
@@ -146,6 +158,7 @@ class App extends Component {
           </Grid>
           <Grid item xs={3}>
             <ScraperSettings
+              failedDownloadPhotos={failedDownloadPhotos}
               photosDownloadedCount={photosDownloadedCount}
               status={scraperStatus}
               startScraper={this.runScraper}

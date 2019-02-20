@@ -1,17 +1,11 @@
 const log = require('electron-log');
 
 const downloadFile = require('./downloadFile.js');
-const {
-  RETRY_MESSAGE,
-  statusGetFullPhotos,
-  statusMissingElement,
-  statusFailed,
-} = require('./statusTypes.js');
+const { statusGetFullPhotos } = require('./statusTypes.js');
 
 async function downloadAllPhotos(
   photoStartIndex,
   $photos,
-  page,
   browser,
   ipc,
   electronWindow
@@ -20,6 +14,8 @@ async function downloadAllPhotos(
   ipc.send('status', statusGetFullPhotos());
 
   for (let i = photoStartIndex; i < $photos.length; i++) {
+    const userFriendlyPhotoNumber = i + 1;
+
     try {
       const $photo = $photos[i];
       const hrefPropertyHandle = await $photo.getProperty('href');
@@ -31,25 +27,39 @@ async function downloadAllPhotos(
         .waitForSelector('[data-action-type="open_options_flyout"]')
         .catch(async () => {
           log.error(
-            'Couldn\'t find [data-action-type="open_options_flyout"] selector on photo'
+            `Couldn't find [data-action-type="open_options_flyout"] selector on photo #${userFriendlyPhotoNumber}`
           );
-          ipc.send('status', statusMissingElement());
-          await page.close();
+          ipc.send('photo-download-failed', userFriendlyPhotoNumber);
+          await newPhotoPage.close();
         });
 
       if (!$optionsButton) {
-        throw new Error("Couldn't find $optionsButton");
+        // Some photo URLs won't work if navigated to in a new tab
+        // and will take the user to a page that says:
+        // "The link you followed may be broken, or the page may have been removed.",
+        // even though the photo works if the user clicks on the thumbnail.
+        // There's nothing I can think of to do about this except
+        // skip and move on to the next photo.
+        throw new Error(
+          `Couldn't find $optionsButton on photo #${userFriendlyPhotoNumber}`
+        );
       }
 
       let imageSrc = await newPhotoPage
         .$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src)
         .catch(async () => {
           log.error(
-            "Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on photo"
+            `Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on photo #${userFriendlyPhotoNumber}`
           );
-          ipc.send('status', statusMissingElement());
-          await page.close();
+          ipc.send('photo-download-failed', userFriendlyPhotoNumber);
+          await newPhotoPage.close();
         });
+
+      if (!imageSrc) {
+        throw new Error(
+          `Couldn't find imageSrc on photo #${userFriendlyPhotoNumber}`
+        );
+      }
 
       // sometimes imageSrc will be a URL like
       // "https://static.xx.fbcdn.net/rsrc.php/v3/y4/r/-PAXP-deijE.gif"
@@ -61,18 +71,9 @@ async function downloadAllPhotos(
           .$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src)
           .catch(async () => {
             log.error(
-              "Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on photo"
+              `Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on photo #${userFriendlyPhotoNumber}`
             );
-            ipc.send('status', statusMissingElement());
-            await page.close();
           });
-      }
-
-      if (!imageSrc) {
-        log.error("Couldn't find 'imageSrc' for the photo");
-        ipc.send('status', statusMissingElement());
-        await page.close();
-        throw new Error("Couldn't find imageSrc");
       }
 
       // grab filename of image from URL
@@ -80,14 +81,13 @@ async function downloadAllPhotos(
       let filename = regx.exec(imageSrc)[0];
       // append index number + 1 in front of filename for user to
       // reference once they download in case tool fails while running
-      filename = `${i + 1}-${filename}`;
+      filename = `${userFriendlyPhotoNumber}-${filename}`;
 
       await downloadFile(
         imageSrc,
         filename,
         i,
         $photos.length,
-        page,
         ipc,
         electronWindow
       );
@@ -100,14 +100,7 @@ async function downloadAllPhotos(
       await newPhotoPage.waitFor(1000);
       await newPhotoPage.close();
     } catch (e) {
-      log.error(`error: ${e}`);
-      ipc.send(
-        'status',
-        statusFailed(
-          `Downloading failed before all photos were retrieved successfully. ${RETRY_MESSAGE}`
-        )
-      );
-      await page.close();
+      log.error(e);
     }
   }
 }

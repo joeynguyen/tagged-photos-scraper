@@ -54,6 +54,7 @@ const settingsSchema = yup.object().shape({
 
 class ScraperSettings extends Component {
   static propTypes = {
+    failedDownloadPhotos: PropTypes.array.isRequired,
     photosDownloadedCount: PropTypes.number.isRequired,
     status: PropTypes.shape({
       statusCode: PropTypes.number.isRequired,
@@ -114,6 +115,7 @@ class ScraperSettings extends Component {
   render() {
     const {
       classes,
+      failedDownloadPhotos,
       photosDownloadedCount,
       status: { statusCode },
       stopScraper,
@@ -231,8 +233,9 @@ class ScraperSettings extends Component {
                         tooltip: classes.htmlTooltipSmall,
                       }}
                       title="Allows you to see what this tool does behind
-                      the scenes. Note that enabling this mode may decrease
-                      stability and performance."
+                      the scenes. Note that this mode may decrease
+                      stability and performance so if you see issues,
+                      don't use it."
                     >
                       <FormControlLabel
                         control={
@@ -273,16 +276,31 @@ class ScraperSettings extends Component {
                   </Typography>
                 </>
               )}
-              {scraperFailed && photosDownloadedCount > 0 ? (
-                <Typography style={{ marginTop: '20px' }}>
-                  Last photo downloaded: #{photosDownloadedCount}
-                </Typography>
-              ) : null}
               {scraperSuccess && (
                 <Typography variant="h5" color="primary">
                   Success!
                 </Typography>
               )}{' '}
+              {failedDownloadPhotos.length > 0 ? (
+                <Typography style={{ marginTop: '10px' }}>
+                  <span>Unable to download the following photos:</span>
+                  <ul>
+                    {failedDownloadPhotos.map(photo => (
+                      <li>{photo}</li>
+                    ))}
+                  </ul>
+                  <span>Please try downloading them manually yourself.</span>
+                </Typography>
+              ) : null}
+              {scraperFailed && photosDownloadedCount > 0 ? (
+                <Typography style={{ marginTop: '20px' }}>
+                  The tool stopped running before all photos were downloaded.
+                  Click the Retry button above to continue where you left off.
+                  <br />
+                  <br />
+                  The last photo downloaded was: #{photosDownloadedCount}
+                </Typography>
+              ) : null}
             </Form>
           )}
         </Formik>

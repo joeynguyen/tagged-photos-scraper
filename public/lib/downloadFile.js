@@ -1,18 +1,14 @@
 const { app } = require('electron');
 const { download } = require('electron-dl');
 const log = require('electron-log');
-const {
-  RETRY_MESSAGE,
-  statusFailed,
-  statusSuccess,
-} = require('./statusTypes.js');
+
+const { statusSuccess } = require('./statusTypes.js');
 
 function downloadFile(
   url,
   filename,
   iter,
   totalPhotosCount,
-  page,
   ipc,
   electronWindow
 ) {
@@ -25,18 +21,16 @@ function downloadFile(
       log.info(`Downloaded ${filename} successfully`);
       log.info(`${photosDownloaded} downloaded`);
       ipc.send('photos-downloaded', photosDownloaded);
-      if (iter === totalPhotosCount) {
+      if (iter + 1 === totalPhotosCount) {
         log.warn('SUCCESSFUL RUN');
         ipc.send('status', statusSuccess());
       }
     })
     .catch(async err => {
-      const errMessage = `Downloading failed at photo #${iter +
-        1} before all photos were downloaded. ${RETRY_MESSAGE}`;
+      ipc.send('photo-download-failed', iter + 1);
+      const errMessage = `Downloading failed at photo #${iter + 1}`;
       log.error(errMessage);
       log.error('error', err);
-      ipc.send('status', statusFailed(errMessage));
-      await page.close();
     });
 }
 
