@@ -41,7 +41,7 @@ I wanted to find a solution to a need that I felt was unaddressed.  In the past,
 - The browser extension gave me very low quality versions of my photos (it only downloaded the thumbnail versions, not the full quality ones).
 - Both the third party app and browser extension had code that was closed-source so I couldn't see how they worked and confirm that they weren't doing something unscrupulous or nefarious with my account.
 
-The other reason I built this tool was to get my hands dirty and learn some technologies that I've been interested in, specifically Electron.js and Puppeteer.  For a software developer, like any other profession that involves creating things, the best way to learn a new skill is to create something with it, and this project gave me a good opportunity to do that.  So mostly, I built this tool for myself.
+The other reason I built this tool was to get my hands dirty and learn some technologies that I've been interested in, specifically Electron.js and Puppeteer.  For a software developer, like any other profession that involves creating things, the best way to learn a new skill is to create something with it, and this project gave me a good opportunity to do that.  So mostly, I built this tool for myself. But since it's open-source, anyone who wants to see how it's built or want to build similar can reference the code.
 
 ## Acknowledgments
 
