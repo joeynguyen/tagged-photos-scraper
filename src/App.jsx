@@ -90,6 +90,9 @@ class App extends Component {
   }
 
   runScraper(username, password, userRequestedPhotoIndexStart, visualMode) {
+    // reset this list to empty for retried runs
+    this.setState({ failedDownloadPhotos: [] });
+
     let photoStartIndex = 0;
 
     if (userRequestedPhotoIndexStart) {

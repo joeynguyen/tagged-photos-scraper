@@ -47,6 +47,7 @@ async function downloadAllPhotos(
         // even though the photo works if the user clicks on the thumbnail.
         // There's nothing I can think of to do about this except
         // skip and move on to the next photo.
+        ipc.send('photo-download-failed', userFriendlyPhotoNumber);
         throw new Error(
           `Couldn't find $optionsButton on photo #${userFriendlyPhotoNumber}`
         );
@@ -62,11 +63,11 @@ async function downloadAllPhotos(
           log.error(
             `Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on photo #${userFriendlyPhotoNumber}`
           );
-          ipc.send('photo-download-failed', userFriendlyPhotoNumber);
           await newPhotoPage.close();
         });
 
       if (!imageSrc) {
+        ipc.send('photo-download-failed', userFriendlyPhotoNumber);
         throw new Error(
           `Couldn't find imageSrc on photo #${userFriendlyPhotoNumber}`
         );
@@ -95,6 +96,7 @@ async function downloadAllPhotos(
       const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
       let filename = regx.exec(imageSrc) && regx.exec(imageSrc)[0];
       if (!filename) {
+        ipc.send('photo-download-failed', userFriendlyPhotoNumber);
         throw new Error(
           `Couldn't find a filename on photo #${userFriendlyPhotoNumber}`
         );
@@ -120,7 +122,6 @@ async function downloadAllPhotos(
       await newPhotoPage.waitFor(1000);
       await newPhotoPage.close();
     } catch (e) {
-      ipc.send('photo-download-failed', userFriendlyPhotoNumber);
       log.error(e);
     }
   }
