@@ -43,10 +43,6 @@ I wanted to find a solution to a need that I felt was unaddressed.  In the past,
 
 The other reason I built this tool was to get my hands dirty and learn some technologies that I've been interested in, specifically Electron.js and Puppeteer.  For a software developer, like any other profession that involves creating things, the best way to learn a new skill is to create something with it, and this project gave me a good opportunity to do that.  So mostly, I built this tool for myself.
 
-## Why not put this in the Mac App Store
-
-Going through the process of doing that requires more time and energy than I'm interested in taking on.  Plus, Facebook can easily make changes to their website that can break the functionality of this tool so if that happens, there'll be a bunch of frustrated users leaving bad reviews. As a wise woman once said, "Ain't nobody got time for that!".
-
 ## Acknowledgments
 
 I was able to build this app thanks to the work of many other open-source projects.
