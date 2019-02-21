@@ -1,6 +1,14 @@
 # Tagged Photos Scraper
 
-![screenshot of Tagged Photos Scraper app](app.jpg)
+![screenshot of Tagged Photos Scraper app](gh-images/app.jpg)
+
+## Installation instructions
+
+Follow the instructions for your particular operating system below:
+
+- [Windows](installation-windows.md)
+- [MacOS](installation-mac.md)
+- [Linux](installation-linux.md)
 
 ## What this tool does
 
