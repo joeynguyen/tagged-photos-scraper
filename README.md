@@ -67,4 +67,5 @@ I was able to build this app thanks to the work of many other open-source projec
 
 ### Design
 
-The icon used for this app was free and downloaded at -  https://www.iconfinder.com/icons/1055003/photographs_picture_pictures_polaroids_icon.
+
+The icon used for this app was free and downloaded at -  https://www.iconfinder.com/icons/1936908/camera_instagram_photo_polaroid_selfie_shoot_icon.
