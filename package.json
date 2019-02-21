@@ -48,6 +48,7 @@
     "publish:lin": "yarn build && electron-builder -l --publish always",
     "publish:mac": "yarn build && electron-builder -m --publish always",
     "publish:win": "yarn build && electron-builder -w --publish always",
+    "publish:all": "yarn build && electron-builder -lmw --publish always",
     "postinstall": "electron-builder install-app-deps",
     "analyze:react": "yarn build --stats && webpack-bundle-analyzer build/bundle-stats.json",
     "lint": "eslint --debug src/",

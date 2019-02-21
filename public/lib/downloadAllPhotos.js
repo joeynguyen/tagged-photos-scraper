@@ -37,7 +37,6 @@ async function downloadAllPhotos(
           log.error(
             `Couldn't find [data-action-type="open_options_flyout"] selector on photo #${userFriendlyPhotoNumber}`
           );
-          ipc.send('photo-download-failed', userFriendlyPhotoNumber);
           await newPhotoPage.close();
         });
 
@@ -121,6 +120,7 @@ async function downloadAllPhotos(
       await newPhotoPage.waitFor(1000);
       await newPhotoPage.close();
     } catch (e) {
+      ipc.send('photo-download-failed', userFriendlyPhotoNumber);
       log.error(e);
     }
   }
