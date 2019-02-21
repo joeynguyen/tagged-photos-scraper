@@ -31,7 +31,7 @@ Reasons why you may want to download your tagged photos:
 - You're worried a Facebook bug will occur where they lose the photos you're tagged in.
 - You're afraid a friend may deactivate or delete their account, and you'll no longer have access to the photos they tagged you in.
 - Facebook may (rightly or wrongly) think that you violated one of their terms of service for whatever reason and choose to close your account which means you'll lose access to all the photos you're tagged in.
-- You, for some reason or other, may want to close your account.
+- You may want to close your Facebook account.
 
 ## Why I decided to build it
 
