@@ -94,7 +94,12 @@ async function downloadAllPhotos(
 
       // grab filename of image from URL
       const regx = /[a-zA-Z_0-9]*\.[a-zA-Z]{3,4}(?=\?)/;
-      let filename = regx.exec(imageSrc)[0];
+      let filename = regx.exec(imageSrc) && regx.exec(imageSrc)[0];
+      if (!filename) {
+        throw new Error(
+          `Couldn't find a filename on photo #${userFriendlyPhotoNumber}`
+        );
+      }
       // append index number + 1 in front of filename for user to
       // reference once they download in case tool fails while running
       filename = `${userFriendlyPhotoNumber}-${filename}`;

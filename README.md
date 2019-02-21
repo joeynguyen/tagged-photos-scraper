@@ -6,9 +6,9 @@
 
 This tool's sole function is to download all of the photos you've been tagged in on Facebook to your computer.  It **doesn't** track you, look at your personal data or your friends' data, save your login info for me or anyone else to use later, or anything else. If you’re someone who knows how to read and understand JavaScript, you can explore the code yourself to verify.  Or ask your friendly neighborhood web/software developer to take a look (buy her/him a coffee, beer, boba tea, or their BEVERAGE_OF_CHOICE as thanks).
 
-To be extra careful, I also recommend using this tool only on your own personal home network and not on a public WiFi network like a coffee shop.
+To be extra careful, I recommend using this tool only on your own personal home network and not on a public WiFi network like a coffee shop.
 
-The speed of your computer and WiFi also play a big part in how well this tool performs.  I recommend being on a network with at least 25 Mbps which you can test by going to https://www.speedtest.net/.
+The speed of your computer and WiFi play a big part in how fast/stable this tool performs.
 
 As far as I know, this tool only supports users using the United States version of the Facebook.com website. I don't know whether or not international users will be able to benefit from it, but feel free to try it out if you're not in the U.S. and let me know how it goes for you!
 
