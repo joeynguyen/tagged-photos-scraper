@@ -1,7 +1,9 @@
 const log = require('electron-log');
 const {
-  statusInfiniteScroll,
   statusFoundAllPhotos,
+  statusInfiniteScroll,
+  statusStopped,
+  userForcedStop,
 } = require('./statusTypes.js');
 
 async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
@@ -32,6 +34,10 @@ async function infiniteScrollPhotos(page, ipc, scrollDelay = 1000) {
       log.info('Scrolling down the page to load more photos');
     }
   } catch (e) {
+    if (userForcedStop(e.message)) {
+      ipc.send('status', statusStopped());
+      return;
+    }
     // there will be an error thrown once the page can't scroll down any further
     // since there aren't any more photos left to load
     // do nothing with the error

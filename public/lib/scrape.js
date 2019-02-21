@@ -15,6 +15,7 @@ const {
   statusStopped,
   statusMissingElement,
   statusFailed,
+  userForcedStop,
 } = require('./statusTypes.js');
 
 function getChromiumExecPath() {
@@ -118,9 +119,7 @@ async function scrape(
   const $profileLink = await page
     .waitForSelector('div[data-click="profile_icon"] a', { timeout: 10000 })
     .catch(async e => {
-      if (
-        e.message === 'Protocol error (Runtime.callFunctionOn): Target closed.'
-      ) {
+      if (userForcedStop(e.message)) {
         ipc.send('status', statusStopped());
         return;
       }
@@ -138,10 +137,7 @@ async function scrape(
           );
         })
         .catch(async e => {
-          if (
-            e.message ===
-            'Protocol error (Runtime.callFunctionOn): Target closed.'
-          ) {
+          if (userForcedStop(e.message)) {
             ipc.send('status', statusStopped());
             return;
           }
@@ -166,7 +162,12 @@ async function scrape(
 
   const $photosLink = await page
     .waitForSelector('a[data-tab-key="photos"]')
-    .catch(async () => {
+    .catch(async e => {
+      if (userForcedStop(e.message)) {
+        ipc.send('status', statusStopped());
+        return;
+      }
+
       log.error(
         'Couldn\'t find a[data-tab-key="photos"] selector on Profile page'
       );
@@ -184,7 +185,12 @@ async function scrape(
 
   const $photosOfYou = await page
     .waitForSelector('a[name="Photos of You"]')
-    .catch(async () => {
+    .catch(async e => {
+      if (userForcedStop(e.message)) {
+        ipc.send('status', statusStopped());
+        return;
+      }
+
       log.error(
         'Couldn\'t find a[name="Photos of You"] selector on Photos page'
       );

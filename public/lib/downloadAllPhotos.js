@@ -1,7 +1,11 @@
 const log = require('electron-log');
 
 const downloadFile = require('./downloadFile.js');
-const { statusGetFullPhotos } = require('./statusTypes.js');
+const {
+  statusGetFullPhotos,
+  statusStopped,
+  userForcedStop,
+} = require('./statusTypes.js');
 
 async function downloadAllPhotos(
   photoStartIndex,
@@ -25,7 +29,11 @@ async function downloadAllPhotos(
 
       const $optionsButton = await newPhotoPage
         .waitForSelector('[data-action-type="open_options_flyout"]')
-        .catch(async () => {
+        .catch(async e => {
+          if (userForcedStop(e.message)) {
+            ipc.send('status', statusStopped());
+            return;
+          }
           log.error(
             `Couldn't find [data-action-type="open_options_flyout"] selector on photo #${userFriendlyPhotoNumber}`
           );
@@ -47,7 +55,11 @@ async function downloadAllPhotos(
 
       let imageSrc = await newPhotoPage
         .$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src)
-        .catch(async () => {
+        .catch(async e => {
+          if (userForcedStop(e.message)) {
+            ipc.send('status', statusStopped());
+            return;
+          }
           log.error(
             `Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on photo #${userFriendlyPhotoNumber}`
           );
@@ -69,7 +81,11 @@ async function downloadAllPhotos(
         await newPhotoPage.waitFor(1000);
         imageSrc = await newPhotoPage
           .$eval('.fbPhotoSnowliftPopup img.spotlight', el => el.src)
-          .catch(async () => {
+          .catch(async e => {
+            if (userForcedStop(e.message)) {
+              ipc.send('status', statusStopped());
+              return;
+            }
             log.error(
               `Couldn't find '.fbPhotoSnowliftPopup img.spotlight' selector on photo #${userFriendlyPhotoNumber}`
             );

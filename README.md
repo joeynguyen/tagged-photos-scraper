@@ -1,5 +1,7 @@
 # Tagged Photos Scraper
 
+![screenshot of Tagged Photos Scraper app](app.jpg)
+
 ## What this tool does
 
 This tool's sole function is to download all of the photos you've been tagged in on Facebook to your computer.  It **doesn't** track you, look at your personal data or your friends' data, save your login info for me or anyone else to use later, or anything else. If you’re someone who knows how to read and understand JavaScript, you can explore the code yourself to verify.  Or ask your friendly neighborhood web/software developer to take a look (buy her/him a coffee, beer, boba tea, or their BEVERAGE_OF_CHOICE as thanks).
