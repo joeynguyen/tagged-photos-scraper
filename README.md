@@ -1,5 +1,7 @@
 # Tagged Photos Scraper
 
+Note: this tool was not built by the company Facebook and is not an official Facebook app.
+
 ![screenshot of Tagged Photos Scraper app](gh-images/app.jpg)
 
 ## Installation instructions
