@@ -22,16 +22,16 @@ As far as I know, this tool only supports users using the United States version 
 
 ## Why this tool exists
 
-Currently, Facebook gives you the ability to download full photo albums that you yourself have uploaded to your Facebook account. This [video](https://www.youtube.com/watch?v=Qw6g1Db48Ok) shows you how to do that. You can download [all of the data about your account history](https://www.facebook.com/settings?tab=your_facebook_information). However as far as I know, at this moment there's no option on Facebook.com or through their mobile app for you to download all of the photos that you've been tagged in by others.
+Currently, Facebook gives you the ability to download full photo albums that you yourself have uploaded to your Facebook account. This [video](https://www.youtube.com/watch?v=Qw6g1Db48Ok) shows you how to do that. You can also download [all of the data about your account history](https://www.facebook.com/settings?tab=your_facebook_information). However, as far as I know, at this moment there's no option on Facebook.com or through their mobile app for you to download all of the photos that you've been **tagged** in by others.
 
 Reasons why you may want to download your tagged photos:
 
 - You want to print out the photos for a physical photo album and want the best quality version available on Facebook.
 - You want a local copy so that you can view offline.
 - You're worried a Facebook bug will occur where they lose the photos you're tagged in.
-- You're afraid a friend may deactivate or delete their account and you'll no longer have access to the photos they have of you.
+- You're afraid a friend may deactivate or delete their account, and you'll no longer have access to the photos they tagged you in.
 - Facebook may (rightly or wrongly) think that you violated one of their terms of service for whatever reason and choose to close your account which means you'll lose access to all the photos you're tagged in.
-- Or you, for some reason or other, may choose to close your account.
+- You, for some reason or other, may want to close your account.
 
 ## Why I decided to build it
 
@@ -41,7 +41,7 @@ I wanted to find a solution to a need that I felt was unaddressed.  In the past,
 - The browser extension gave me very low quality versions of my photos (it only downloaded the thumbnail versions, not the full quality ones).
 - Both the third party app and browser extension had code that was closed-source so I couldn't see how they worked and confirm that they weren't doing something unscrupulous or nefarious with my account.
 
-The other reason I built this tool was to get my hands dirty and learn some technologies that I've been interested in, specifically Electron.js and Puppeteer.  For a software developer, like any other profession that involves creating things, the best way to learn a new skill is to create something with it, and this project gave me a good opportunity to do that.  So mostly, I built this tool for myself. But since it's open-source, anyone who wants to see how it's built or want to build similar can reference the code.
+The other reason I built this tool was to get my hands dirty and learn some technologies that I've been interested in, specifically Electron.js and Puppeteer.  For a software developer, like any other profession that involves creating things, the best way to learn a new skill is to create something with it. This project gave me a good opportunity to do that.  So mostly, I built this tool for myself, but once I had it working for me, I figured others would find it useful as well so I built a user interface so that non-developers can ue it as well. And since it's open-source, anyone who wants to see how it's built or want to build a similar tool can reference the code.
 
 ## Acknowledgments
 
