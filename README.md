@@ -43,7 +43,7 @@ I wanted to find a solution to a need that I felt was unaddressed.  In the past,
 - The browser extension gave me very low quality versions of my photos (it only downloaded the thumbnail versions, not the full quality ones).
 - Both the third party app and browser extension had code that was closed-source so I couldn't see how they worked and confirm that they weren't doing something unscrupulous or nefarious with my account.
 
-The other reason I built this tool was to get my hands dirty and learn some technologies that I've been interested in, specifically Electron.js and Puppeteer.  For a software developer, like any other profession that involves creating things, the best way to learn a new skill is to create something with it. This project gave me a good opportunity to do that.  So mostly, I built this tool for myself, but once I had it working for me, I figured others would find it useful as well so I built a user interface so that non-developers can use it as well. And since it's open-source, anyone who wants to see how it's built or want to build a similar tool can reference the code.
+The other reason I built this tool was to get my hands dirty and learn some technologies that I've been interested in, specifically Electron.js and Puppeteer.  For a software developer, like any other profession that involves creating things, the best way to learn a new skill is to build something with it. This project gave me a good opportunity to do that.  So mostly, I built this tool for myself. But once I had it working for my own use, I figured others would find it useful as well so I added a user interface that non-developers can easily interact with. And since it's open-source, anyone who wants to see how it's built or want to build a similar tool can reference the code.
 
 ## Acknowledgments
 
@@ -61,8 +61,9 @@ I was able to build this app thanks to the work of many other open-source projec
 - Material-UI
 - Formik
 - Yup.js
+- electron-builder
 - and many others listed in the *package.json* file
 
 ### Design
 
-The icon used for this app was free and downloaded at -  https://www.iconfinder.com/icons/1936908/camera_instagram_photo_polaroid_selfie_shoot_icon.
+The icon used for this app was free and downloaded from -  https://www.iconfinder.com/icons/1936908/camera_instagram_photo_polaroid_selfie_shoot_icon.
